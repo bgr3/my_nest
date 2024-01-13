@@ -3,8 +3,8 @@
     "name": "nest",
     "builds": [
        { 
-        "src": "package.json", 
-        "use": "now-sapper" 
+        "src": "src/main.ts", 
+        "use": "@vercel/node" 
        }
     ],
     "routes": [
