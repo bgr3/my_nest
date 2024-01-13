@@ -1,6 +1,6 @@
 import { ObjectId } from "mongoose";
-import { Tokens } from "src/features/auth/api/dto/middle/auth-middle-dto";
 import { UserOutput } from "../output/user-output-dto";
+import { Tokens } from "../../../../auth/api/dto/middle/auth-middle-dto";
 
 // export class UserType {
 //     constructor(

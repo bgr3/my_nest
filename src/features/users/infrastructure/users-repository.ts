@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { User, UserDocument } from "../domain/users-entity";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
-import { Tokens } from "src/features/auth/api/dto/middle/auth-middle-dto";
+import { Tokens } from "../../auth/api/dto/middle/auth-middle-dto";
 
 @Injectable()
 export class UsersRepository {

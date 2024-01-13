@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { CommentForPost, CommentModelType } from "../domain/comments-entity";
 import { InjectModel } from "@nestjs/mongoose";
 import { CommentsRepository } from "../infrastructure/comments-reppository";
-import { PostsRepository } from "src/features/posts/infrastructure/posts-repository";
-import { PostsQueryRepository } from "src/features/posts/infrastructure/posts-query-repository";
 import { CommentPostType, CommentPutType } from "../api/dto/input/comments-input-dto";
+import { PostsQueryRepository } from "../../posts/infrastructure/posts-query-repository";
+import { PostsRepository } from "../../posts/infrastructure/posts-repository";
 
 @Injectable()
 export class CommentsService {
