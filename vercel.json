@@ -3,7 +3,7 @@
     "name": "nest",
     "builds": [
        { 
-        "src": "packaje.json", 
+        "src": "package.json", 
         "use": "@vercel/node" 
        }
     ],
