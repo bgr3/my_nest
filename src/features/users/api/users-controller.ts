@@ -1,8 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Query, Res } from "@nestjs/common";
-import { UsersService } from "../../application/users-service";
-import {Request, Response} from 'express'
+import { UsersService } from "../application/users-service";
 import { HTTP_STATUSES } from "src/settings/http-statuses";
-import { UsersQueryRepository } from "../../infrastructure/users-query-repository";
+import { UsersQueryRepository } from "../infrastructure/users-query-repository";
 
 @Controller('users')
 export class UsersController {
@@ -11,7 +10,7 @@ export class UsersController {
         private readonly usersService: UsersService){}
 
     @Post()
-    async createUser (@Body() dto, @Res() res: Response)  {
+    async createUser (@Body() dto, @Res() res)  {
       
       let result = await this.usersService.createUser(dto, true)
       
@@ -37,7 +36,7 @@ export class UsersController {
 
     @Delete('/:id')
     @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-    async deleteUser(@Param('id') id: string, @Res() res: Response)  {
+    async deleteUser(@Param('id') id: string, @Res() res)  {
     
       const foundBlog = await this.usersService.deleteUser(id)
     

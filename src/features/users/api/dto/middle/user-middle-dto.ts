@@ -2,8 +2,24 @@ import { ObjectId } from "mongoose";
 import { Tokens } from "src/features/auth/api/dto/middle/auth-middle-dto";
 import { UserOutput } from "../output/user-output-dto";
 
-export class UserType {
+// export class UserType {
+//     constructor(
+//         public login: string,
+//         public email: string,
+//         public password: string,
+//         public createdAt: string,
+//         public emailConfirmation : {
+//             confirmationCode: string,
+//             expirationDate: object,
+//             isConfirmed: boolean,
+//             nextSend: object
+//         },
+//         public JWTTokens: Tokens[]){}
+// }
+
+export class UserDb{
     constructor(
+        public _id: ObjectId, 
         public login: string,
         public email: string,
         public password: string,
@@ -15,24 +31,6 @@ export class UserType {
             nextSend: object
         },
         public JWTTokens: Tokens[]){}
-}
-
-export class UserDb extends UserType{
-    constructor(
-        public _id: ObjectId, 
-        login: string,
-        email: string,
-        password: string,
-        createdAt: string,
-        emailConfirmation : {
-            confirmationCode: string,
-            expirationDate: object,
-            isConfirmed: boolean,
-            nextSend: object
-        },
-        JWTTokens: Tokens[]){
-            super(login, email, password, createdAt, emailConfirmation, JWTTokens)
-    }
 }
 
 export class UserFilterType {

@@ -1,18 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { User, UserDocument } from "../domain/users-entity";
-import { Model } from "mongoose";
+import { User, UserDocument, UserModelType } from "../domain/users-entity";
 import  bcrypt  from 'bcrypt'
 import { add } from 'date-fns/add'
 import { v4 as uuidv4 } from 'uuid'
 import { UsersRepository } from "../infrastructure/users-repository";
-import { UserPostType } from "../api/dto/input/user-input-dto";
-import { UserDb, UserType } from "../api/dto/middle/user-middle-dto";
+import { UserPostType } from "../api/dto/input/users-input-dto";
 
 @Injectable()
 export class UsersService {
     constructor(
-        @InjectModel(User.name) private userModel: Model<UserDocument>,
+        @InjectModel(User.name) private UserModel: UserModelType,
         protected usersRepository: UsersRepository
     ){}
     async testAllData (): Promise<void> {
@@ -44,24 +42,9 @@ export class UsersService {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(dto.password, passwordSalt) 
 
-        const newUser = new UserType(
-            dto.login,
-            dto.email,
-            passwordHash,            
-            new Date().toISOString(),
-            {
-                confirmationCode: uuidv4(),
-                expirationDate: add(new Date(), {
-                    minutes: 5
-                }),
-                isConfirmed: isSuperAdmin,
-                nextSend: add(new Date(), {
-                    seconds: 0
-                }),
-            },
-            [])
+        const newUser = User.createUser(dto.login, dto.email, passwordHash, isSuperAdmin)
 
-        const newUserModel = new this.userModel(newUser)
+        const newUserModel = new this.UserModel(newUser)
 
         await this.usersRepository.save(newUserModel)
         

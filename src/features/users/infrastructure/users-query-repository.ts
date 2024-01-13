@@ -1,8 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { UserDb, UserFilterType, UserPaginatorType } from "../api/dto/middle/user-middle-dto"
-import { User, UserDocument } from "../domain/users-entity"
-import { Model } from "mongoose"
-import { ObjectId } from "mongodb";
+import { User, UserDocument, UserModelType } from "../domain/users-entity"
+import { Types } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose"
 import { UserOutput } from "../api/dto/output/user-output-dto"
 
@@ -17,13 +16,14 @@ export const userFilter = {
 
 @Injectable()
 export class UsersQueryRepository {
-    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>){}
+    constructor(@InjectModel(User.name) private UserModel: UserModelType){}
     async findUsers (filter: UserFilterType = userFilter): Promise<UserPaginatorType> {
+
         const skip = (filter.pageNumber - 1) * filter.pageSize
         const regexLogin = new RegExp(filter.searchLoginTerm, 'i')
         const regexEmail = new RegExp(filter.searchEmailTerm, 'i')
-        const dbCount = await this.userModel.countDocuments({$or: [{login: RegExp(regexLogin)}, {email: RegExp(regexEmail)}]})
-        const dbResult = await this.userModel.find({$or: [{login: RegExp(regexLogin)}, {email: RegExp(regexEmail)}]}).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).lean()
+        const dbCount = await this.UserModel.countDocuments({$or: [{login: RegExp(regexLogin)}, {email: RegExp(regexEmail)}]})
+        const dbResult = await this.UserModel.find({$or: [{login: RegExp(regexLogin)}, {email: RegExp(regexEmail)}]}).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize).lean()
         debugger
 
         const paginator = {
@@ -38,8 +38,8 @@ export class UsersQueryRepository {
     }
     
     async findUserByID (id: string): Promise<UserOutput | null> {
-        if (ObjectId.isValid(id)) {
-            const user = await this.userModel.findOne({_id: new ObjectId(id) }).lean();
+        if (Types.ObjectId.isValid(id)) {
+            const user = await this.UserModel.findOne({_id: new Types.ObjectId(id) }).lean();
 
             if (user) {
                 return userMapper(user)                
