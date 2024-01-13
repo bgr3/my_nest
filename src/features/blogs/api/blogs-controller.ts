@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Res } from "@nestjs/common";
 import { BlogPostType, BlogPutType, PostForBlogPostType } from "./dto/input/blogs-input-dto";
-import { HTTP_STATUSES } from "src/settings/http-statuses";
+import { HTTP_STATUSES } from "src/http-statuses";
 import { BlogsService } from "../application/blog-service";
 import { BlogsQueryRepository } from "../infrastructure/blogs-query-repository";
 import { PostsService } from "src/features/posts/application/post-service";

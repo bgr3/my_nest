@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Query, Res } from "@nestjs/common";
 import { UsersService } from "../application/users-service";
-import { HTTP_STATUSES } from "src/settings/http-statuses";
+import { HTTP_STATUSES } from "src/http-statuses";
 import { UsersQueryRepository } from "../infrastructure/users-query-repository";
 
 @Controller('users')

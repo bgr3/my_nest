@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Res }
 import { PostsService } from "../application/post-service"
 import { PostsQueryRepository } from "../infrastructure/posts-query-repository"
 import { PostPostType, PostPutType } from "./dto/input/post-input-dto";
-import { HTTP_STATUSES } from "src/settings/http-statuses";
+import { HTTP_STATUSES } from "src/http-statuses";
 import { CommentPostType } from "src/features/comments/api/dto/input/comments-input-dto";
 import { CommentsService } from "src/features/comments/application/comment-service";
 import { CommentsQueryRepository } from "src/features/comments/infrastructure/comments-query-repository";

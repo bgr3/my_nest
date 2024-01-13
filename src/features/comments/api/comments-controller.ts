@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Res } from "@nestjs/common";
-import { HTTP_STATUSES } from "src/settings/http-statuses";
+import { HTTP_STATUSES } from "src/http-statuses";
 import { CommentsService } from "../application/comment-service";
 import { CommentsQueryRepository } from "../infrastructure/comments-query-repository";
 
