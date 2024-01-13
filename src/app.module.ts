@@ -23,6 +23,8 @@ import { CommentsController } from './features/comments/api/comments-controller'
 import { Blog, BlogSchema } from './features/blogs/domain/blogs-entity';
 import { Post, PostSchema } from './features/posts/domain/posts-entity';
 import { CommentForPost, CommentSchema } from './features/comments/domain/comments-entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -35,6 +37,10 @@ if (!url) {
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'swagger-static'),
+      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
+    }),
     MongooseModule.forRoot(url, {
       dbName: 'nest'
     }),
