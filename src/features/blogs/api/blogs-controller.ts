@@ -17,27 +17,29 @@ export class BlogsController {
     ){}
 
     @Post()
-    async createBlog(@Body() dto: BlogPostType, @Res() res) {
+    async createBlog(@Body() dto: BlogPostType) {
     
       let result = await this.blogsService.createBlog(dto)
-      
-      if (result) {
-        const newBlog = await this.blogsQueryRepository.findBlogByID(result)
-        return newBlog;
-      } else {
-        res.status(HTTP_STATUSES.BAD_REQUEST_400)
+
+      if (!result) {
+        //res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+        throw new Error('404')
         return
       }
+
+      const newBlog = await this.blogsQueryRepository.findBlogByID(result!)
+
+      return newBlog;
     }
 
     @Post(':id/posts')
-    async createPostforBlog(@Param('id') id: string, @Body() dto: PostForBlogPostType, @Res() res) {
+    async createPostforBlog(@Param('id') id: string, @Body() dto: PostForBlogPostType) {
       dto.blogId = id
       
       let result = await this.postsService.createPost(dto)
       
       if (!result) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        //res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
         return
       } 
       
@@ -54,20 +56,20 @@ export class BlogsController {
     }
 
     @Get(':id')
-    async getBlog(@Param('id') id: string, @Res() res) {
+    async getBlog(@Param('id') id: string) {
     
       const foundBlog = await this.blogsQueryRepository.findBlogByID(id)
     
       if (foundBlog) {      
         return foundBlog;
-      } else {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        return
-      }
+      } //else {
+      //   res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+      //   return
+      // }
     }
 
     @Get(':id/posts')
-    async getPostsforBlog(@Param('id') id: string, @Query() query, @Res() res) {
+    async getPostsforBlog(@Param('id') id: string, @Query() query) {
       const foundBlog = await this.blogsQueryRepository.findBlogByID(id)
       //const queryFilter = postCheckQuery(query)
 
@@ -83,7 +85,7 @@ export class BlogsController {
       const posts = await this.postsQueryRepository.findPosts(id, query/*, userId*/)
     
       if (!foundBlog) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        //res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
       } else {
         return posts;
@@ -92,7 +94,7 @@ export class BlogsController {
 
     @Put(':id')
     @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-    async updateBlog(@Param('id') id: string, @Body() dto: BlogPutType, @Res() res) {
+    async updateBlog(@Param('id') id: string, @Body() dto: BlogPutType) {
     
       const foundBlog = await this.blogsQueryRepository.findBlogByID(id)
       if (foundBlog) {
@@ -101,24 +103,25 @@ export class BlogsController {
         if (updatedBlog) {
           return
         } else {
-          res.status(HTTP_STATUSES.BAD_REQUEST_400);
+          //res.status(HTTP_STATUSES.BAD_REQUEST_400);
           return
         }
       } else {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        //res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
         return
       }
     }
 
     @Delete(':id')
     @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-    async deleteBlog(@Param('id') id: string, @Res() res) {
+    async deleteBlog(@Param('id') id: string) {
       const foundBlog = await this.blogsService.deleteBlog(id)
     
       if (foundBlog) {
         return
       } else {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        //res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        return
       }
     }
   }
