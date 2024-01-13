@@ -23,10 +23,19 @@ import { CommentsController } from './features/comments/api/comments-controller'
 import { Blog, BlogSchema } from './features/blogs/domain/blogs-entity';
 import { Post, PostSchema } from './features/posts/domain/posts-entity';
 import { CommentForPost, CommentSchema } from './features/comments/domain/comments-entity';
+import dotenv from "dotenv"
+
+dotenv.config()
+
+const url = process.env.MONGO_URL;
+
+if (!url) {
+    throw new Error('! URL doesn`t found')
+}
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017', {
+    MongooseModule.forRoot(url, {
       dbName: 'nest'
     }),
     MongooseModule.forFeature([
