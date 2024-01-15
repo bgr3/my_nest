@@ -41,7 +41,7 @@ export class UsersService {
     async createUser (dto: UserPostType, isSuperAdmin: boolean = false): Promise<string | null> {     
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(dto.password, passwordSalt) 
-
+        
         const newUser = User.createUser(dto.login, dto.email, passwordHash, isSuperAdmin)
 
         const newUserModel = new this.UserModel(newUser)

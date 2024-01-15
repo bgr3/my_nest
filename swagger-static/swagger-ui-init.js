@@ -393,7 +393,7 @@ window.onload = function() {
           "operationId": "TestingController_allData",
           "parameters": [],
           "responses": {
-            "200": {
+            "204": {
               "description": ""
             }
           }

@@ -1,37 +1,45 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { randomUUID } from "crypto";
-import { HydratedDocument, Model } from "mongoose";
+import mongoose, { HydratedDocument, Model } from "mongoose";
 import { add } from 'date-fns/add';
 
 export type UserDocument = HydratedDocument<User>;
+export type EmailConfirmationDocument = HydratedDocument<EmailConfirmation>;
 
 export type UserModelType = Model<UserDocument> & typeof statics;
 
 @Schema({_id: false})
 class EmailConfirmation {
 
-    @Prop({required: true})
+    @Prop()
     confirmationCode: string;
 
     @Prop({
-        required: true,
         type: Object
     })
     expirationDate: object;
 
-    @Prop({required: true})
+    @Prop()
     isConfirmed: boolean;
 
     @Prop({
-        required: true,
         type: Object
     })
     nextSend: object;
 }
 
+class EmailConfirmationModel {
+    constructor (
+        public confirmationCode: string,
+        public expirationDate: object,
+        public isConfirmed: boolean,
+        public nextSend: object,
+    ){}
+}
+
 const EmailConfirmationSchema = SchemaFactory.createForClass(EmailConfirmation)
 
-@Schema()
+@Schema({_id: false})
 class JWTTokens {
     @Prop({required: true})
     accessToken: string
@@ -56,7 +64,7 @@ export class User {
     @Prop({required: true})
     createdAt: string;
 
-    @Prop({required: true, type: EmailConfirmationSchema})
+    @Prop({type: EmailConfirmationSchema, ref: 'EmailConfirmation'})
     emailConfirmation : EmailConfirmation;
 
     @Prop({default: []})
@@ -68,11 +76,12 @@ export class User {
 
     static createUser(login: string, email: string, passwordHash: string, isSuperAdmin: boolean = false): User {
         const user = new this();
-
+        
         user.login = login;
         user.email = email;
         user.password = passwordHash;
         user.createdAt = new Date().toISOString();
+        user.emailConfirmation = new EmailConfirmation()
         user.emailConfirmation.confirmationCode = randomUUID();
         user.emailConfirmation.expirationDate = add(new Date(), {minutes: 5});
         user.emailConfirmation.isConfirmed = isSuperAdmin;
