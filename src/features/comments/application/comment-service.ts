@@ -56,6 +56,8 @@ export class CommentsService {
             dto.content
         )    
 
+        this.commentsRepository.save(comment)
+
         return true
     }
 

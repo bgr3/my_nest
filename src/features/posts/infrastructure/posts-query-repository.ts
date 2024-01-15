@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import {Post, PostDocument, PostModelType } from "../domain/posts-entity";
 import { InjectModel } from "@nestjs/mongoose";
-import { LikesInfo, PostDb, PostFilterType, PostPaginatorType } from "../api/dto/middle/post-middle-dto";
+import { LikesInfo, PostFilterType, PostPaginatorType } from "../api/dto/middle/post-middle-dto";
 import { LikesInfoOutput, PostOutput } from "../api/dto/output/post-output-type";
 import { Types } from "mongoose";
 

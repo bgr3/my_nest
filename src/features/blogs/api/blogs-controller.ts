@@ -5,6 +5,7 @@ import { BlogsQueryRepository } from "../infrastructure/blogs-query-repository";
 import { HTTP_STATUSES } from "../../../settings/http-statuses";
 import { PostsQueryRepository } from "../../posts/infrastructure/posts-query-repository";
 import { PostsService } from "../../posts/application/post-service";
+import { blogCheckQuery } from "../application/blog-check-query";
 
 @Controller('blogs')
 export class BlogsController {
@@ -47,9 +48,9 @@ export class BlogsController {
 
     @Get()
     async getBlogs(@Query() query) {
-        //const queryFilter = blogCheckQuery(query)
+        const queryFilter = blogCheckQuery(query)
       
-        return await this.blogsQueryRepository.findBlogs(query);
+        return await this.blogsQueryRepository.findBlogs(queryFilter);
     }
 
     @Get(':id')
@@ -67,7 +68,7 @@ export class BlogsController {
     @Get(':id/posts')
     async getPostsforBlog(@Param('id') id: string, @Query() query) {
       const foundBlog = await this.blogsQueryRepository.findBlogByID(id)
-      //const queryFilter = postCheckQuery(query)
+      const queryFilter = blogCheckQuery(query)
 
       //const accessToken = req.headers.authorization
     //   let userId = ''
@@ -78,7 +79,7 @@ export class BlogsController {
     //     }
     //   }
       
-      const posts = await this.postsQueryRepository.findPosts(id, query/*, userId*/)
+      const posts = await this.postsQueryRepository.findPosts(id, queryFilter/*, userId*/)
     
       if (!foundBlog) {
         throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);

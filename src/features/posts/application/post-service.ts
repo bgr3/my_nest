@@ -43,6 +43,7 @@ export class PostsService {
         if (!post || !blogName) return false
 
         post.updatePost(dto.title, dto.shortDescription, dto.content, dto.blogId, blogName)
+        this.postsRepository.save(post)
 
         return true
     } 

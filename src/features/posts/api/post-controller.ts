@@ -7,6 +7,7 @@ import { HTTP_STATUSES } from "../../../settings/http-statuses";
 import { CommentPostType } from "../../comments/api/dto/input/comments-input-dto";
 import { CommentsService } from "../../comments/application/comment-service";
 import { CommentsQueryRepository } from "../../comments/infrastructure/comments-query-repository";
+import { postCheckQuery } from "../application/post-check-query";
 
 
 @Controller('posts')
@@ -58,7 +59,7 @@ export class PostsController {
 
     @Get()
     async getPosts(@Query() query) {  
-      //const queryFilter = postCheckQuery(query)
+      const queryFilter = postCheckQuery(query)
 
       //const accessToken = req.headers.authorization
     //   let userId = ''
@@ -71,7 +72,7 @@ export class PostsController {
       
         const userId = ''
 
-        return await this.postsQueryRepository.findPosts(null, query, userId);
+        return await this.postsQueryRepository.findPosts(null, queryFilter, userId);
     }
 
     @Get(':postId')
@@ -97,7 +98,7 @@ export class PostsController {
 
     @Get(':postId/comments')
     async getCommentsForPost(@Param('postId') postId: string, @Query() query) {     
-        //const queryFilter = postCheckQuery(req.query)
+        const queryFilter = postCheckQuery(query)
         const post = await this.postsQueryRepository.findPostByID(postId)
 
         // const accessToken = req.headers.authorization
@@ -111,7 +112,7 @@ export class PostsController {
         
         const userId = ''
 
-        const foundcomments = await this.commentsQueryRepository.findComments(postId, query, userId)
+        const foundcomments = await this.commentsQueryRepository.findComments(postId, queryFilter, userId)
         
         if (!post) throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);      
         

@@ -27,6 +27,7 @@ export class BlogsService {
 
         if (blog) {
             blog.updateBlog(dto.name, dto.description, dto.websiteUrl)
+            this.blogsRepository.save(blog)
             return true
         }
         
