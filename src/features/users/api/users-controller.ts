@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Query, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, Param, Post, Query, Res } from "@nestjs/common";
 import { UsersService } from "../application/users-service";
 import { HTTP_STATUSES } from "../../../settings/http-statuses";
 import { UsersQueryRepository } from "../infrastructure/users-query-repository";
@@ -11,19 +11,15 @@ export class UsersController {
         private readonly usersService: UsersService){}
 
     @Post()
-    async createUser (@Body() dto, @Res() res)  {
+    async createUser (@Body() dto)  {
       
       let result = await this.usersService.createUser(dto, true)
       
-      if (!result) {
-
-        res.status(HTTP_STATUSES.BAD_REQUEST_400);
-        return
-      } 
+      if (!result) throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
   
       const newUser = await this.usersQueryRepository.findUserByID(result)
         
-      res.status(HTTP_STATUSES.CREATED_201).send(newUser);
+      return newUser;
 
       return
     }
@@ -37,16 +33,12 @@ export class UsersController {
 
     @Delete('/:id')
     @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-    async deleteUser(@Param('id') id: string, @Res() res)  {
+    async deleteUser(@Param('id') id: string)  {
     
       const foundBlog = await this.usersService.deleteUser(id)
     
-      if (foundBlog) {
-        return
-      } else {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        return
-      }
+      if (!foundBlog) throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
+        return ;
     }
 }
 
