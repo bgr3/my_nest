@@ -23,8 +23,6 @@ export class BlogsQueryRepository {
         const regex = new RegExp(filter.searchNameTerm, 'i')        
         const dbCount = await this.BlogModel.countDocuments({name: RegExp(regex)})
         const dbResult = await this.BlogModel.find({name: RegExp(regex)}).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize)
-        this.BlogModel.find()
-
         const paginator = {
             pagesCount: Math.ceil(dbCount / filter.pageSize),
             page: filter.pageNumber,
