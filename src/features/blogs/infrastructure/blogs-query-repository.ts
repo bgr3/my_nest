@@ -20,9 +20,10 @@ export class BlogsQueryRepository {
 
     async findBlogs (filter: BlogFilter = blogFilter): Promise<BlogPaginatorType> {
         const skip = (filter.pageNumber - 1) * filter.pageSize
-        const regex = new RegExp(filter.searchNameTerm, 'i')
+        const regex = new RegExp(filter.searchNameTerm, 'i')        
         const dbCount = await this.BlogModel.countDocuments({name: RegExp(regex)})
         const dbResult = await this.BlogModel.find({name: RegExp(regex)}).sort({[filter.sortBy]: (filter.sortDirection == 'asc' ? 1 : -1)}).skip(skip).limit(filter.pageSize)
+        this.BlogModel.find()
 
         const paginator = {
             pagesCount: Math.ceil(dbCount / filter.pageSize),
