@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, Param, Post, Put, Query, Res } from "@nestjs/common";
 import { CommentsService } from "../application/comment-service";
 import { CommentsQueryRepository } from "../infrastructure/comments-query-repository";
 import { HTTP_STATUSES } from "../../../settings/http-statuses";
@@ -49,27 +49,21 @@ export class CommentsController {
 
     @Put()
     @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-    async updateComment(@Param('commentId') commentId: string, @Body() dto, @Res() res) {
+    async updateComment(@Param('commentId') commentId: string, @Body() dto) {
   
         const updatedComment = await this.commentsService.updateComment(commentId, dto) 
         
-        if (!updatedComment) {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-            return
-        }
+        if (!updatedComment) throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
         
         return ;
     }
 
     @Delete()
-    async deleteComment(@Param('commentId') commentId: string, @Res() res) {
+    async deleteComment(@Param('commentId') commentId: string) {
     
         const foundComment = await this.commentsService.deleteComment(commentId)
         
-        if (!foundComment) {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-            return ;
-        }
+        if (!foundComment) throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
         
         return
     }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, Param, Post, Put, Query, Res } from "@nestjs/common";
 import { BlogPostType, BlogPutType, PostForBlogPostType } from "./dto/input/blogs-input-dto";
 import { BlogsService } from "../application/blog-service";
 import { BlogsQueryRepository } from "../infrastructure/blogs-query-repository";
@@ -22,9 +22,7 @@ export class BlogsController {
       let result = await this.blogsService.createBlog(dto)
 
       if (!result) {
-        //res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
-        throw new Error('404')
-        return
+        throw new HttpException('BAD_REQUEST', HTTP_STATUSES.BAD_REQUEST_400);
       }
 
       const newBlog = await this.blogsQueryRepository.findBlogByID(result!)
@@ -39,8 +37,7 @@ export class BlogsController {
       let result = await this.postsService.createPost(dto)
       
       if (!result) {
-        //res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        return
+        throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
       } 
       
       const newPost = await this.postsQueryRepository.findPostByID(result)
@@ -62,10 +59,9 @@ export class BlogsController {
     
       if (foundBlog) {      
         return foundBlog;
-      } //else {
-      //   res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-      //   return
-      // }
+      } else {
+        throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
+      }
     }
 
     @Get(':id/posts')
@@ -85,8 +81,7 @@ export class BlogsController {
       const posts = await this.postsQueryRepository.findPosts(id, query/*, userId*/)
     
       if (!foundBlog) {
-        //res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        return
+        throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
       } else {
         return posts;
       } 
@@ -103,12 +98,11 @@ export class BlogsController {
         if (updatedBlog) {
           return
         } else {
-          //res.status(HTTP_STATUSES.BAD_REQUEST_400);
+          throw new HttpException('BAD_REQUEST', HTTP_STATUSES.BAD_REQUEST_400);
           return
         }
       } else {
-        //res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        return
+        throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
       }
     }
 
@@ -120,8 +114,7 @@ export class BlogsController {
       if (foundBlog) {
         return
       } else {
-        //res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        return
+        throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
       }
     }
   }
