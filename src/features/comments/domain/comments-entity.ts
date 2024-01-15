@@ -7,10 +7,10 @@ export type CommentModelType = Model<CommentDocument> & typeof statics;
 
 @Schema()
 class CommentatorInfo {
-    @Prop({required: true})
+    @Prop()
     userId: string;
     
-    @Prop({required: true})
+    @Prop()
     userLogin: string;
 }
 
@@ -32,13 +32,13 @@ export class CommentForPost {
     @Prop({required: true})
     content: string;
 
-    @Prop({required: true})
+    @Prop({type: CommentatorInfoSchema, ref: 'CommentatorInfo'})
     commentatorInfo: CommentatorInfo;
 
     @Prop({required: true})
     createdAt: string;
 
-    @Prop({required: true})
+    @Prop({type: LikesInfoSchema, ref: 'LikesInfo'})
     likesInfo: LikesInfo;
 
     @Prop({required: true})
@@ -52,6 +52,7 @@ export class CommentForPost {
         const comment = new this();
 
         comment.content = content;
+        comment.commentatorInfo = new CommentatorInfo()
         comment.commentatorInfo.userId = userId;
         comment.commentatorInfo.userLogin = userLogin;
         comment.createdAt = new Date().toISOString();

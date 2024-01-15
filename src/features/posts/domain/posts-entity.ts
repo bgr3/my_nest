@@ -43,7 +43,7 @@ export class Post {
     @Prop({required: true})
     createdAt: string;
 
-    @Prop({default: [], type: LikesInfoSchema})
+    @Prop({default: [], type: [{type: LikesInfoSchema, ref: 'LikesInfo'}]})
     likesInfo: [LikesInfo];
 
     updatePost(title: string, shortDescription: string, content: string, blogId: string, blogName: string){

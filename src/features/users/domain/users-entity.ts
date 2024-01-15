@@ -67,7 +67,7 @@ export class User {
     @Prop({type: EmailConfirmationSchema, ref: 'EmailConfirmation'})
     emailConfirmation : EmailConfirmation;
 
-    @Prop({default: []})
+    @Prop({default: [], type: [{type: JWTTokensSchema, ref: 'JWTTokens'}]})
     JWTTokens: [JWTTokens];
 
     updateUser(login: string){
