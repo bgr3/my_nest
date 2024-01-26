@@ -166,6 +166,36 @@ window.onload = function() {
           }
         }
       },
+      "/posts/{id}/like-status": {
+        "put": {
+          "operationId": "PostsController_likeStatus",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostLikeStatus"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/posts": {
         "post": {
           "operationId": "PostsController_createPost",
@@ -350,6 +380,46 @@ window.onload = function() {
           }
         }
       },
+      "/comments/{commentId}/like-status": {
+        "put": {
+          "operationId": "CommentsController_likeStatus",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/comments/{commentId}": {
+        "get": {
+          "operationId": "CommentsController_getComment",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/comments": {
         "put": {
           "operationId": "CommentsController_updateComment",
@@ -409,6 +479,144 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/auth/password-recovery": {
+        "post": {
+          "operationId": "AuthController_passwordRecovery",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthPasswordRecoveryDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/auth/new-password": {
+        "post": {
+          "operationId": "AuthController_newPassword",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthNewPasswordDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/auth/refresh-token": {
+        "post": {
+          "operationId": "AuthController_refreshToken",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/auth/logout": {
+        "post": {
+          "operationId": "AuthController_logout",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/auth/me": {
+        "get": {
+          "operationId": "AuthController_aboutMe",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/auth/registration": {
+        "post": {
+          "operationId": "AuthController_registration",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthRegistrationDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/auth/registration-confirmation": {
+        "post": {
+          "operationId": "AuthController_registrationConfirmation",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthRegistrationConfirmationDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/auth/registration-email-resending": {
+        "post": {
+          "operationId": "AuthController_emailResending",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthEmailResendingDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
@@ -438,6 +646,10 @@ window.onload = function() {
           "type": "object",
           "properties": {}
         },
+        "PostLikeStatus": {
+          "type": "object",
+          "properties": {}
+        },
         "PostPostType": {
           "type": "object",
           "properties": {}
@@ -447,6 +659,26 @@ window.onload = function() {
           "properties": {}
         },
         "PostPutType": {
+          "type": "object",
+          "properties": {}
+        },
+        "AuthPasswordRecoveryDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "AuthNewPasswordDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "AuthRegistrationDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "AuthRegistrationConfirmationDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "AuthEmailResendingDTO": {
           "type": "object",
           "properties": {}
         }

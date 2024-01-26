@@ -56,32 +56,32 @@ export class CommentsRepository {
   //     return false
   // }
 
-  async myLikeStatus(
-    commentId: string,
-    userId: string,
-  ): Promise<string | null> {
-    if (Types.ObjectId.isValid(commentId)) {
-      const comment = await this.CommentModel.findOne({
-        _id: new Types.ObjectId(commentId),
-      }).lean();
+  // async myLikeStatus(
+  //   commentId: string,
+  //   userId: string,
+  // ): Promise<string | null> {
+  //   if (Types.ObjectId.isValid(commentId)) {
+  //     const comment = await this.CommentModel.findOne({
+  //       _id: new Types.ObjectId(commentId),
+  //     }).lean();
 
-      if (!comment) return null;
+  //     if (!comment) return null;
 
-      let myStatus = 'null';
+  //     let myStatus = 'null';
 
-      if (comment.likesInfo.likes.includes(userId)) {
-        myStatus = 'Like';
-      } else if (comment.likesInfo.dislikes.includes(userId)) {
-        myStatus = 'Dislike';
-      } else {
-        myStatus = 'None';
-      }
+  //     if (comment.likesInfo.likes.includes(userId)) {
+  //       myStatus = 'Like';
+  //     } else if (comment.likesInfo.dislikes.includes(userId)) {
+  //       myStatus = 'Dislike';
+  //     } else {
+  //       myStatus = 'None';
+  //     }
 
-      return myStatus;
-    }
+  //     return myStatus;
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
   async setLikeStatus(
     commentId: string,

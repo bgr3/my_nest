@@ -23,7 +23,7 @@ export class UsersQueryRepository {
   constructor(@InjectModel(User.name) private UserModel: UserModelType) {}
   async findUsers(
     filter: UserFilterType = userFilter,
-  ): Promise<UserPaginatorType> {
+  ): Promise<UserPaginatorType<UserOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
     const regexLogin = new RegExp(filter.searchLoginTerm, 'i');
     const regexEmail = new RegExp(filter.searchEmailTerm, 'i');
