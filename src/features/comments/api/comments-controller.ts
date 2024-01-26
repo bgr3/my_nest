@@ -1,70 +1,82 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, Param, Post, Put, Query, Res } from "@nestjs/common";
-import { CommentsService } from "../application/comment-service";
-import { CommentsQueryRepository } from "../infrastructure/comments-query-repository";
-import { HTTP_STATUSES } from "../../../settings/http-statuses";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { CommentsService } from '../application/comment-service';
+import { CommentsQueryRepository } from '../infrastructure/comments-query-repository';
+import { HTTP_STATUSES } from '../../../settings/http-statuses';
+import { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
+import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 
 @Controller('comments')
 export class CommentsController {
-    constructor(
-      //protected authorizationValidation: AuthorizationValidation,
-      protected commentsService: CommentsService,
-      protected commentsQueryRepository: CommentsQueryRepository){}
+  constructor(
+    protected commentsService: CommentsService,
+    protected commentsQueryRepository: CommentsQueryRepository,
+    protected jwtService: JwtService,
+  ) {}
 
-    // @Get('commentId')
-    // @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-    // async likeStatus(@Param('commentId') commentId: string, @Body() dto, @Res() res) {
-    //   const token = req.headers.authorization!  
-    //   const id = commentId;
-    //   const body = dto;
-    //   const result = await this.commentsService.likeStatus(id, token, body)     
-      
-    //   if (!result) {
-    //     res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-    //     return
-    //   }
+  @UseGuards(JwtAuthGuard)
+  @Put(':commentId/like-status')
+  @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
+  async likeStatus(@Param('commentId') commentId: string, @Body() dto, @Req() req: Request) {
+    const accessToken = req.headers.authorization!
+    const id = commentId;
+    const result = await this.commentsService.likeStatus(id, accessToken, dto)
 
-    //   return ;
-    // }
-
-    // @Get()
-    // async getComment(@Param('commentId') commentId: string, @Res() res) {
-    //   const accessToken = req.headers.authorization
-    //   let userId = ''
-    //   if(accessToken){
-    //     const user = await this.authorizationValidation.getUserByJWTAccessToken(accessToken)  
-    //     if(user) {
-    //       userId = user!._id.toString()
-    //     }
-    //   }
-      
-    //   const foundComment = await this.commentsQueryRepository.findCommentByID(req.params.id, userId)
-      
-    //   if (foundComment) {      
-    //     return foundComment;
-    //   } else {
-    //     res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-    //     return ;
-    //   }
-    // }
-
-    @Put()
-    @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-    async updateComment(@Param('commentId') commentId: string, @Body() dto) {
-  
-        const updatedComment = await this.commentsService.updateComment(commentId, dto) 
-        
-        if (!updatedComment) throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
-        
-        return ;
+    if (!result) {
+      throw new NotFoundException()
     }
 
-    @Delete()
-    async deleteComment(@Param('commentId') commentId: string) {
-    
-        const foundComment = await this.commentsService.deleteComment(commentId)
-        
-        if (!foundComment) throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
-        
-        return
-    }
+    return ;
   }
+
+  @Get(':commentId')
+  async getComment(@Param('commentId') commentId: string, @Req() req: Request) {
+    const accessToken = req.headers.authorization!
+    const userId = await this.jwtService.verifyAsync(accessToken);
+    const foundComment = await this.commentsQueryRepository.findCommentByID(commentId, userId)
+
+    if (!foundComment) throw new NotFoundException();
+
+    return foundComment;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
+  async updateComment(@Param('commentId') commentId: string, @Body() dto) {
+    const updatedComment = await this.commentsService.updateComment(
+      commentId,
+      dto,
+    );
+
+    if (!updatedComment)
+      throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
+
+    return;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete()
+  async deleteComment(@Param('commentId') commentId: string) {
+    const foundComment = await this.commentsService.deleteComment(commentId);
+
+    if (!foundComment)
+      throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
+
+    return;
+  }
+}

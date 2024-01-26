@@ -1,55 +1,55 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Model } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Model } from 'mongoose';
+import { BlogPostType, BlogPutType } from '../api/dto/input/blogs-input-dto';
 
 export type BlogDocument = HydratedDocument<Blog>;
 
 export type BlogModelType = Model<BlogDocument> & typeof statics;
 
-
 @Schema()
 export class Blog {
-    @Prop({required: true})
-    name: string;
+  @Prop({ required: true })
+  name: string;
 
-    @Prop({required: true})
-    description: string;
+  @Prop({ required: true })
+  description: string;
 
-    @Prop({required: true})
-    websiteUrl: string;
+  @Prop({ required: true })
+  websiteUrl: string;
 
-    @Prop({required: true})
-    createdAt: string;
+  @Prop({ required: true })
+  createdAt: string;
 
-    @Prop({required: true})
-    isMembership: boolean;
+  @Prop({ required: true })
+  isMembership: boolean;
 
-    updateBlog(name: string, description: string, websiteUrl: string){
-        this.name = name;
-        this.description = description;
-        this.websiteUrl = websiteUrl;
-    }
+  updateBlog(inputModel: BlogPutType) {
+    this.name = inputModel.name;
+    this.description = inputModel.description;
+    this.websiteUrl = inputModel.websiteUrl;
+  }
 
-    static createBlog(name: string, description: string, websiteUrl: string) {
-        const blog = new this();
+  static createBlog(inputModel: BlogPostType) {
+    const blog = new this();
 
-        blog.name = name;
-        blog.description = description;
-        blog.websiteUrl = websiteUrl;
-        blog.createdAt = new Date().toISOString();
-        blog.isMembership = false;
+    blog.name = inputModel.name;
+    blog.description = inputModel.description;
+    blog.websiteUrl = inputModel.websiteUrl;
+    blog.createdAt = new Date().toISOString();
+    blog.isMembership = false;
 
-        return blog
-    }
+    return blog;
+  }
 }
 
-export const BlogSchema = SchemaFactory.createForClass(Blog)
+export const BlogSchema = SchemaFactory.createForClass(Blog);
 
 BlogSchema.methods = {
-    updateBlog: Blog.prototype.updateBlog,
-}
+  updateBlog: Blog.prototype.updateBlog,
+};
 
 const statics = {
-    createBlog: Blog.createBlog,
-}
+  createBlog: Blog.createBlog,
+};
 
 BlogSchema.statics = statics;
