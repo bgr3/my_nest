@@ -131,6 +131,7 @@ export class BlogsController {
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async deleteBlog(@Param('id') id: string) {
     const foundBlog = await this.blogsService.deleteBlog(id);
+    console.log(foundBlog);
 
     if (foundBlog) {
       return;
