@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import { add } from 'date-fns/add';
 import { v4 as uuidv4 } from 'uuid';
 import { UsersRepository } from '../infrastructure/users-repository';
-import { UserPostType } from '../api/dto/input/users-input-dto';
+import { UserPost } from '../api/dto/input/users-input-dto';
 
 @Injectable()
 export class UsersService {
@@ -43,7 +43,7 @@ export class UsersService {
   }
 
   async createUser(
-    dto: UserPostType,
+    dto: UserPost,
     isSuperAdmin: boolean = false,
   ): Promise<string | null> {
     const passwordSalt = await bcrypt.genSalt(10);

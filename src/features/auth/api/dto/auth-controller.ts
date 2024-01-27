@@ -27,6 +27,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @HttpCode(HTTP_STATUSES.OK_200)
   async loginUser(@Req() req, @Res() res: Response) {
     const deviceName: string = req.header('User-Agent')
       ? req.header('User-Agent')!

@@ -1,6 +1,6 @@
 import { IsEmail, Length } from "class-validator";
 
-export class UserPostType {
+export class UserPost {
   @Length(3, 10)
   login: string;
 

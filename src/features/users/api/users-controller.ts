@@ -15,6 +15,7 @@ import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { UsersQueryRepository } from '../infrastructure/users-query-repository';
 import { userCheckQuery } from '../application/user-check-query';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
+import { UserPost } from './dto/input/users-input-dto';
 
 @Controller('users')
 export class UsersController {
@@ -25,7 +26,7 @@ export class UsersController {
 
   @UseGuards(BasicAuthGuard)
   @Post()
-  async createUser(@Body() dto) {
+  async createUser(@Body() dto: UserPost) {
     const result = await this.usersService.createUser(dto, true);
 
     if (!result)

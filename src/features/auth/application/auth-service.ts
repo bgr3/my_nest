@@ -31,7 +31,10 @@ export class AuthService {
       
       if (!user) return false;
 
-      await user.updateConfirmation();
+      const result = await user.updateConfirmation();
+
+      if (!result) return false;
+      
       await this.usersRepository.save(user);
 
       return true

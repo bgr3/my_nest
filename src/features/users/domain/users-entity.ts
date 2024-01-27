@@ -75,7 +75,11 @@ export class User {
   };
 
   updateConfirmation(){
+    if (this.emailConfirmation.isConfirmed) return false;
+
     this.emailConfirmation.isConfirmed = true
+
+    return true;
   };
 
   resendConfirmationCode(
