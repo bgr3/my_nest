@@ -8,8 +8,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
+        ExtractJwt.fromAuthHeaderAsBearerToken(),        
         JwtStrategy.extractJWT,
-        ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,
@@ -17,17 +17,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log(payload);
-    return payload;
+    const userId = payload.userId
+    const deviceId = payload.deviceId
+    
+    return userId || deviceId;
   }
 
-  private static extractJWT(req: RequestType): string | null {
+  private static extractJWT(req: RequestType): string | null {          
     if (
       req.cookies &&
-      'token' in req.cookies &&
-      req.cookies.user_token.length > 0
+      'refreshToken' in req.cookies &&
+      req.cookies.refreshToken.length > 0
     ) {
-      return req.cookies.token;
+      return req.cookies.refreshToken;
     }
     return null;
   }

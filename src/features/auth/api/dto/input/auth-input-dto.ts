@@ -1,50 +1,44 @@
-export class AuthPutType {
-  constructor(
-    public issuedAt: Date,
-    public expiredAt: Date,
-    public tokens: {
-      accessToken: string;
-      refreshToken: string;
-    },
-  ) {}
-}
+import { IsEmail, IsString, Length } from "class-validator";
 
 export class AuthLoginInputDTO {
-  constructor(
-    public loginOrEmail: string,
-    public password: string,
-  ) {}
+  @IsString()
+  loginOrEmail: string;
+
+  @IsString()
+  password: string;
+
 }
 
 export class AuthPasswordRecoveryDTO {
-  constructor(
-    public email: string,
-  ) {}
+  @IsEmail()
+  email: string;
 }
 
 export class AuthNewPasswordDTO {
-  constructor(
-    public newPassword: string,
-    public recoveryCode: string,
-  ) {}
+  @Length(6, 20)
+  newPassword: string;
+
+  @IsString()
+  recoveryCode: string;
 }
 
 export class AuthRegistrationDTO {
-  constructor(
-    public login: string,
-    public email: string,
-    public password: string,
-  ) {}
+  @Length(3, 10)
+  login: string;
+
+  @IsEmail()
+  email: string;
+
+  @Length(6, 20)
+  password: string;
 }
 
 export class AuthRegistrationConfirmationDTO {
-  constructor(
-    public code: string,
-  ) {}
+  @IsString()
+  code: string;
 }
 
 export class AuthEmailResendingDTO {
-  constructor(
-    public email: string,
-  ) {}
+  @IsEmail()
+  email: string;
 }

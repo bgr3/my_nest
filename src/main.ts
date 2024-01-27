@@ -9,6 +9,7 @@ import {
   ErrorExceptionFilter,
   HttpExceptionFilter,
 } from './infrastructure/exception-filters/exception-filter';
+import cookieParser from 'cookie-parser'
 
 const serverUrl = process.env.SERVER_URL;
 
@@ -43,6 +44,7 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
   applyAppSettings(app);
+  app.use(cookieParser())
   await app.listen(3000);
 
   // get the swagger json file (if app is running in development mode)

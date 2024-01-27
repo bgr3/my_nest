@@ -1,23 +1,32 @@
+import { IsNumberString, MaxLength } from "class-validator";
+
 export class PostPostType {
-  constructor(
-    public title: string,
-    public shortDescription: string,
-    public content: string,
-    public blogId: string,
-  ) {}
+  @MaxLength(30)
+  title: string;
+  
+  @MaxLength(100)
+  shortDescription: string;
+
+  @MaxLength(1000)
+  content: string;
+
+  @IsNumberString()
+  blogId: string;
 }
 
 export class PostPutType {
-  constructor(
-    public title: string,
-    public shortDescription: string,
-    public content: string,
-    public blogId: string,
-  ) {}
+  @MaxLength(30)
+  title: string;
+
+  @MaxLength(100)
+  shortDescription: string;
+
+  @MaxLength(1000)
+  content: string;
+
+  @IsNumberString()
+  blogId: string;
 }
 
-export class PostLikeStatus {
-  constructor(
-      public likeStatus: string
-  ){}
-}
+
+

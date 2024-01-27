@@ -15,16 +15,16 @@ import {
 } from '@nestjs/common';
 import { PostsService } from '../application/post-service';
 import { PostsQueryRepository } from '../infrastructure/posts-query-repository';
-import { PostLikeStatus, PostPostType, PostPutType } from './dto/input/post-input-dto';
+import { PostPostType, PostPutType } from './dto/input/post-input-dto';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { CommentPostType } from '../../comments/api/dto/input/comments-input-dto';
 import { CommentsService } from '../../comments/application/comment-service';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments-query-repository';
 import { postCheckQuery } from '../application/post-check-query';
-import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
+import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
 
 @Controller('posts')
 export class PostsController {
@@ -39,8 +39,8 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @Put(':id/like-status')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async likeStatus(@Body() dto: PostLikeStatus, @Req() req: Request, @Param('id') id: string) {
-    const token = req.headers.authorization!;
+  async likeStatus(@Body() dto: LikeStatus, @Req() req, @Param('id') id: string) {
+    const token = req.payload;
     const result = await this.postsService.likeStatus(id, token, dto);
 
     if (!result) throw new NotFoundException();
@@ -66,9 +66,9 @@ export class PostsController {
   async createCommentForPost(
     @Param('postId') postId: string,
     @Body() dto: CommentPostType,
-    @Req() req: Request,
+    @Req() req,
   ) {
-    const accessToken = req.headers.authorization!
+    const accessToken = req.payload;
     const result = await this.commentsService.createComment(
       dto,
       accessToken, 
@@ -83,20 +83,19 @@ export class PostsController {
   }
 
   @Get()
-  async getPosts(@Query() query, @Req() req: Request) {
+  async getPosts(@Query() query, @Req() req) {
     const queryFilter = postCheckQuery(query);
 
-    const accessToken = req.headers.authorization ? req.headers.authorization : '';
-
+    const accessToken = req.payload;
     const userId = await this.jwtService.verifyAsync(accessToken);
 
     return await this.postsQueryRepository.findPosts(null, queryFilter, userId);
   }
 
   @Get(':postId')
-  async getPost(@Param('postId') postId: string, @Req() req: Request) {
+  async getPost(@Param('postId') postId: string, @Req() req) {
   
-    const accessToken = req.headers.authorization ? req.headers.authorization : '';
+    const accessToken = req.payload;
 
     const userId = await await this.jwtService.verifyAsync(accessToken);
 
@@ -114,11 +113,11 @@ export class PostsController {
   }
 
   @Get(':postId/comments')
-  async getCommentsForPost(@Param('postId') postId: string, @Query() query, @Req() req: Request) {
+  async getCommentsForPost(@Param('postId') postId: string, @Query() query, @Req() req) {
     const queryFilter = postCheckQuery(query);
     const post = await this.postsQueryRepository.findPostByID(postId);
 
-    const accessToken = req.headers.authorization ? req.headers.authorization : '';
+    const accessToken = req.payload;
 
     const userId = await this.jwtService.verifyAsync(accessToken);
 

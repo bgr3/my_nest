@@ -1,7 +1,7 @@
-import { UserFilterType } from '../api/dto/middle/user-middle-dto';
+import { UserFilter } from '../api/dto/input/users-input-dto';
 import { userFilter } from '../infrastructure/users-query-repository';
 
-export const userCheckQuery = (query: any): UserFilterType => {
+export const userCheckQuery = (query: any): UserFilter => {
   const queryFilter = { ...userFilter };
 
   if (query.pageNumber) {

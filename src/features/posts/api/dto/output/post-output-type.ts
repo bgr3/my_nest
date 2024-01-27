@@ -23,3 +23,12 @@ export class LikesInfoOutput {
     public addedAt: string,
   ) {}
 }
+
+export class LikesInfo {
+  constructor(
+    public userId: string,
+    public login: string,
+    public addedAt: string,
+    public likeStatus: string,
+  ) {}
+}

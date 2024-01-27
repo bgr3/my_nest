@@ -6,8 +6,7 @@ import { Auth, AuthDocument, AuthModelType } from '../domain/auth-entity';
 import { add } from 'date-fns/add';
 import { AuthRepository } from '../infrastructure/auth-repository';
 import { AuthQueryRepository } from '../infrastructure/auth-query-repository';
-import { AuthTypeOutput, MeType } from '../api/dto/output/auth-output-dto';
-import { Tokens } from '../api/dto/middle/auth-middle-dto';
+import { AuthTypeOutput, MeType, Tokens } from '../api/dto/output/auth-output-dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { emailManager } from '../../email-manager/application/email-manager';
 
@@ -73,8 +72,9 @@ export class AuthService {
       return true
   }
 
-  async getMeByToken(accessToken: string): Promise<MeType | null> {
-    const userId = await this.jwtService.verifyAsync(accessToken);
+  async getMeById(userId: string): Promise<MeType | null> {
+    //const userId = await this.jwtService.verifyAsync(accessToken);
+    
     const user = await this.usersRepository.findUserDbByID(userId);
 
     if (!user) return null;
@@ -117,11 +117,7 @@ export class AuthService {
 
 
   
-  async updateTokens (oldRefreshToken: string): Promise<Tokens | null> {
-    const deviceId = await this.jwtService.verifyAsync(oldRefreshToken)
-    
-    if (!deviceId) return null;
-
+  async updateTokens (deviceId: string): Promise<Tokens | null> {
     const session = await this.authRepository.findAuthSessionByDeviceId(deviceId)
 
     if (!session) return null;
@@ -143,8 +139,7 @@ export class AuthService {
     }
   }
 
-  async getAuthSessionsByToken(token: string): Promise<AuthTypeOutput[] | null> {
-    const deviceId = await this.jwtService.verifyAsync(token)
+  async getAuthSessionsByToken(deviceId: string): Promise<AuthTypeOutput[] | null> {
     const userSession = await this.authRepository.findAuthSessionByDeviceId(deviceId)
 
     if (!userSession) return null;
@@ -152,8 +147,7 @@ export class AuthService {
     return await this.authQueryRepository.findAuthSessionsByUserId(userSession.userId)
   }
 
-  async getSingleAuthSessionByToken(token: string): Promise<AuthDocument | null> {
-    const deviceId = await this.jwtService.verifyAsync(token)
+  async getSingleAuthSessionByToken(deviceId: string): Promise<AuthDocument | null> {
     const userSession = await this.authRepository.findAuthSessionByDeviceId(deviceId)
 
     return userSession
@@ -165,8 +159,7 @@ export class AuthService {
     return userSession
   }
 
-  async deleteAuthSessionsExcludeCurent(token: string): Promise<boolean> {
-    const deviceId = await this.jwtService.verifyAsync(token)
+  async deleteAuthSessionsExcludeCurent(deviceId: string): Promise<boolean> {
     const userSessions = await this.authRepository.findAuthSessionByDeviceId(deviceId)
 
     if (!userSessions) return false;
@@ -186,8 +179,7 @@ export class AuthService {
     return true
   }
 
-  async deleteAuthSessionByToken(token: string): Promise<boolean> {
-    const deviceId = await this.jwtService.verifyAsync(token)
+  async deleteAuthSessionByToken(deviceId: string): Promise<boolean> {
     const result = await this.authRepository.deleteAuthSessionByDeviceId(deviceId)
     
     if (!result) return false
@@ -196,7 +188,7 @@ export class AuthService {
   };
 
   async _generateTokens(userId: string, deviceId: string){
-    const expirationTimeSeconds = 20;
+    const expirationTimeSeconds = 200;
     const issuedAt = new Date();
     const expireAt = add(new Date(), {
       seconds: expirationTimeSeconds,
@@ -205,12 +197,13 @@ export class AuthService {
     const accessTokenPayload = { userId: userId };
     const refreshTokenPayload = { deviceId: deviceId };
     const accessToken = await this.jwtService.signAsync(accessTokenPayload, {
-      expiresIn: 10,
+      expiresIn: 100,
     });
 
     const refreshToken = await this.jwtService.signAsync(refreshTokenPayload, {
       expiresIn: expirationTimeSeconds,
     });
+    this.jwtService.decode
 
     return {
       accessToken: accessToken,

@@ -184,7 +184,7 @@ window.onload = function() {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PostLikeStatus"
+                  "$ref": "#/components/schemas/LikeStatus"
                 }
               }
             }
@@ -617,6 +617,37 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/security/devices": {
+        "get": {
+          "operationId": "SecurityController_getDevices",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "SecurityController_deleteDevices",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/security/devices/{deviceId}": {
+        "delete": {
+          "operationId": "SecurityController_deleteDevice",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
@@ -646,7 +677,7 @@ window.onload = function() {
           "type": "object",
           "properties": {}
         },
-        "PostLikeStatus": {
+        "LikeStatus": {
           "type": "object",
           "properties": {}
         },

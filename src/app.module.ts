@@ -38,6 +38,7 @@ import { AuthRepository } from './features/auth/infrastructure/auth-repository';
 import { AuthService } from './features/auth/application/auth-service';
 import { Auth, AuthSchema } from './features/auth/domain/auth-entity';
 import { AuthController } from './features/auth/api/dto/auth-controller';
+import { SecurityController } from './features/security/api/dto/security-controller';
 
 dotenv.config();
 
@@ -93,6 +94,7 @@ if (!url) {
     CommentsController,
     TestingController,
     AuthController,
+    SecurityController,
   ],
   providers: [
     AppService,

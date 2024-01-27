@@ -1,7 +1,7 @@
-import { PostFilterType } from '../api/dto/middle/post-middle-dto';
+import { Filter } from '../../../infrastructure/dto/input/input-dto';
 import { postFilter } from '../infrastructure/posts-query-repository';
 
-export const postCheckQuery = (query: any): PostFilterType => {
+export const postCheckQuery = (query: any): Filter => {
   const queryFilter = { ...postFilter };
 
   if (query.pageNumber) {

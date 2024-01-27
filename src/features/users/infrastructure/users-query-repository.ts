@@ -1,13 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import {
-  UserDb,
-  UserFilterType,
-  UserPaginatorType,
-} from '../api/dto/middle/user-middle-dto';
 import { User, UserDocument, UserModelType } from '../domain/users-entity';
 import { Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserOutput } from '../api/dto/output/user-output-dto';
+import { Paginator } from '../../../infrastructure/dto/output/output-dto';
+import { UserFilter } from '../api/dto/input/users-input-dto';
 
 export const userFilter = {
   pageNumber: 1,
@@ -22,8 +19,8 @@ export const userFilter = {
 export class UsersQueryRepository {
   constructor(@InjectModel(User.name) private UserModel: UserModelType) {}
   async findUsers(
-    filter: UserFilterType = userFilter,
-  ): Promise<UserPaginatorType<UserOutput>> {
+    filter: UserFilter = userFilter,
+  ): Promise<Paginator<UserOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
     const regexLogin = new RegExp(filter.searchLoginTerm, 'i');
     const regexEmail = new RegExp(filter.searchEmailTerm, 'i');

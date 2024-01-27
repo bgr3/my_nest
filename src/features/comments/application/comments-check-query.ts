@@ -1,7 +1,7 @@
-import { CommentsFilter } from '../api/dto/middle/comments-middle-dto';
+import { Filter } from '../../../infrastructure/dto/input/input-dto';
 import { commentFilter } from '../infrastructure/comments-query-repository';
 
-export const commentCheckQuery = (query: any): CommentsFilter => {
+export const commentCheckQuery = (query: any): Filter => {
   const queryFilter = { ...commentFilter };
 
   if (query.pageNumber) {

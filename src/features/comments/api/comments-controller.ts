@@ -16,7 +16,6 @@ import {
 import { CommentsService } from '../application/comment-service';
 import { CommentsQueryRepository } from '../infrastructure/comments-query-repository';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
-import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 
@@ -31,8 +30,8 @@ export class CommentsController {
   @UseGuards(JwtAuthGuard)
   @Put(':commentId/like-status')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async likeStatus(@Param('commentId') commentId: string, @Body() dto, @Req() req: Request) {
-    const accessToken = req.headers.authorization!
+  async likeStatus(@Param('commentId') commentId: string, @Body() dto, @Req() req) {
+    const accessToken = req.payload;
     const id = commentId;
     const result = await this.commentsService.likeStatus(id, accessToken, dto)
 
@@ -44,8 +43,8 @@ export class CommentsController {
   }
 
   @Get(':commentId')
-  async getComment(@Param('commentId') commentId: string, @Req() req: Request) {
-    const accessToken = req.headers.authorization!
+  async getComment(@Param('commentId') commentId: string, @Req() req) {
+    const accessToken = req.payload;
     const userId = await this.jwtService.verifyAsync(accessToken);
     const foundComment = await this.commentsQueryRepository.findCommentByID(commentId, userId)
 

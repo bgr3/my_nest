@@ -17,7 +17,6 @@ import { UsersService } from '../../../users/application/users-service';
 import { AuthEmailResendingDTO, AuthNewPasswordDTO, AuthPasswordRecoveryDTO, AuthRegistrationConfirmationDTO, AuthRegistrationDTO } from './input/auth-input-dto';
 import { HTTP_STATUSES } from '../../../../settings/http-statuses';
 import { JwtAuthGuard } from '../../../../infrastructure/guards/jwt-auth-guard';
-import { BasicAuthGuard } from '../../../../infrastructure/guards/basic-auth-guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,10 +25,9 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
-  @UseGuards(BasicAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async loginUser(@Req() req, @Res() res: Response) {
-    
     const deviceName: string = req.header('User-Agent')
       ? req.header('User-Agent')!
       : 'unknown device';
@@ -66,11 +64,10 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('refresh-token')
-  async refreshToken(@Req() req: Request, @Res() res: Response)  {
-
-    const oldRefreshToken = req.cookies.refreshToken
+  async refreshToken(@Req() req, @Res() res: Response)  {
+    const deviceId = req.user;
   
-    const tokens = await this.authService.updateTokens(oldRefreshToken)
+    const tokens = await this.authService.updateTokens(deviceId)
   
     if (!tokens) throw new NotFoundException() //new HttpException('NOT_FOUND', HTTP_STATUSES.UNAUTHORIZED_401);
     
@@ -83,10 +80,10 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async logout(@Req() req: Request)  {
-    const oldRefreshToken = req.cookies.refreshToken;
+  async logout(@Req() req)  {
+    const deviceId = req.user;
   
-    const result = await this.authService.deleteAuthSessionByToken(oldRefreshToken);
+    const result = await this.authService.deleteAuthSessionByToken(deviceId);
   
     if (!result) throw new HttpException('NOT_FOUND', HTTP_STATUSES.UNAUTHORIZED_401);
     
@@ -95,9 +92,11 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async aboutMe(@Req() req: Request) {
-    const accessToken = req.headers.authorization!.split(' ')[1]
-    let me = await this.authService.getMeByToken(accessToken)
+  async aboutMe(@Req() req) {
+    const userId = req.user;
+
+    let me = await this.authService.getMeById(userId)
+    
     return me;
   }
 

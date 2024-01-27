@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
+import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 
 export type PostDocument = HydratedDocument<Post>;
 
@@ -17,7 +18,7 @@ class LikesInfo {
   addedAt: string;
 
   @Prop({ required: true })
-  likeStatus: string;
+  likeStatus: LikeStatusType;
 }
 
 const LikesInfoSchema = SchemaFactory.createForClass(LikesInfo);
@@ -62,7 +63,7 @@ export class Post {
   setLikeStatus(
     userId: string,
     login: string,
-    likeStatus: string,
+    likeStatus: LikeStatusType,
   ) {
     const like = this.likesInfo.find(i => i.userId === userId);
 

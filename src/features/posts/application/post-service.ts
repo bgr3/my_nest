@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PostsRepository } from '../infrastructure/posts-repository';
 import { Post, PostModelType } from '../domain/posts-entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { PostLikeStatus, PostPostType, PostPutType } from '../api/dto/input/post-input-dto';
+import { PostPostType, PostPutType } from '../api/dto/input/post-input-dto';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs-query-repository';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../../users/application/users-service';
+import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
 
 @Injectable()
 export class PostsService {
@@ -65,7 +66,7 @@ export class PostsService {
     return true;
   }
 
-  async likeStatus (postId: string, accessToken: string, dto: PostLikeStatus): Promise <boolean> {
+  async likeStatus (postId: string, accessToken: string, dto: LikeStatus): Promise <boolean> {
       const userId = await this.jwtService.verifyAsync(accessToken);
       const user = await this.usersService.findUserDbByID(userId);
 

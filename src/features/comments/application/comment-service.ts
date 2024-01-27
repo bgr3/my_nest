@@ -3,7 +3,6 @@ import { CommentForPost, CommentModelType } from '../domain/comments-entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommentsRepository } from '../infrastructure/comments-reppository';
 import {
-  CommentLikeStatus,
   CommentPostType,
   CommentPutType,
 } from '../api/dto/input/comments-input-dto';
@@ -11,6 +10,7 @@ import { PostsQueryRepository } from '../../posts/infrastructure/posts-query-rep
 import { PostsRepository } from '../../posts/infrastructure/posts-repository';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../../users/application/users-service';
+import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
 
 @Injectable()
 export class CommentsService {
@@ -69,7 +69,7 @@ export class CommentsService {
     return true;
   }
 
-  async likeStatus (commentId: string, accessToken: string, dto: CommentLikeStatus): Promise <boolean> {
+  async likeStatus (commentId: string, accessToken: string, dto: LikeStatus): Promise <boolean> {
     const userId = await this.jwtService.verifyAsync(accessToken);
     const user = await this.usersService.findUserDbByID(userId);
 

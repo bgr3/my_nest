@@ -26,7 +26,6 @@ import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { PostsQueryRepository } from '../../posts/infrastructure/posts-query-repository';
 import { PostsService } from '../../posts/application/post-service';
 import { blogCheckQuery } from '../application/blog-check-query';
-import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
 
@@ -92,11 +91,11 @@ export class BlogsController {
   }
 
   @Get(':id/posts')
-  async getPostsforBlog(@Param('id') id: string, @Query() query, @Req() req: Request) {
+  async getPostsforBlog(@Param('id') id: string, @Query() query, @Req() req) {
     const foundBlog = await this.blogsQueryRepository.findBlogByID(id);
     const queryFilter = blogCheckQuery(query);
 
-    const accessToken = req.headers.authorization!
+    const accessToken = req.payload;
     const userId = await this.jwtService.verifyAsync(accessToken);
 
     const posts = await this.postsQueryRepository.findPosts(
@@ -131,7 +130,6 @@ export class BlogsController {
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async deleteBlog(@Param('id') id: string) {
     const foundBlog = await this.blogsService.deleteBlog(id);
-    console.log(foundBlog);
 
     if (foundBlog) {
       return;

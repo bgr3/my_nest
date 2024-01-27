@@ -18,3 +18,10 @@ export class MeType {
 export class LoginResponseType {
   constructor(public accessToken: string) {}
 }
+
+export class Tokens {
+  constructor(
+    public accessToken: string,
+    public refreshToken: string,
+  ) {}
+}

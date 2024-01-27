@@ -2,15 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import {
-  CommentPaginatorType,
-  CommentsFilter,
-} from '../api/dto/middle/comments-middle-dto';
-import {
   CommentDocument,
   CommentModelType,
   CommentForPost,
 } from '../domain/comments-entity';
 import { CommentOutput } from '../api/dto/output/comments-output-dto';
+import { Filter } from '../../../infrastructure/dto/input/input-dto';
+import { Paginator } from '../../../infrastructure/dto/output/output-dto';
 
 export const commentFilter = {
   pageNumber: 1,
@@ -26,9 +24,9 @@ export class CommentsQueryRepository {
   ) {}
   async findComments(
     postId: string | null = null,
-    filter: CommentsFilter = commentFilter,
+    filter: Filter = commentFilter,
     userId: string = '',
-  ): Promise<CommentPaginatorType> {
+  ): Promise<Paginator<CommentOutput>> {
     const find: any = {};
 
     if (postId) {

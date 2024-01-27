@@ -1,4 +1,4 @@
-import { BlogFilter } from '../api/dto/middle/blogs-middle-dto';
+import { BlogFilter } from '../api/dto/input/blogs-input-dto';
 import { blogFilter } from '../infrastructure/blogs-query-repository';
 
 export const blogCheckQuery = (query: any): BlogFilter => {

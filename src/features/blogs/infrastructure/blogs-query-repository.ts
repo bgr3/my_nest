@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import {
-  BlogFilter,
-  BlogPaginatorType,
-} from '../api/dto/middle/blogs-middle-dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogDocument, BlogModelType } from '../domain/blogs-entity';
 import { Types } from 'mongoose';
 import { BlogOutput } from '../api/dto/output/blog-output-dto';
+import { BlogFilter } from '../api/dto/input/blogs-input-dto';
+import { Paginator } from '../../../infrastructure/dto/output/output-dto';
 
 export const blogFilter = {
   pageNumber: 1,
@@ -20,7 +18,7 @@ export const blogFilter = {
 export class BlogsQueryRepository {
   constructor(@InjectModel(Blog.name) private BlogModel: BlogModelType) {}
 
-  async findBlogs(filter: BlogFilter = blogFilter): Promise<BlogPaginatorType> {
+  async findBlogs(filter: BlogFilter = blogFilter): Promise<Paginator<BlogOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
     const regex = new RegExp(filter.searchNameTerm, 'i');
     const dbCount = await this.BlogModel.countDocuments({

@@ -1,17 +1,10 @@
-// export class BlogPostType {
-//     constructor(
-//         public name: string,
-//         public description: string,
-//         public websiteUrl: string){}
-// }
-
-import { Length, Matches } from 'class-validator';
+import { Matches, MaxLength } from 'class-validator';
 
 export class BlogPostType {
-  @Length(1, 15)
+  @MaxLength(15)
   name: string;
 
-  @Length(1, 500)
+  @MaxLength(500)
   description: string;
 
   @Matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
@@ -19,18 +12,33 @@ export class BlogPostType {
 }
 
 export class PostForBlogPostType {
+  @MaxLength(30)
+  title: string;
+
+  @MaxLength(100)
+  shortDescription: string;
+
+  @MaxLength(1000)
+  content: string;
+
   blogId: string;
-  constructor(
-    public title: string,
-    public shortDescription: string,
-    public content: string,
-  ) {}
 }
 
 export class BlogPutType {
-  constructor(
-    public name: string,
-    public description: string,
-    public websiteUrl: string,
-  ) {}
+  @MaxLength(15)
+  name: string;
+
+  @MaxLength(500)
+  description: string;
+
+  @Matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
+  websiteUrl: string;
+}
+
+export class BlogFilter {
+  pageNumber: number;
+  pageSize: number;
+  sortBy: string;
+  sortDirection: string;
+  searchNameTerm: string;
 }

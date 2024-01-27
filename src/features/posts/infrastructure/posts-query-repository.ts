@@ -3,14 +3,12 @@ import { Post, PostDocument, PostModelType } from '../domain/posts-entity';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   LikesInfo,
-  PostFilterType,
-  PostPaginatorType,
-} from '../api/dto/middle/post-middle-dto';
-import {
   LikesInfoOutput,
   PostOutput,
 } from '../api/dto/output/post-output-type';
 import { Types } from 'mongoose';
+import { Filter } from '../../../infrastructure/dto/input/input-dto';
+import { Paginator } from '../../../infrastructure/dto/output/output-dto';
 
 export const postFilter = {
   pageNumber: 1,
@@ -25,9 +23,9 @@ export class PostsQueryRepository {
 
   async findPosts(
     blogId: string | null = null,
-    filter: PostFilterType = postFilter,
+    filter: Filter = postFilter,
     userId: string = '',
-  ): Promise<PostPaginatorType> {
+  ): Promise<Paginator<PostOutput>> {
     const find: any = {};
 
     if (blogId) {

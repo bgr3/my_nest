@@ -1,11 +1,11 @@
+import { Length } from "class-validator";
+
 export class CommentPostType {
-  constructor(public content: string) {}
+  @Length(20, 300)
+  content: string;
 }
 
 export class CommentPutType {
-  constructor(public content: string) {}
-}
-
-export class CommentLikeStatus {
-  constructor(public likeStatus: string) {}
+  @Length(20, 300)
+  content: string;
 }
