@@ -113,3 +113,29 @@ export class AuthReSendEmailConfirmValidation implements ValidatorConstraintInte
         return this.errorMessage;
     }
 }
+
+@ValidatorConstraint({ name: 'customText', async: true })
+@Injectable()
+export class UserEmailValidation implements ValidatorConstraintInterface {
+    constructor(
+        protected usersRepository: UsersRepository,
+      ) {}
+
+    errorMessage: string;
+
+    async validate(email: string, args: ValidationArguments) {        
+            const user = await this.usersRepository.findUserByLoginOrEmail(email)
+
+            if (user) {
+                this.errorMessage = 'E-mail already in use';
+
+                return false;
+            }
+            
+            return true
+    }
+
+    defaultMessage(args: ValidationArguments) {
+        return this.errorMessage;
+    }
+}

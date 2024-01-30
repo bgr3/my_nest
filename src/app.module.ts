@@ -39,7 +39,7 @@ import { AuthService } from './features/auth/application/auth-service';
 import { Auth, AuthSchema } from './features/auth/domain/auth-entity';
 import { AuthController } from './features/auth/api/dto/auth-controller';
 import { SecurityController } from './features/security/api/dto/security-controller';
-import { AuthEmailConfirmValidation, AuthPasswordRecoveryCodeValidation, AuthReSendEmailConfirmValidation } from './features/auth/api/dto/input/auth-input-validator';
+import { AuthEmailConfirmValidation, AuthPasswordRecoveryCodeValidation, AuthReSendEmailConfirmValidation, UserEmailValidation } from './features/auth/api/dto/input/auth-input-validator';
 import { AccessFrequencyMiddleware } from './infrastructure/middlewares/access-middleware';
 import { AccessService } from './features/access/application/access-service';
 import { LogRepository } from './features/access/infrastructure/access-log-repository';
@@ -93,6 +93,7 @@ const authProviders = [
   AuthEmailConfirmValidation,
   AuthPasswordRecoveryCodeValidation,
   AuthReSendEmailConfirmValidation,
+  UserEmailValidation,
 ];
 const accessProviders = [
   AccessService,
