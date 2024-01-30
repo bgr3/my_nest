@@ -63,14 +63,15 @@ export class AuthService {
   }
 
   async ReSendEmail (email: string): Promise<boolean> {
-      const user = await this.usersRepository.findUserByLoginOrEmail(email)
+      const user = await this.usersRepository.findUserByLoginOrEmail(email);
 
-      if (!user) return false
+      if (!user) return false;
 
-      const code = uuidv4()
+      const code = uuidv4();
 
-      await user.resendConfirmationCode(code)
-      await emailManager.sendRegistrationEmail(code, user.email)
+      await user.resendConfirmationCode(code);
+      await this.usersRepository.save(user);
+      await emailManager.sendRegistrationEmail(code, user.email);
 
       return true
   }

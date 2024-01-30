@@ -86,6 +86,8 @@ export class User {
     code: string
   ){
     this.emailConfirmation.confirmationCode = code;
+    this.emailConfirmation.expirationDate = add(new Date(), { minutes: 5 });
+    this.emailConfirmation.nextSend = add(new Date(), { seconds: 0 });
   };
 
   getMe(

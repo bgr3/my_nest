@@ -16,26 +16,6 @@ export class AuthRepository {
     await auth.save();
   }
 
-  // async createAuthSession (auth: AuthType): Promise<string | null> {
-  //     const result = await this.AuthModel.insertMany([auth]);
-  //     //console.log(result.insertedId)
-  //     if (result[0]._id) {
-  //         return result[0]._id.toString()
-  //     } else {
-  //         return null
-  //     }
-  // }
-
-  // async updateAuthSession (deviceId: string, putAuth: AuthPutType): Promise<boolean> {
-  //     const result = await this.AuthModel.updateOne({deviceId: deviceId}, { $set: putAuth})
-
-  //     if (result.matchedCount) {
-  //         return true
-  //     }
-
-  //     return false
-  // }
-
   async findAuthSessionByDeviceId(
     deviceId: string,
   ): Promise<AuthDocument | null> {

@@ -27,6 +27,11 @@ export class BlogsRepository {
     return null;
   }
 
+  async getAllBlogs(): Promise<BlogDocument[] | []> {
+    const blogs = await this.BlogModel.find();
+    return blogs;
+  }
+
   // async createBlog (newBlog: BlogType): Promise<string | null> {
   //     const result = await this.blogModel.insertMany([newBlog]);
   //     //console.log(result.insertedId)

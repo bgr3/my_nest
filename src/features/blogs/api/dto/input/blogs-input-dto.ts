@@ -1,5 +1,6 @@
 import { Matches, MaxLength } from 'class-validator';
 
+
 export class BlogPostType {
   @MaxLength(15)
   name: string;

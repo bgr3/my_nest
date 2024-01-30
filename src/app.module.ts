@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -39,6 +39,12 @@ import { AuthService } from './features/auth/application/auth-service';
 import { Auth, AuthSchema } from './features/auth/domain/auth-entity';
 import { AuthController } from './features/auth/api/dto/auth-controller';
 import { SecurityController } from './features/security/api/dto/security-controller';
+import { AuthEmailConfirmValidation, AuthPasswordRecoveryCodeValidation, AuthReSendEmailConfirmValidation } from './features/auth/api/dto/input/auth-input-validator';
+import { AccessFrequencyMiddleware } from './infrastructure/middlewares/access-middleware';
+import { AccessService } from './features/access/application/access-service';
+import { LogRepository } from './features/access/infrastructure/access-log-repository';
+import { AccessLog, AccessLogSchema } from './features/access/domain/access-log-entity';
+import { CommentExistMiddleware, PostExistMiddleware, PostValidationMiddleware } from './infrastructure/middlewares/comment-validation-middleware';
 
 dotenv.config();
 
@@ -49,6 +55,49 @@ console.log('mongo URL: ', url);
 if (!url) {
   throw new Error('! URL doesn`t found');
 }
+
+const usersProviders = [
+  UsersService,
+  UsersRepository,
+  UsersQueryRepository,
+];
+
+const blogsProviders = [
+  BlogsService,
+  BlogsRepository,
+  BlogsQueryRepository,
+];
+
+const postsProviders = [
+  PostsService,
+  PostsRepository,
+  PostsQueryRepository,
+];
+
+const commentsProviders = [
+  CommentsService,
+  CommentsRepository,
+  CommentsQueryRepository,
+];
+
+const strategiesProviders = [
+  LocalStrategy,
+  JwtStrategy,
+  BasicStrategy,
+];
+
+const authProviders = [
+  AuthService,
+  AuthRepository,
+  AuthQueryRepository,
+  AuthEmailConfirmValidation,
+  AuthPasswordRecoveryCodeValidation,
+  AuthReSendEmailConfirmValidation,
+];
+const accessProviders = [
+  AccessService,
+  LogRepository,
+];
 
 @Module({
   imports: [
@@ -76,9 +125,13 @@ if (!url) {
         name: CommentForPost.name,
         schema: CommentSchema,
       },
-      {
+      {      
         name: Auth.name,
         schema: AuthSchema,
+      },
+      {      
+        name: AccessLog.name,
+        schema: AccessLogSchema,
       },
     ]),
     JwtModule.register({
@@ -88,34 +141,42 @@ if (!url) {
   ],
   controllers: [
     AppController,
+    AuthController,
     BlogsController,
     PostsController,
     UsersController,
     CommentsController,
     TestingController,
-    AuthController,
     SecurityController,
   ],
   providers: [
     AppService,
-    UsersService,
-    UsersRepository,
-    UsersQueryRepository,
-    BlogsService,
-    BlogsRepository,
-    BlogsQueryRepository,
-    PostsService,
-    PostsRepository,
-    PostsQueryRepository,
-    CommentsService,
-    CommentsRepository,
-    CommentsQueryRepository,
-    AuthService,
-    AuthRepository,
-    AuthQueryRepository,
-    LocalStrategy,
-    JwtStrategy,
-    BasicStrategy,
+    ...usersProviders,
+    ...blogsProviders,
+    ...postsProviders,
+    ...commentsProviders,
+    ...strategiesProviders,
+    ...authProviders,
+    ...accessProviders,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  async configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AccessFrequencyMiddleware)
+      .exclude(
+        { path: 'auth/refresh-token', method: RequestMethod.POST },
+        { path: 'auth/logout', method: RequestMethod.POST },
+        { path: 'auth/me', method: RequestMethod.GET },
+      )
+      .forRoutes(AuthController)
+      .apply(PostValidationMiddleware)
+      .forRoutes(
+        { path: 'post/*/comments', method: RequestMethod.POST },
+        )
+      .apply(PostExistMiddleware)
+      .forRoutes({ path: 'post/*/like-status', method: RequestMethod.PUT })
+      .apply(CommentExistMiddleware)
+      .forRoutes({ path: 'comments/*/like-status', method: RequestMethod.PUT })
+  }
+}

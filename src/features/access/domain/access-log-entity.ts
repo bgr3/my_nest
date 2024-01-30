@@ -30,6 +30,8 @@ export class AccessLog {
         accessLog.IP = inputModel.IP;
         accessLog.URL = inputModel.URL;
         accessLog.date = new Date();
+
+        return accessLog;
       }
 }
 

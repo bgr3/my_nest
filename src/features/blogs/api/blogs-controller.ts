@@ -28,6 +28,8 @@ import { PostsService } from '../../posts/application/post-service';
 import { blogCheckQuery } from '../application/blog-check-query';
 import { JwtService } from '@nestjs/jwt';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
+import { CustomValidationPipe } from '../../../infrastructure/pipes/auth-email-confirm-validation-pipe';
+import { BlogOutput } from './dto/output/blog-output-dto';
 
 @Controller('blogs')
 export class BlogsController {
@@ -36,12 +38,12 @@ export class BlogsController {
     private readonly blogsQueryRepository: BlogsQueryRepository,
     private readonly postsService: PostsService,
     private readonly postsQueryRepository: PostsQueryRepository,
-    protected jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
   @UseGuards(BasicAuthGuard)
   @Post()
-  async createBlog(@Body() dto: BlogPostType) {
+  async createBlog(@Body(new CustomValidationPipe) dto: BlogPostType): Promise<BlogOutput | null> {
     const result = await this.blogsService.createBlog(dto);
 
     if (!result) {

@@ -10,11 +10,14 @@ import {
   HttpExceptionFilter,
 } from './infrastructure/exception-filters/exception-filter';
 import cookieParser from 'cookie-parser'
+import { useContainer } from 'class-validator';
 
 const serverUrl = process.env.SERVER_URL;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   const config = new DocumentBuilder()
     .setTitle('products example')
@@ -23,7 +26,7 @@ async function bootstrap() {
     .addTag('products')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup('hometask_14/api/swagger', app, document);
 
   app.enableCors();
   app.useGlobalPipes(
