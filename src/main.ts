@@ -26,7 +26,7 @@ async function bootstrap() {
     .addTag('products')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('hometask_14/api/swagger', app, document);
+  SwaggerModule.setup('swagger', app, document);
 
   app.enableCors();
   app.useGlobalPipes(
