@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 
-const APP_PREFIX = '/hometask_14/api';
+const APP_PREFIX = '';
 
 export const applyAppSettings = (app: INestApplication) => {
   setAppPrefix(app);

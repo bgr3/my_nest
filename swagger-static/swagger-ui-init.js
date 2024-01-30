@@ -1,1 +1,1 @@
-{"statusCode":404,"timestamp":"2024-01-30T17:18:14.489Z","path":"/swagger/swagger-ui-init.js"}
+{"statusCode":404,"timestamp":"2024-01-30T17:23:04.116Z","path":"/swagger/swagger-ui-init.js"}
