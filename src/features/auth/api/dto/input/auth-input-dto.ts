@@ -1,5 +1,5 @@
 import { IsEmail, IsString, Length, Validate } from "class-validator";
-import { AuthEmailConfirmValidation, AuthPasswordRecoveryCodeValidation, AuthReSendEmailConfirmValidation, UserEmailValidation } from "./auth-input-validator";
+import { AuthEmailConfirmValidation, AuthPasswordRecoveryCodeValidation, AuthReSendEmailConfirmValidation, UserEmailValidation, UserLoginValidation } from "./auth-input-validator";
 
 export class AuthLoginInputDTO {
   @IsString()
@@ -26,10 +26,11 @@ export class AuthNewPasswordDTO {
 
 export class AuthRegistrationDTO {
   @Length(3, 10)
-  @Validate(UserEmailValidation)
+  @Validate(UserLoginValidation)
   login: string;
 
   @IsEmail()
+  @Validate(UserEmailValidation)
   email: string;
 
   @Length(6, 20)

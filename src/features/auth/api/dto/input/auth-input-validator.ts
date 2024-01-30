@@ -131,6 +131,32 @@ export class UserEmailValidation implements ValidatorConstraintInterface {
 
                 return false;
             }
+
+            return true
+    }
+
+    defaultMessage(args: ValidationArguments) {
+        return this.errorMessage;
+    }
+}
+
+@ValidatorConstraint({ name: 'customText', async: true })
+@Injectable()
+export class UserLoginValidation implements ValidatorConstraintInterface {
+    constructor(
+        protected usersRepository: UsersRepository,
+      ) {}
+
+    errorMessage: string;
+
+    async validate(login: string, args: ValidationArguments) {        
+            const user = await this.usersRepository.findUserByLoginOrEmail(login)
+
+            if (user) {
+                this.errorMessage = 'Login already in use';
+
+                return false;
+            }
             
             return true
     }
