@@ -21,7 +21,15 @@ export const applyAppSettings = (app: INestApplication) => {
   //setAppPrefix(app);
 
 
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  app.enableCors();
+
+  setGlobalPipes(app);
+  app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
+  app.use(cookieParser());
   
+  setSwagger(app);
 
   
 };
@@ -30,7 +38,7 @@ const setAppPrefix = (app: INestApplication) => {
   app.setGlobalPrefix(APP_PREFIX);
 };
 
-export const setSwagger = (app: INestApplication) => {
+const setSwagger = (app: INestApplication) => {
   const config = new DocumentBuilder()
   .setTitle('products example')
   .setDescription('The products API description')
@@ -41,7 +49,7 @@ export const setSwagger = (app: INestApplication) => {
   SwaggerModule.setup('/swagger', app, document);
 }
 
-export const setGlobalPipes = (app: INestApplication) => {
+const setGlobalPipes = (app: INestApplication) => {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
