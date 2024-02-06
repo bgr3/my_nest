@@ -6,6 +6,9 @@ import { ErrorExceptionFilter, HttpExceptionFilter } from '../infrastructure/exc
 import { get } from 'http';
 import { createWriteStream } from 'fs';
 import cookieParser from 'cookie-parser'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const APP_PREFIX = '';
 const serverUrl = process.env.SERVER_URL;
