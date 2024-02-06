@@ -6,6 +6,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
   getHello(): string {
-    return process.env.MY_ENV! //'My nest app';
+    return 'My nest app';
   }
 }

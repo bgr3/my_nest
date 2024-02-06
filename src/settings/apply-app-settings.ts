@@ -14,7 +14,7 @@ import cookieParser from 'cookie-parser'
 const APP_PREFIX = '';
 const serverUrl = process.env.SERVER_URL;
 const get = process.env.MY_ENV === 'local' ? getHTTP : getHTTPS;
-console.log(process.env.MY_ENV === 'local' ? 'getHTTP' : 'getHTTPS');
+console.log(process.env.MY_ENV === 'local' ? 'getHTTP' : 'getHTTPS'); 
 
 
 
