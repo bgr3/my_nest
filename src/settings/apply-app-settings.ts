@@ -19,13 +19,7 @@ console.log(process.env.MY_ENV === 'local' ? 'getHTTP' : 'getHTTPS');
 
 export const applyAppSettings = (app: INestApplication) => {
   //setAppPrefix(app);
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
-  
-
-
-
-  app.enableCors();
 
   app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
   app.use(cookieParser());
