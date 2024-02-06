@@ -30,7 +30,7 @@ export const applyAppSettings = (app: INestApplication) => {
   app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
   app.use(cookieParser());
 
-  setSwaggerStatic();
+  
 };
 
 const setAppPrefix = (app: INestApplication) => {
@@ -67,7 +67,7 @@ const setGlobalPipes = (app: INestApplication) => {
   );
 }
 
-const setSwaggerStatic = () => {
+export const setSwaggerStatic = () => {
   // get the swagger json file (if app is running in development mode)
   if (process.env.NODE_ENV === 'development') {
     // write swagger ui files
