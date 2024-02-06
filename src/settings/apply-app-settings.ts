@@ -3,8 +3,8 @@ import { useContainer } from 'class-validator';
 import { AppModule } from '../app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ErrorExceptionFilter, HttpExceptionFilter } from '../infrastructure/exception-filters/exception-filter';
-import { get } from 'https';
-//import { get as getHTTP} from 'http';
+import { get as getHTTPS} from 'https';
+import { get as getHTTP} from 'http';
 import { createWriteStream } from 'fs';
 import cookieParser from 'cookie-parser'
 // import dotenv from 'dotenv';
@@ -13,7 +13,10 @@ import cookieParser from 'cookie-parser'
 
 const APP_PREFIX = '';
 const serverUrl = process.env.SERVER_URL;
-//const get = process.env.MY_ENV === 'local' ? getHTTP : getHTTPS;
+const get = process.env.MY_ENV === 'local' ? getHTTP : getHTTPS;
+console.log(process.env.MY_ENV === 'local' ? 'getHTTP' : 'getHTTPS');
+
+
 
 export const appSettings = (app: INestApplication) => {
   setAppPrefix(app);
