@@ -51,7 +51,7 @@ dotenv.config();
 
 const url = process.env.MONGO_URL;
 
-console.log('mongo URL: ', url);
+//console.log('mongo URL: ', url);
 
 if (!url) {
   throw new Error('! URL doesn`t found');

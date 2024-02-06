@@ -3,7 +3,8 @@ import { useContainer } from 'class-validator';
 import { AppModule } from '../app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ErrorExceptionFilter, HttpExceptionFilter } from '../infrastructure/exception-filters/exception-filter';
-import { get } from 'https';
+import { get as getHTTPS} from 'https';
+import { get as getHTTP} from 'http';
 import { createWriteStream } from 'fs';
 import cookieParser from 'cookie-parser'
 // import dotenv from 'dotenv';
@@ -12,6 +13,7 @@ import cookieParser from 'cookie-parser'
 
 const APP_PREFIX = '';
 const serverUrl = process.env.SERVER_URL;
+const get = process.env.NODE_ENV === 'development' ? getHTTP : getHTTPS
 
 export const appSettings = (app: INestApplication) => {
   setAppPrefix(app);
@@ -44,9 +46,7 @@ export const appSettings = (app: INestApplication) => {
     }),
   );
   app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
-  app.use(cookieParser())
-  console.log(process.env.NODE_ENV);
-  
+  app.use(cookieParser())  
 
   // get the swagger json file (if app is running in development mode)
   if (process.env.NODE_ENV === 'development') {
