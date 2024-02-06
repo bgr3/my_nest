@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { applyAppSettings, setSwagger, setSwaggerStatic } from './settings/apply-app-settings';
+import { applyAppSettings, setGlobalPipes, setSwagger, setSwaggerStatic } from './settings/apply-app-settings';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createWriteStream } from 'fs';
 import { get } from 'http';
@@ -19,6 +19,8 @@ async function bootstrap() {
 
   applyAppSettings(app);
 
+  setGlobalPipes(app);
+  
   setSwagger(app);
   
   setSwaggerStatic();

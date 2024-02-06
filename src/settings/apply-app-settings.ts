@@ -23,7 +23,7 @@ export const applyAppSettings = (app: INestApplication) => {
 
   
 
-  setGlobalPipes(app);
+
 
   app.enableCors();
 
@@ -48,7 +48,7 @@ export const setSwagger = (app: INestApplication) => {
   SwaggerModule.setup('/swagger', app, document);
 }
 
-const setGlobalPipes = (app: INestApplication) => {
+export const setGlobalPipes = (app: INestApplication) => {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
