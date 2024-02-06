@@ -21,8 +21,7 @@ export const applyAppSettings = (app: INestApplication) => {
   //setAppPrefix(app);
 
 
-  app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
-  app.use(cookieParser());
+  
 
   
 };

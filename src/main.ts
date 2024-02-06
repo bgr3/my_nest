@@ -23,6 +23,8 @@ async function bootstrap() {
   app.enableCors();
 
   setGlobalPipes(app);
+  app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
+  app.use(cookieParser());
   
   setSwagger(app);
   
