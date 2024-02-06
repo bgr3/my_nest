@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 
-dotenv.config();
+// dotenv.config();
 
 @Injectable()
 export class AppService {
