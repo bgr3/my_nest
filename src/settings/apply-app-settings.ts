@@ -29,7 +29,7 @@ export const appSettings = (app: INestApplication) => {
     .addTag('products')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup('/swagger', app, document);
 
   app.enableCors();
   app.useGlobalPipes(
@@ -82,3 +82,14 @@ const setAppPrefix = (app: INestApplication) => {
 };
 
 
+// getHTTP
+// [32m[Nest] 8  - [39m02/06/2024, 6:28:51 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+// [32m[Nest] 8  - [39m02/06/2024, 6:28:52 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +99ms[39m
+// [32m[Nest] 8  - [39m02/06/2024, 6:28:52 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+// [32m[Nest] 8  - [39m02/06/2024, 6:28:52 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mServeStaticModule dependencies initialized[39m[38;5;3m +0ms[39m
+// [31m[Nest] 8  - [39m02/06/2024, 6:28:53 PM [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (1)...[39m
+// [31m[Nest] 8  - [39m02/06/2024, 6:28:56 PM [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (2)...[39m
+// No exports found in module "/var/task/src/main.js".
+// Did you forget to export a function or a server?
+// INIT_REPORT Init Duration: 8431.38 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+// Error: Runtime exited with error: exit status 1
