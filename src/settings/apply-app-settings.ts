@@ -21,7 +21,7 @@ export const applyAppSettings = (app: INestApplication) => {
   setAppPrefix(app);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
-  setSwagger(app);
+  
 
   setGlobalPipes(app);
 
@@ -37,7 +37,7 @@ const setAppPrefix = (app: INestApplication) => {
   app.setGlobalPrefix(APP_PREFIX);
 };
 
-const setSwagger = (app: INestApplication) => {
+export const setSwagger = (app: INestApplication) => {
   const config = new DocumentBuilder()
   .setTitle('products example')
   .setDescription('The products API description')
