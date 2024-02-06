@@ -45,6 +45,7 @@ import { AccessService } from './features/access/application/access-service';
 import { LogRepository } from './features/access/infrastructure/access-log-repository';
 import { AccessLog, AccessLogSchema } from './features/access/domain/access-log-entity';
 import { CommentExistMiddleware, PostExistMiddleware, PostValidationMiddleware } from './infrastructure/middlewares/comment-validation-middleware';
+import { EmailManager } from './features/email-manager/application/email-manager';
 
 dotenv.config();
 
@@ -153,6 +154,7 @@ const accessProviders = [
   ],
   providers: [
     AppService,
+    EmailManager,
     ...usersProviders,
     ...blogsProviders,
     ...postsProviders,

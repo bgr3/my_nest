@@ -8,7 +8,7 @@ import { AuthRepository } from '../infrastructure/auth-repository';
 import { AuthQueryRepository } from '../infrastructure/auth-query-repository';
 import { AuthTypeOutput, MeType, Tokens } from '../api/dto/output/auth-output-dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { emailManager } from '../../email-manager/application/email-manager';
+import { EmailManager } from '../../email-manager/application/email-manager';
 
 @Injectable()
 export class AuthService {
@@ -18,12 +18,13 @@ export class AuthService {
     protected authQueryRepository: AuthQueryRepository,
     protected usersRepository: UsersRepository,
     protected jwtService: JwtService,
+    protected emailManager: EmailManager,
   ) {}
   async testAllData(): Promise<void> {
     return this.authRepository.testAllData();
   }
   async sendEmail (email: string, subject?: string, message?: string, html?: string) {
-      return emailManager.sendEmail(email, subject, message, html)
+      return this.emailManager.sendEmail(email, subject, message, html)
   }
 
   async confirmEmail(code: string): Promise<boolean> {
@@ -45,7 +46,7 @@ export class AuthService {
 
       if (!user) return false
 
-      await emailManager.sendRegistrationEmail(user.emailConfirmation.confirmationCode, user.email)
+      await this.emailManager.sendRegistrationEmail(user.emailConfirmation.confirmationCode, user.email)
 
       return true
   }
@@ -57,7 +58,7 @@ export class AuthService {
 
       console.log(user.emailConfirmation.confirmationCode);
 
-      await emailManager.sendRecoveryPasswordEmail(user.emailConfirmation.confirmationCode, user.email)
+      await this.emailManager.sendRecoveryPasswordEmail(user.emailConfirmation.confirmationCode, user.email)
 
       return true
   }
@@ -71,7 +72,7 @@ export class AuthService {
 
       await user.resendConfirmationCode(code);
       await this.usersRepository.save(user);
-      await emailManager.sendRegistrationEmail(code, user.email);
+      await this.emailManager.sendRegistrationEmail(code, user.email);
 
       return true
   }

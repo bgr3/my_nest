@@ -28,7 +28,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HTTP_STATUSES.OK_200)
-  async loginUser(@Req() req, @Res() res: Response) {
+  async loginUser(@Req() req, @Res({passthrough: true}) res: Response) {
     const deviceName: string = req.header('User-Agent')
       ? req.header('User-Agent')!
       : 'unknown device';
@@ -37,7 +37,7 @@ export class AuthController {
 
     res.cookie('refreshToken', result.refreshToken, {httpOnly: true, secure: true});
 
-    return res.send({accessToken: result.accessToken})
+    return {accessToken: result.accessToken};
   }
 
   @Post('password-recovery')
@@ -65,7 +65,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('refresh-token')
-  async refreshToken(@Req() req, @Res() res: Response)  {
+  async refreshToken(@Req() req, @Res({passthrough: true}) res: Response)  {
     const deviceId = req.user;
   
     const tokens = await this.authService.updateTokens(deviceId)
@@ -75,7 +75,7 @@ export class AuthController {
     
     res.cookie('refreshToken', tokens.refreshToken, {httpOnly: true, secure: true});
 
-    return res.send({accessToken: tokens.accessToken})
+    return {accessToken: tokens.accessToken};
   }
 
   @UseGuards(JwtAuthGuard)
