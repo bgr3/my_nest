@@ -28,8 +28,9 @@ async function bootstrap() {
   
   setSwagger(app);
   
-  setSwaggerStatic();
+  
 
   await app.listen(3000);
+  setSwaggerStatic();
 }
 bootstrap();
