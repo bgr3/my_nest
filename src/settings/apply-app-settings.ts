@@ -13,7 +13,7 @@ import cookieParser from 'cookie-parser'
 
 const APP_PREFIX = '';
 const serverUrl = process.env.SERVER_URL;
-const get = process.env.NODE_ENV === 'development' ? getHTTP : getHTTPS
+const get = process.env.MY_ENV === 'local' ? getHTTP : getHTTPS
 
 export const appSettings = (app: INestApplication) => {
   setAppPrefix(app);
