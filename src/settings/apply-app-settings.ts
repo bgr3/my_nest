@@ -3,8 +3,7 @@ import { useContainer } from 'class-validator';
 import { AppModule } from '../app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ErrorExceptionFilter, HttpExceptionFilter } from '../infrastructure/exception-filters/exception-filter';
-import { get as getHTTPS} from 'https';
-//import { get as getHTTP} from 'http';
+import { get } from 'http';
 import { createWriteStream } from 'fs';
 import cookieParser from 'cookie-parser'
 // import dotenv from 'dotenv';
@@ -13,12 +12,10 @@ import cookieParser from 'cookie-parser'
 
 const APP_PREFIX = '';
 const serverUrl = process.env.SERVER_URL;
-const get = getHTTPS //process.env.MY_ENV === 'local' ? getHTTP : getHTTPS;
-console.log(process.env.MY_ENV === 'local' ? 'getHTTP' : 'getHTTPS'); 
 
 
 export const applyAppSettings = (app: INestApplication) => {
-  //setAppPrefix(app);
+  setAppPrefix(app);
 
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
@@ -26,11 +23,15 @@ export const applyAppSettings = (app: INestApplication) => {
   app.enableCors();
 
   setGlobalPipes(app);
+
   app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
+
   app.use(cookieParser());
   
   setSwagger(app);
 
+  
+  setSwaggerStatic();
   
 };
 
@@ -68,7 +69,7 @@ const setGlobalPipes = (app: INestApplication) => {
   );
 }
 
-export const setSwaggerStatic = () => {
+const setSwaggerStatic = () => {
   // get the swagger json file (if app is running in development mode)
   if (process.env.NODE_ENV === 'development') {
     // write swagger ui files

@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { applyAppSettings, setSwaggerStatic } from './settings/apply-app-settings';
+import { applyAppSettings } from './settings/apply-app-settings';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createWriteStream } from 'fs';
 import { get } from 'http';
@@ -20,7 +20,5 @@ async function bootstrap() {
   applyAppSettings(app);  
 
   await app.listen(3000);
-
-  setSwaggerStatic();
 }
 bootstrap();

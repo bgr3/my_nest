@@ -25,6 +25,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
 import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
+import { PostOutput } from './dto/output/post-output-type';
 
 @Controller('posts')
 export class PostsController {
@@ -50,7 +51,7 @@ export class PostsController {
 
   @UseGuards(BasicAuthGuard)
   @Post()
-  async createPost(@Body() dto: PostPostType) {
+  async createPost(@Body() dto: PostPostType): Promise<PostOutput | null> {
     const result = await this.postsService.createPost(dto);
 
     if (!result)
