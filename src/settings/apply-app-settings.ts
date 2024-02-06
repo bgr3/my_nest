@@ -17,21 +17,38 @@ const get = getHTTPS //process.env.MY_ENV === 'local' ? getHTTP : getHTTPS;
 console.log(process.env.MY_ENV === 'local' ? 'getHTTP' : 'getHTTPS'); 
 
 
-
-export const appSettings = (app: INestApplication) => {
+export const applyAppSettings = (app: INestApplication) => {
   setAppPrefix(app);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
-  const config = new DocumentBuilder()
-    .setTitle('products example')
-    .setDescription('The products API description')
-    .setVersion('1.0')
-    .addTag('products')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/swagger', app, document);
+  setSwagger(app);
+
+  setGlobalPipes(app);
 
   app.enableCors();
+
+  app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
+  app.use(cookieParser());
+
+  setSwaggerStatic();
+};
+
+const setAppPrefix = (app: INestApplication) => {
+  app.setGlobalPrefix(APP_PREFIX);
+};
+
+const setSwagger = (app: INestApplication) => {
+  const config = new DocumentBuilder()
+  .setTitle('products example')
+  .setDescription('The products API description')
+  .setVersion('1.0')
+  .addTag('products')
+  .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('/swagger', app, document);
+}
+
+const setGlobalPipes = (app: INestApplication) => {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -48,9 +65,9 @@ export const appSettings = (app: INestApplication) => {
       },
     }),
   );
-  app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
-  app.use(cookieParser())  
+}
 
+const setSwaggerStatic = () => {
   // get the swagger json file (if app is running in development mode)
   if (process.env.NODE_ENV === 'development') {
     // write swagger ui files
@@ -75,12 +92,7 @@ export const appSettings = (app: INestApplication) => {
       response.pipe(createWriteStream('swagger-static/swagger-ui.css'));
     });
   }
-};
-
-const setAppPrefix = (app: INestApplication) => {
-  app.setGlobalPrefix(APP_PREFIX);
-};
-
+}
 
 // getHTTP
 // [32m[Nest] 8  - [39m02/06/2024, 6:28:51 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
