@@ -18,7 +18,7 @@ console.log(process.env.MY_ENV === 'local' ? 'getHTTP' : 'getHTTPS');
 
 
 export const applyAppSettings = (app: INestApplication) => {
-  setAppPrefix(app);
+  //setAppPrefix(app);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   
