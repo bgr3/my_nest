@@ -6,6 +6,7 @@ import { ErrorExceptionFilter, HttpExceptionFilter } from '../infrastructure/exc
 import { get } from 'http';
 import { createWriteStream } from 'fs';
 import cookieParser from 'cookie-parser'
+import { TrimPipe } from '../infrastructure/pipes/body-trim-pipe';
 // import dotenv from 'dotenv';
 
 // dotenv.config();
@@ -52,6 +53,7 @@ const setSwagger = (app: INestApplication) => {
 
 const setGlobalPipes = (app: INestApplication) => {
   app.useGlobalPipes(
+    new TrimPipe(),
     new ValidationPipe({
       transform: true,
       stopAtFirstError: true,

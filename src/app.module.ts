@@ -81,6 +81,7 @@ import { AuthGetAuthSessionsByTokenUseCase } from './features/auth/application/u
 import { AuthDeleteAuthSessionsExcludeCurentUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-exclude-current-use-case copy';
 import { AuthDeleteSpecifiedAuthSessionByDeviceIdUseCase } from './features/auth/application/use-cases/auth-delete-specified-auth-session-by-device-id-use-case';
 import { AuthDeleteAuthSessionByTokenUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-by-token-use-case';
+import { TrimPipe } from './infrastructure/pipes/body-trim-pipe';
 
 dotenv.config();
 
@@ -229,6 +230,7 @@ const useCases = [
   providers: [
     AppService,
     EmailManager,
+    TrimPipe,
     ...usersProviders,
     ...blogsProviders,
     ...postsProviders,
