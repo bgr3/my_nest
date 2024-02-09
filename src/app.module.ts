@@ -46,6 +46,41 @@ import { LogRepository } from './features/access/infrastructure/access-log-repos
 import { AccessLog, AccessLogSchema } from './features/access/domain/access-log-entity';
 import { CommentExistMiddleware, PostExistMiddleware, PostValidationMiddleware } from './infrastructure/middlewares/comment-validation-middleware';
 import { EmailManager } from './features/email-manager/application/email-manager';
+import { CqrsModule } from '@nestjs/cqrs';
+import { UsersTestAllDataUseCase } from './features/users/application/use-cases/users-testing-all-data-use-case';
+import { UsersCreateUserUseCase } from './features/users/application/use-cases/users-create-user-use-case';
+import { UsersCheckCredentialsUseCase } from './features/users/application/use-cases/users-check-crefentials-use-case';
+import { UsersUpdateCodeForRecoveryPasswordUseCase } from './features/users/application/use-cases/users-update-code-for-recovery-password-use-case';
+import { UsersChangePasswordUseCase } from './features/users/application/use-cases/users-change-password-use-case';
+import { UsersDeleteUserUseCase } from './features/users/application/use-cases/users-delete-user-use-case';
+import { BlogsTestAllDatasUseCase } from './features/blogs/application/use-cases/blogs-test-all-data-use-case';
+import { BlogsCreateBlogUseCase } from './features/blogs/application/use-cases/blogs-create-blog-use-case';
+import { BlogsUpdateBlogUseCase } from './features/blogs/application/use-cases/blogs-update-blog-use-case';
+import { BlogsDeleteBlogUseCase } from './features/blogs/application/use-cases/blogs-delete-blog-use-case copy';
+import { CommentsTestAllDataUseCase } from './features/comments/application/use-cases/comments-test-all-data-use-case';
+import { CommentsCreateCommentUseCase } from './features/comments/application/use-cases/comments-create-comment-use-case';
+import { CommentsUpdateCommentUseCase } from './features/comments/application/use-cases/comments-update-comment-use-case';
+import { CommentsLikeStatusUseCase } from './features/comments/application/use-cases/comments-like-status-use-case';
+import { CommentsDeleteCommentUseCase } from './features/comments/application/use-cases/comments-delete-comment-use-case';
+import { PostsTestAllDataUseCase } from './features/posts/application/use-cases/posts-test-all-data-use-case';
+import { PostsCreatePostUseCase } from './features/posts/application/use-cases/posts-create-post-use-case';
+import { PostsUpdatePostUseCase } from './features/posts/application/use-cases/posts-update-post-use-case';
+import { PostsLikeStatusUseCase } from './features/posts/application/use-cases/posts-like-status-use-case';
+import { PostsDeletePostUseCase } from './features/posts/application/use-cases/posts-delete-post-use-case';
+import { AccessTestAllDataUseCase } from './features/access/application/use-cases/access-test-all-data-use-case';
+import { AccessCheckaccessFrequencyUseCase } from './features/access/application/use-cases/access-check-access-frequency-use-case';
+import { AuthTestAllDataUseCase } from './features/auth/application/use-cases/auth-test-all-data-use-case';
+import { AuthConfirmEmailUseCase } from './features/auth/application/use-cases/auth-confirm-email-use-case';
+import { AuthRegisterUserSendEmailUseCase } from './features/auth/application/use-cases/auth-register-user-send-email-use-case';
+import { AuthChangePasswordEmailUseCase } from './features/auth/application/use-cases/auth-change-password-email-use-case';
+import { AuthResendEmailUseCase } from './features/auth/application/use-cases/auth-resend-email-use-case';
+import { AuthGetMeByIdUseCase } from './features/auth/application/use-cases/auth-get-me-by-id-use-case';
+import { AuthCreateAuthSessionUseCase } from './features/auth/application/use-cases/auth-create-auth-session-use-case copy';
+import { AuthUpdateTokensUseCase } from './features/auth/application/use-cases/auth-update-tokens-use-case';
+import { AuthGetAuthSessionsByTokenUseCase } from './features/auth/application/use-cases/auth-get-auth-session-by-token-use-case';
+import { AuthDeleteAuthSessionsExcludeCurentUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-exclude-current-use-case copy';
+import { AuthDeleteSpecifiedAuthSessionByDeviceIdUseCase } from './features/auth/application/use-cases/auth-delete-specified-auth-session-by-device-id-use-case';
+import { AuthDeleteAuthSessionByTokenUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-by-token-use-case';
 
 dotenv.config();
 
@@ -102,6 +137,44 @@ const accessProviders = [
   LogRepository,
 ];
 
+const useCases = [
+  UsersTestAllDataUseCase,
+  UsersCreateUserUseCase,
+  UsersCheckCredentialsUseCase,
+  UsersUpdateCodeForRecoveryPasswordUseCase,
+  UsersChangePasswordUseCase,
+  UsersDeleteUserUseCase,
+  BlogsTestAllDatasUseCase,
+  BlogsCreateBlogUseCase,
+  BlogsUpdateBlogUseCase,
+  BlogsDeleteBlogUseCase,
+  CommentsTestAllDataUseCase,
+  CommentsCreateCommentUseCase,
+  CommentsUpdateCommentUseCase,
+  CommentsLikeStatusUseCase,
+  CommentsDeleteCommentUseCase,
+  PostsTestAllDataUseCase,
+  PostsCreatePostUseCase,
+  PostsUpdatePostUseCase,
+  PostsLikeStatusUseCase,
+  PostsDeletePostUseCase,
+  AccessTestAllDataUseCase,
+  AccessCheckaccessFrequencyUseCase,
+  AuthTestAllDataUseCase,
+  AuthConfirmEmailUseCase,
+  AuthRegisterUserSendEmailUseCase,
+  AuthChangePasswordEmailUseCase,
+  AuthResendEmailUseCase,
+  AuthResendEmailUseCase,
+  AuthGetMeByIdUseCase,
+  AuthCreateAuthSessionUseCase,
+  AuthUpdateTokensUseCase,
+  AuthGetAuthSessionsByTokenUseCase,
+  AuthDeleteAuthSessionsExcludeCurentUseCase,
+  AuthDeleteSpecifiedAuthSessionByDeviceIdUseCase,
+  AuthDeleteAuthSessionByTokenUseCase,
+];
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -141,6 +214,7 @@ const accessProviders = [
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '60s' },
     }),
+    CqrsModule,
   ],
   controllers: [
     AppController,
@@ -162,6 +236,7 @@ const accessProviders = [
     ...strategiesProviders,
     ...authProviders,
     ...accessProviders,
+    ...useCases,
   ],
 })
 export class AppModule implements NestModule {

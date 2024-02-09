@@ -2,16 +2,23 @@ import { Controller, Delete, Get, HttpCode, NotFoundException, Param, Req, UseGu
 import { AuthService } from "../../../auth/application/auth-service"
 import { JwtAuthGuard } from "../../../../infrastructure/guards/jwt-auth-guard"
 import { HTTP_STATUSES } from "../../../../settings/http-statuses";
+import { CommandBus } from "@nestjs/cqrs";
+import { AuthGetAuthSessionsByTokenCommand } from "../../../auth/application/use-cases/auth-get-auth-session-by-token-use-case";
+import { AuthDeleteAuthSessionsExcludeCurentCommand } from "../../../auth/application/use-cases/auth-delete-auth-session-exclude-current-use-case copy";
+import { AuthDeleteSpecifiedAuthSessionByDeviceIdCommand } from "../../../auth/application/use-cases/auth-delete-specified-auth-session-by-device-id-use-case";
 
 @Controller('security/devices')
 export class SecurityController {
-    constructor(protected authService: AuthService){}
+    constructor(
+        protected authService: AuthService,
+        private readonly commandBus: CommandBus,
+    ){}
 
     @UseGuards(JwtAuthGuard)
     @Get()
     async getDevices(@Req() req) {
         const refreshToken = req.payload;
-        const sessions = await this.authService.getAuthSessionsByToken(refreshToken)
+        const sessions = await this.commandBus.execute(new AuthGetAuthSessionsByTokenCommand(refreshToken));
     
         if (!sessions) throw new NotFoundException();
 
@@ -23,7 +30,7 @@ export class SecurityController {
     @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
     async deleteDevices(@Req() req) {
         const refreshToken = req.payload;
-        const result = await this.authService.deleteAuthSessionsExcludeCurent(refreshToken);
+        const result = await this.commandBus.execute(new AuthDeleteAuthSessionsExcludeCurentCommand(refreshToken));
     
         if (!result) throw new NotFoundException();
         
@@ -33,7 +40,7 @@ export class SecurityController {
     @UseGuards(JwtAuthGuard)
     @Delete(':deviceId')
     async deleteDevice(@Param() deviceId: string) {
-        const result = await this.authService.deleteSpecifiedAuthSessionByDeviceId(deviceId)
+        const result = await this.commandBus.execute(new AuthDeleteSpecifiedAuthSessionByDeviceIdCommand(deviceId));
     
         if (!result) throw new NotFoundException();
         

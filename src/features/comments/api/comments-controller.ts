@@ -18,6 +18,10 @@ import { CommentsQueryRepository } from '../infrastructure/comments-query-reposi
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
+import { CommandBus } from '@nestjs/cqrs';
+import { CommentsUpdateCommentCommand } from '../application/use-cases/comments-update-comment-use-case';
+import { CommentsLikeStatusCommand } from '../application/use-cases/comments-like-status-use-case';
+import { CommentsDeleteCommentCommand } from '../application/use-cases/comments-delete-comment-use-case';
 
 @Controller('comments')
 export class CommentsController {
@@ -25,6 +29,8 @@ export class CommentsController {
     protected commentsService: CommentsService,
     protected commentsQueryRepository: CommentsQueryRepository,
     protected jwtService: JwtService,
+    private readonly commandBus: CommandBus,
+
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -33,7 +39,7 @@ export class CommentsController {
   async likeStatus(@Param('commentId') commentId: string, @Body() dto, @Req() req) {
     const accessToken = req.payload;
     const id = commentId;
-    const result = await this.commentsService.likeStatus(id, accessToken, dto)
+    const result = await this.commandBus.execute(new CommentsLikeStatusCommand(id, accessToken, dto));
 
     if (!result) {
       throw new NotFoundException()
@@ -57,10 +63,10 @@ export class CommentsController {
   @Put()
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async updateComment(@Param('commentId') commentId: string, @Body() dto) {
-    const updatedComment = await this.commentsService.updateComment(
+    const updatedComment = await this.commandBus.execute(new CommentsUpdateCommentCommand(
       commentId,
       dto,
-    );
+    ));
 
     if (!updatedComment)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
@@ -71,7 +77,7 @@ export class CommentsController {
   @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteComment(@Param('commentId') commentId: string) {
-    const foundComment = await this.commentsService.deleteComment(commentId);
+    const foundComment = await this.commandBus.execute(new CommentsDeleteCommentCommand(commentId));
 
     if (!foundComment)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);

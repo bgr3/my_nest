@@ -26,6 +26,12 @@ import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
 import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
 import { PostOutput } from './dto/output/post-output-type';
+import { CommandBus } from '@nestjs/cqrs';
+import { CommentsCreateCommentCommand } from '../../comments/application/use-cases/comments-create-comment-use-case';
+import { PostsCreatePostCommand } from '../application/use-cases/posts-create-post-use-case';
+import { PostsUpdatePostCommand } from '../application/use-cases/posts-update-post-use-case';
+import { PostsLikeStatusCommand } from '../application/use-cases/posts-like-status-use-case';
+import { PostsDeletePostCommand } from '../application/use-cases/posts-delete-post-use-case';
 
 @Controller('posts')
 export class PostsController {
@@ -35,6 +41,8 @@ export class PostsController {
     protected commentsQueryRepository: CommentsQueryRepository,
     protected postsQueryRepository: PostsQueryRepository,
     protected jwtService: JwtService,
+    private readonly commandBus: CommandBus,
+
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -42,7 +50,7 @@ export class PostsController {
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async likeStatus(@Body() dto: LikeStatus, @Req() req, @Param('id') id: string) {
     const token = req.payload;
-    const result = await this.postsService.likeStatus(id, token, dto);
+    const result = await this.commandBus.execute(new PostsLikeStatusCommand(id, token, dto));
 
     if (!result) throw new NotFoundException();
 
@@ -52,7 +60,7 @@ export class PostsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   async createPost(@Body() dto: PostPostType): Promise<PostOutput | null> {
-    const result = await this.postsService.createPost(dto);
+    const result = await this.commandBus.execute(new PostsCreatePostCommand(dto));
 
     if (!result)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
@@ -70,11 +78,11 @@ export class PostsController {
     @Req() req,
   ) {
     const accessToken = req.payload;
-    const result = await this.commentsService.createComment(
+    const result = await this.commandBus.execute(new CommentsCreateCommentCommand(
       dto,
       accessToken, 
       postId,
-    );
+    ));
     if (!result)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
 
@@ -138,7 +146,7 @@ export class PostsController {
   @Put(':postId')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async updatePost(@Param('postId') postId: string, @Body() dto: PostPutType) {
-    const updatedPost = await this.postsService.updatePost(postId, dto);
+    const updatedPost = await this.commandBus.execute(new PostsUpdatePostCommand(postId, dto));
 
     if (!updatedPost)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
@@ -150,7 +158,7 @@ export class PostsController {
   @Delete(':postId')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async deletePost(@Param('postId') postId: string) {
-    const foundPost = await this.postsService.deletePost(postId);
+    const foundPost = await this.commandBus.execute(new PostsDeletePostCommand(postId));
 
     if (!foundPost)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);

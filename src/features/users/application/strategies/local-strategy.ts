@@ -2,10 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { UsersService } from '../users-service';
+import { CommandBus } from '@nestjs/cqrs';
+import { UsersCheckCredentialsCommand } from '../use-cases/users-check-crefentials-use-case';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly usersService: UsersService) {
+  constructor(
+    private readonly commandBus: CommandBus,
+    ) {
     super({
       usernameField: 'loginOrEmail',
     });
@@ -13,10 +17,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(loginOrEmail: string, password: string): Promise<any> {
     
-    const user = await this.usersService.checkCredentials(
+    const user = await this.commandBus.execute(new UsersCheckCredentialsCommand(
       loginOrEmail,
       password,
-    );
+    ));
 
     if (!user) throw new UnauthorizedException();
 
