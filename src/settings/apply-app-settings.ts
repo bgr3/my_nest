@@ -52,8 +52,8 @@ const setSwagger = (app: INestApplication) => {
 }
 
 const setGlobalPipes = (app: INestApplication) => {
+  app.useGlobalPipes(new TrimPipe());
   app.useGlobalPipes(
-    new TrimPipe(),
     new ValidationPipe({
       transform: true,
       stopAtFirstError: true,
