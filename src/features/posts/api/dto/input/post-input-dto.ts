@@ -1,4 +1,4 @@
-import { IsNumberString, MaxLength } from "class-validator";
+import { IsNumberString, IsString, MaxLength } from "class-validator";
 
 export class PostPostType {
   @MaxLength(30)
@@ -10,7 +10,7 @@ export class PostPostType {
   @MaxLength(1000)
   content: string;
 
-  @IsNumberString()
+  @IsString()
   blogId: string;
 }
 

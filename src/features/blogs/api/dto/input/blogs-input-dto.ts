@@ -8,6 +8,7 @@ export class BlogPostType {
   @MaxLength(500)
   description: string;
 
+  @MaxLength(100)
   @Matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
   websiteUrl: string;
 }
