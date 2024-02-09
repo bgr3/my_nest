@@ -4,21 +4,21 @@ import { InjectModel } from "@nestjs/mongoose";
 import { AccessLog, AccessLogModelType } from "../../domain/access-log-entity";
 import { add } from 'date-fns/add';
 
-export class AccessCheckaccessFrequencyCommand {
+export class AccessCheckAccessFrequencyCommand {
     constructor(
         public url: string, 
         public ip: string
     ){};
 };
 
-@CommandHandler(AccessCheckaccessFrequencyCommand)
-export class AccessCheckaccessFrequencyUseCase implements ICommandHandler<AccessCheckaccessFrequencyCommand> {
+@CommandHandler(AccessCheckAccessFrequencyCommand)
+export class AccessCheckAccessFrequencyUseCase implements ICommandHandler<AccessCheckAccessFrequencyCommand> {
     constructor (
         @InjectModel(AccessLog.name) private AccessLogModel: AccessLogModelType,
         protected logRepository: LogRepository,
         ){}
 
-    async execute(command: AccessCheckaccessFrequencyCommand): Promise<boolean> {
+    async execute(command: AccessCheckAccessFrequencyCommand): Promise<boolean> {
         const lastDate = await this.logRepository.findAccessLogByURLAndIp(command.url, command.ip)
         
         if(lastDate[0]){

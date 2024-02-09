@@ -68,7 +68,7 @@ import { PostsUpdatePostUseCase } from './features/posts/application/use-cases/p
 import { PostsLikeStatusUseCase } from './features/posts/application/use-cases/posts-like-status-use-case';
 import { PostsDeletePostUseCase } from './features/posts/application/use-cases/posts-delete-post-use-case';
 import { AccessTestAllDataUseCase } from './features/access/application/use-cases/access-test-all-data-use-case';
-import { AccessCheckaccessFrequencyUseCase } from './features/access/application/use-cases/access-check-access-frequency-use-case';
+import { AccessCheckAccessFrequencyUseCase } from './features/access/application/use-cases/access-check-access-frequency-use-case';
 import { AuthTestAllDataUseCase } from './features/auth/application/use-cases/auth-test-all-data-use-case';
 import { AuthConfirmEmailUseCase } from './features/auth/application/use-cases/auth-confirm-email-use-case';
 import { AuthRegisterUserSendEmailUseCase } from './features/auth/application/use-cases/auth-register-user-send-email-use-case';
@@ -159,7 +159,7 @@ const useCases = [
   PostsLikeStatusUseCase,
   PostsDeletePostUseCase,
   AccessTestAllDataUseCase,
-  AccessCheckaccessFrequencyUseCase,
+  AccessCheckAccessFrequencyUseCase,
   AuthTestAllDataUseCase,
   AuthConfirmEmailUseCase,
   AuthRegisterUserSendEmailUseCase,
@@ -242,13 +242,13 @@ const useCases = [
 export class AppModule implements NestModule {
   async configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(AccessFrequencyMiddleware)
-      .exclude(
-        { path: 'auth/refresh-token', method: RequestMethod.POST },
-        { path: 'auth/logout', method: RequestMethod.POST },
-        { path: 'auth/me', method: RequestMethod.GET },
-      )
-      .forRoutes(AuthController)
+      // .apply(AccessFrequencyMiddleware)
+      // .exclude(
+      //   { path: 'auth/refresh-token', method: RequestMethod.POST },
+      //   { path: 'auth/logout', method: RequestMethod.POST },
+      //   { path: 'auth/me', method: RequestMethod.GET },
+      // )
+      // .forRoutes(AuthController)
       .apply(PostValidationMiddleware)
       .forRoutes(
         { path: 'post/*/comments', method: RequestMethod.POST },
