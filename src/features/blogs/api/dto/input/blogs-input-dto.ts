@@ -1,38 +1,39 @@
-import { Matches, MaxLength } from 'class-validator';
+import { Length, Matches } from 'class-validator';
 
 
 export class BlogPostType {
-  @MaxLength(15)
+  @Length(1, 15)
   name: string;
 
-  @MaxLength(500)
+  @Length(1, 500)
   description: string;
 
-  @MaxLength(100)
+  @Length(1, 100)
   @Matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
   websiteUrl: string;
 }
 
 export class PostForBlogPostType {
-  @MaxLength(30)
+  @Length(1, 30)
   title: string;
 
-  @MaxLength(100)
+  @Length(1, 100)
   shortDescription: string;
 
-  @MaxLength(1000)
+  @Length(1, 1000)
   content: string;
 
   blogId: string;
 }
 
 export class BlogPutType {
-  @MaxLength(15)
+  @Length(1, 15)
   name: string;
 
-  @MaxLength(500)
+  @Length(1, 500)
   description: string;
 
+  @Length(1, 100)
   @Matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
   websiteUrl: string;
 }
