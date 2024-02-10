@@ -1,4 +1,5 @@
-import { IsString, Length, MaxLength } from "class-validator";
+import { IsString, Length, MaxLength, Validate } from "class-validator";
+import { BlogExistValidation } from "./blogs-input-validator";
 
 export class PostPostType {
   @Length(1, 30)
@@ -11,6 +12,7 @@ export class PostPostType {
   content: string;
 
   @IsString()
+  @Validate(BlogExistValidation)
   blogId: string;
 }
 
@@ -25,6 +27,7 @@ export class PostPutType {
   content: string;
 
   @IsString()
+  @Validate(BlogExistValidation)
   blogId: string;
 }
 

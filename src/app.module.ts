@@ -83,6 +83,7 @@ import { AuthDeleteSpecifiedAuthSessionByDeviceIdUseCase } from './features/auth
 import { AuthDeleteAuthSessionByTokenUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-by-token-use-case';
 import { TrimPipe } from './infrastructure/pipes/body-trim-pipe';
 import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-identification-middleware copy';
+import { BlogExistValidation } from './features/posts/api/dto/input/blogs-input-validator';
 
 dotenv.config();
 
@@ -110,6 +111,7 @@ const postsProviders = [
   PostsService,
   PostsRepository,
   PostsQueryRepository,
+  BlogExistValidation,
 ];
 
 const commentsProviders = [

@@ -27,7 +27,7 @@ export class CommentExistMiddleware implements NestMiddleware{
         ){}
     async use(req: Request, res: Response, next: NextFunction) {
 
-  const comment = await this.commentsQueryRepository.findCommentByID(req.params.id)
+  const comment = await this.commentsQueryRepository.findCommentByID(req.params[0])
   
   if (comment) {
           next()
@@ -44,14 +44,13 @@ export class PostExistMiddleware implements NestMiddleware{
         protected postsQueryRepository: PostsQueryRepository,
         ){}
     async use(req: Request, res: Response, next: NextFunction) {
-        const post = await this.postsQueryRepository.findPostByID(req.params.id)
+        const post = await this.postsQueryRepository.findPostByID(req.params[0])
         
         if (post) {
                 next()
                 return
-            } else {
-                res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-                return
-            }
+        } else {
+            throw new HttpException('', HTTP_STATUSES.NOT_FOUND_404)
+        }
     }
 }
