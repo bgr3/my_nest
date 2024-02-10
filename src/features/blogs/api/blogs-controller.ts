@@ -99,8 +99,7 @@ export class BlogsController {
     const foundBlog = await this.blogsQueryRepository.findBlogByID(id);
     const queryFilter = blogCheckQuery(query);
 
-    const accessToken = req.payload;
-    const userId = await this.jwtService.verifyAsync(accessToken);
+    const userId = req.user
 
     const posts = await this.postsQueryRepository.findPosts(
       id,

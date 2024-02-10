@@ -23,7 +23,7 @@ import { Injectable, PipeTransform,
       }
     
       transform(values: any, metadata: ArgumentMetadata) {
-        console.log('values: ', values, 'metadata: ', metadata);
+        //console.log('values: ', values, 'metadata: ', metadata);
         
         const { type } = metadata
         if (this.isObj(values) && type === 'body') {

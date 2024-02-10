@@ -9,7 +9,7 @@ import { UsersService } from "../../../users/application/users-service";
 export class CommentsLikeStatusCommand {
     constructor(
         public commentId: string, 
-        public accessToken: string, 
+        public userId: string, 
         public dto: LikeStatus
     ){};
 };
@@ -25,8 +25,7 @@ export class CommentsLikeStatusUseCase implements ICommandHandler<CommentsLikeSt
     ){}
 
     async execute(command: CommentsLikeStatusCommand): Promise<boolean> {
-        const userId = await this.jwtService.verifyAsync(command.accessToken);
-        const user = await this.usersService.findUserDbByID(userId);
+        const user = await this.usersService.findUserDbByID(command.userId);
     
         if (!user) return false;
     
@@ -37,7 +36,7 @@ export class CommentsLikeStatusUseCase implements ICommandHandler<CommentsLikeSt
         
         if (!comment) return false;
     
-        comment.setLikeStatus(userId, login, likeStatus);
+        comment.setLikeStatus(command.userId, login, likeStatus);
         await this.postsRepository.save(comment);
     
         return true;

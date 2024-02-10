@@ -82,6 +82,7 @@ import { AuthDeleteAuthSessionsExcludeCurentUseCase } from './features/auth/appl
 import { AuthDeleteSpecifiedAuthSessionByDeviceIdUseCase } from './features/auth/application/use-cases/auth-delete-specified-auth-session-by-device-id-use-case';
 import { AuthDeleteAuthSessionByTokenUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-by-token-use-case';
 import { TrimPipe } from './infrastructure/pipes/body-trim-pipe';
+import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-identification-middleware copy';
 
 dotenv.config();
 
@@ -233,7 +234,7 @@ const useCases = [
     TrimPipe,
     ...usersProviders,
     ...blogsProviders,
-    ...postsProviders,
+       ...postsProviders,
     ...commentsProviders,
     ...strategiesProviders,
     ...authProviders,
@@ -259,5 +260,7 @@ export class AppModule implements NestModule {
       .forRoutes({ path: 'post/*/like-status', method: RequestMethod.PUT })
       .apply(CommentExistMiddleware)
       .forRoutes({ path: 'comments/*/like-status', method: RequestMethod.PUT })
+      .apply(UserIdentificationMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.GET}) 
   }
 }

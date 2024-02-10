@@ -12,6 +12,7 @@ import {
   Query,
   Req,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common';
 import { PostsService } from '../application/post-service';
 import { PostsQueryRepository } from '../infrastructure/posts-query-repository';
@@ -49,8 +50,8 @@ export class PostsController {
   @Put(':id/like-status')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async likeStatus(@Body() dto: LikeStatus, @Req() req, @Param('id') id: string) {
-    const token = req.payload;
-    const result = await this.commandBus.execute(new PostsLikeStatusCommand(id, token, dto));
+    const userId = req.user;
+    const result = await this.commandBus.execute(new PostsLikeStatusCommand(id, userId, dto));
 
     if (!result) throw new NotFoundException();
 
@@ -77,10 +78,10 @@ export class PostsController {
     @Body() dto: CommentPostType,
     @Req() req,
   ) {
-    const accessToken = req.payload;
+    const userId = req.user
     const result = await this.commandBus.execute(new CommentsCreateCommentCommand(
       dto,
-      accessToken, 
+      userId, 
       postId,
     ));
     if (!result)
@@ -92,22 +93,18 @@ export class PostsController {
   }
 
   @Get()
-  async getPosts(@Query() query, @Req() req) {
+  async getPosts(@Req() req, @Query() query) {    
+
     const queryFilter = postCheckQuery(query);
 
-    const accessToken = req.payload;
-    const userId = await this.jwtService.verifyAsync(accessToken);
-
+    const userId = req.user
+    
     return await this.postsQueryRepository.findPosts(null, queryFilter, userId);
   }
 
   @Get(':postId')
   async getPost(@Param('postId') postId: string, @Req() req) {
-  
-    const accessToken = req.payload;
-
-    const userId = await await this.jwtService.verifyAsync(accessToken);
-
+    const userId = req.user
 
     const foundPost = await this.postsQueryRepository.findPostByID(
       postId,
@@ -126,9 +123,7 @@ export class PostsController {
     const queryFilter = postCheckQuery(query);
     const post = await this.postsQueryRepository.findPostByID(postId);
 
-    const accessToken = req.payload;
-
-    const userId = await this.jwtService.verifyAsync(accessToken);
+    const userId = req.user
 
     const foundcomments = await this.commentsQueryRepository.findComments(
       postId,

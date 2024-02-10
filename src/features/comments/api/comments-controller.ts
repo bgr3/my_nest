@@ -37,9 +37,10 @@ export class CommentsController {
   @Put(':commentId/like-status')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async likeStatus(@Param('commentId') commentId: string, @Body() dto, @Req() req) {
-    const accessToken = req.payload;
+    const userId = req.user
     const id = commentId;
-    const result = await this.commandBus.execute(new CommentsLikeStatusCommand(id, accessToken, dto));
+
+    const result = await this.commandBus.execute(new CommentsLikeStatusCommand(id, userId, dto));
 
     if (!result) {
       throw new NotFoundException()
@@ -50,8 +51,7 @@ export class CommentsController {
 
   @Get(':commentId')
   async getComment(@Param('commentId') commentId: string, @Req() req) {
-    const accessToken = req.payload;
-    const userId = await this.jwtService.verifyAsync(accessToken);
+    const userId = req.user
     const foundComment = await this.commentsQueryRepository.findCommentByID(commentId, userId)
 
     if (!foundComment) throw new NotFoundException();

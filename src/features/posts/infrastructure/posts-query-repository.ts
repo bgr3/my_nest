@@ -73,12 +73,15 @@ export class PostsQueryRepository {
 
 const postMapper = (post: PostDocument, userId: string): PostOutput => {
   const myStatus = post.likesInfo.find((i) => i.userId === userId);
+
   const lastLikes = post.likesInfo
     .filter((i) => i.likeStatus === 'Like')
     .sort((a, b) => (a.addedAt < b.addedAt ? 1 : -1));
+
   const likesCount = post.likesInfo.filter(
     (i) => i.likeStatus === 'Like',
   ).length;
+  
   const dislikesCount = post.likesInfo.filter(
     (i) => i.likeStatus === 'Dislike',
   ).length;

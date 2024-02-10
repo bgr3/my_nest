@@ -10,7 +10,7 @@ import { PostsQueryRepository } from "../../../posts/infrastructure/posts-query-
 export class CommentsCreateCommentCommand {
     constructor(
       public dto: CommentPostType,
-      public accessToken: string, 
+      public userId: string, 
       public postId: string,
     ){};
 };
@@ -26,8 +26,7 @@ export class CommentsCreateCommentUseCase implements ICommandHandler<CommentsCre
       ){}
 
     async execute(command: CommentsCreateCommentCommand): Promise<string | null> {
-      const userId = await this.jwtService.verifyAsync(command.accessToken);
-      const user = await this.usersService.findUserDbByID(userId);
+      const user = await this.usersService.findUserDbByID(command.userId);
   
       if (!user) return null;
   
