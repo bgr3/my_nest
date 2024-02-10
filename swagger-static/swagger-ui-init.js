@@ -577,9 +577,7 @@ window.onload = function() {
               "description": ""
             }
           }
-        }
-      },
-      "/comments": {
+        },
         "put": {
           "operationId": "CommentsController_updateComment",
           "parameters": [
@@ -592,6 +590,16 @@ window.onload = function() {
               }
             }
           ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentPutType"
+                }
+              }
+            }
+          },
           "responses": {
             "204": {
               "description": ""
@@ -724,6 +732,10 @@ window.onload = function() {
           "properties": {}
         },
         "UserPost": {
+          "type": "object",
+          "properties": {}
+        },
+        "CommentPutType": {
           "type": "object",
           "properties": {}
         }

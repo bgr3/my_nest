@@ -22,6 +22,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CommentsUpdateCommentCommand } from '../application/use-cases/comments-update-comment-use-case';
 import { CommentsLikeStatusCommand } from '../application/use-cases/comments-like-status-use-case';
 import { CommentsDeleteCommentCommand } from '../application/use-cases/comments-delete-comment-use-case';
+import { CommentPutType } from './dto/input/comments-input-dto';
 
 @Controller('comments')
 export class CommentsController {
@@ -60,9 +61,9 @@ export class CommentsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put()
+  @Put(':commentId')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async updateComment(@Param('commentId') commentId: string, @Body() dto) {
+  async updateComment(@Param('commentId') commentId: string, @Body() dto: CommentPutType) {
     const updatedComment = await this.commandBus.execute(new CommentsUpdateCommentCommand(
       commentId,
       dto,
@@ -75,7 +76,7 @@ export class CommentsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete()
+  @Delete(':commentId')
   async deleteComment(@Param('commentId') commentId: string) {
     const foundComment = await this.commandBus.execute(new CommentsDeleteCommentCommand(commentId));
 
