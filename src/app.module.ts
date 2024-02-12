@@ -265,6 +265,7 @@ export class AppModule implements NestModule {
       .apply(UserIdentificationMiddleware)
       .forRoutes({ path: '*', method: RequestMethod.ALL}) 
       .apply(AuthorizationCommentMiddleware)
-      .forRoutes({ path: 'comments/*', method: RequestMethod.PUT}) 
+      .forRoutes({ path: 'comments/*', method: RequestMethod.PUT }, {path: 'comments/*', method: RequestMethod.DELETE}) 
+      
   }
 }
