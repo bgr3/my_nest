@@ -13,8 +13,8 @@ export class PostsCreatePostCommand {
 export class PostsCreatePostUseCase implements ICommandHandler<PostsCreatePostCommand> {
     constructor (
         @InjectModel(Post.name) private PostModel: PostModelType,
-        protected postsRepository: PostsRepository,
-        protected blogsQueryRepository: BlogsQueryRepository,
+        private readonly postsRepository: PostsRepository,
+        private readonly blogsQueryRepository: BlogsQueryRepository,
         ){}
 
     async execute(command: PostsCreatePostCommand): Promise<string | null> {

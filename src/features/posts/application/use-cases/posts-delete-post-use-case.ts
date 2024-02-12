@@ -7,7 +7,7 @@ export class PostsDeletePostCommand {
 
 @CommandHandler(PostsDeletePostCommand)
 export class PostsDeletePostUseCase implements ICommandHandler<PostsDeletePostCommand> {
-    constructor (protected postsRepository: PostsRepository,){}
+    constructor (private readonly postsRepository: PostsRepository,){}
 
     async execute(command: PostsDeletePostCommand): Promise<boolean> {
         return this.postsRepository.deletePost(command.id);      

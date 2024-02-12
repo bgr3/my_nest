@@ -64,7 +64,7 @@ export class AuthorizationCommentMiddleware implements NestMiddleware{
         const comment = await this.commentsQueryRepository.findCommentByID(req.params[0])
         const userId = req.user
         
-        if (!comment) throw new HttpException('', HTTP_STATUSES.NOT_FOUND_404);
+        //if (!comment) throw new HttpException('', HTTP_STATUSES.NOT_FOUND_404);
 
         if (comment && userId) {
             if (comment.commentatorInfo.userId === userId) {

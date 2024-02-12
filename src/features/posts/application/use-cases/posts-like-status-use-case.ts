@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { PostsRepository } from "../../infrastructure/posts-repository";
 import { LikeStatus } from "../../../../infrastructure/dto/input/input-dto";
-import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "../../../users/application/users-service";
 
 export class PostsLikeStatusCommand {
@@ -15,9 +14,8 @@ export class PostsLikeStatusCommand {
 @CommandHandler(PostsLikeStatusCommand)
 export class PostsLikeStatusUseCase implements ICommandHandler<PostsLikeStatusCommand> {
     constructor (
-        protected postsRepository: PostsRepository,
-        protected jwtService: JwtService,
-        protected usersService: UsersService,
+        private readonly postsRepository: PostsRepository,
+        private readonly usersService: UsersService,
     ){}
 
     async execute(command: PostsLikeStatusCommand): Promise<boolean> {

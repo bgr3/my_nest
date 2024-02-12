@@ -6,7 +6,7 @@ import { BlogsRepository } from '../../../../blogs/infrastructure/blogs-reposito
 @Injectable()
 export class BlogExistValidation implements ValidatorConstraintInterface {
     constructor(
-        protected blogsRepository: BlogsRepository,
+        private readonly blogsRepository: BlogsRepository,
       ) {}
 
     errorMessage: string;

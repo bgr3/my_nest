@@ -1,9 +1,6 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { CommentsRepository } from "../../infrastructure/comments-repository";
 import { LikeStatus } from "../../../../infrastructure/dto/input/input-dto";
-import { JwtService } from "@nestjs/jwt";
-import { PostsQueryRepository } from "../../../posts/infrastructure/posts-query-repository";
-import { PostsRepository } from "../../../posts/infrastructure/posts-repository";
 import { UsersService } from "../../../users/application/users-service";
 
 export class CommentsLikeStatusCommand {
@@ -17,8 +14,8 @@ export class CommentsLikeStatusCommand {
 @CommandHandler(CommentsLikeStatusCommand)
 export class CommentsLikeStatusUseCase implements ICommandHandler<CommentsLikeStatusCommand> {
     constructor (
-        protected commentsRepository: CommentsRepository,
-        protected usersService: UsersService,
+        private readonly commentsRepository: CommentsRepository,
+        private readonly usersService: UsersService,
     ){}
 
     async execute(command: CommentsLikeStatusCommand): Promise<boolean> {

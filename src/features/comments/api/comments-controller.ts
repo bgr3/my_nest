@@ -13,10 +13,8 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { CommentsService } from '../application/comment-service';
 import { CommentsQueryRepository } from '../infrastructure/comments-query-repository';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
-import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 import { CommandBus } from '@nestjs/cqrs';
 import { CommentsUpdateCommentCommand } from '../application/use-cases/comments-update-comment-use-case';
@@ -28,9 +26,7 @@ import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
 @Controller('comments')
 export class CommentsController {
   constructor(
-    protected commentsService: CommentsService,
-    protected commentsQueryRepository: CommentsQueryRepository,
-    protected jwtService: JwtService,
+    private readonly commentsQueryRepository: CommentsQueryRepository,
     private readonly commandBus: CommandBus,
 
   ) {}

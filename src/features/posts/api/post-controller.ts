@@ -12,17 +12,13 @@ import {
   Query,
   Req,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
-import { PostsService } from '../application/post-service';
 import { PostsQueryRepository } from '../infrastructure/posts-query-repository';
 import { PostPostType, PostPutType } from './dto/input/post-input-dto';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { CommentPostType } from '../../comments/api/dto/input/comments-input-dto';
-import { CommentsService } from '../../comments/application/comment-service';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments-query-repository';
 import { postCheckQuery } from '../application/post-check-query';
-import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
 import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
@@ -37,11 +33,8 @@ import { PostsDeletePostCommand } from '../application/use-cases/posts-delete-po
 @Controller('posts')
 export class PostsController {
   constructor(
-    protected postsService: PostsService,
-    protected commentsService: CommentsService,
-    protected commentsQueryRepository: CommentsQueryRepository,
-    protected postsQueryRepository: PostsQueryRepository,
-    protected jwtService: JwtService,
+    private readonly commentsQueryRepository: CommentsQueryRepository,
+    private readonly postsQueryRepository: PostsQueryRepository,
     private readonly commandBus: CommandBus,
 
   ) {}

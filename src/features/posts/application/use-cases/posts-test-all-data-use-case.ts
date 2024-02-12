@@ -7,7 +7,7 @@ export class PostsTestAllDataCommand {
 
 @CommandHandler(PostsTestAllDataCommand)
 export class PostsTestAllDataUseCase implements ICommandHandler<PostsTestAllDataCommand> {
-    constructor (protected postsRepository: PostsRepository,){}
+    constructor (private readonly postsRepository: PostsRepository,){}
 
     async execute(command: PostsTestAllDataCommand): Promise<void> {
         return  await this.postsRepository.testAllData();      

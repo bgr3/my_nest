@@ -10,7 +10,7 @@ export class CommentsUpdateCommentCommand {
 
 @CommandHandler(CommentsUpdateCommentCommand)
 export class CommentsUpdateCommentUseCase implements ICommandHandler<CommentsUpdateCommentCommand> {
-    constructor (protected commentsRepository: CommentsRepository,){}
+    constructor (private readonly commentsRepository: CommentsRepository,){}
 
     async execute(command: CommentsUpdateCommentCommand): Promise<boolean> {
         const comment = await this.commentsRepository.getCommentById(command.id);

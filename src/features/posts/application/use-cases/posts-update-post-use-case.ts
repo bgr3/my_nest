@@ -12,8 +12,8 @@ export class PostsUpdatePostCommand {
 @CommandHandler(PostsUpdatePostCommand)
 export class PostsUpdatePostUseCase implements ICommandHandler<PostsUpdatePostCommand> {
     constructor (
-        protected postsRepository: PostsRepository,
-        protected blogsQueryRepository: BlogsQueryRepository,
+        private readonly postsRepository: PostsRepository,
+        private readonly blogsQueryRepository: BlogsQueryRepository,
     ){}
 
     async execute(command: PostsUpdatePostCommand): Promise<boolean> {

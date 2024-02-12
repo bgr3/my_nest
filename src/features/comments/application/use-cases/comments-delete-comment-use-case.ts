@@ -7,7 +7,7 @@ export class CommentsDeleteCommentCommand {
 
 @CommandHandler(CommentsDeleteCommentCommand)
 export class CommentsDeleteCommentUseCase implements ICommandHandler<CommentsDeleteCommentCommand> {
-    constructor (protected commentsRepository: CommentsRepository,){}
+    constructor (private readonly commentsRepository: CommentsRepository,){}
 
     async execute(command: CommentsDeleteCommentCommand): Promise<boolean> {
         return await this.commentsRepository.deleteComment(command.id);      

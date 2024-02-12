@@ -7,7 +7,7 @@ export class CommentsTestAllDataCommand {
 
 @CommandHandler(CommentsTestAllDataCommand)
 export class CommentsTestAllDataUseCase implements ICommandHandler<CommentsTestAllDataCommand> {
-    constructor (protected commentsRepository: CommentsRepository,){}
+    constructor (private readonly commentsRepository: CommentsRepository,){}
 
     async execute(command: CommentsTestAllDataCommand): Promise<void> {
         return await this.commentsRepository.testAllData();      

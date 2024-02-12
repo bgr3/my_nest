@@ -19,10 +19,10 @@ export class CommentsCreateCommentCommand {
 export class CommentsCreateCommentUseCase implements ICommandHandler<CommentsCreateCommentCommand> {
     constructor (
       @InjectModel(CommentForPost.name) private CommentModel: CommentModelType,
-      protected commentsRepository: CommentsRepository,
-      protected jwtService: JwtService,
-      protected usersService: UsersService,
-      protected postsQueryRepository: PostsQueryRepository,
+      private readonly commentsRepository: CommentsRepository,
+      private readonly jwtService: JwtService,
+      private readonly usersService: UsersService,
+      private readonly postsQueryRepository: PostsQueryRepository,
       ){}
 
     async execute(command: CommentsCreateCommentCommand): Promise<string | null> {
