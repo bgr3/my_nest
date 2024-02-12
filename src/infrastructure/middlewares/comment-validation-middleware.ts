@@ -54,3 +54,27 @@ export class PostExistMiddleware implements NestMiddleware{
         }
     }
 }
+
+@Injectable()
+export class AuthorizationCommentMiddleware implements NestMiddleware{
+    constructor(
+        protected commentsQueryRepository: CommentsQueryRepository,
+        ){}
+    async use(req: Request, res: Response, next: NextFunction) {
+        const comment = await this.commentsQueryRepository.findCommentByID(req.params[0])
+        const userId = req.user
+        
+        if (!comment) throw new HttpException('', HTTP_STATUSES.NOT_FOUND_404);
+
+        if (comment && userId) {
+            if (comment.commentatorInfo.userId === userId) {
+                next()
+                return
+            } else {
+                throw new HttpException('', HTTP_STATUSES.FORBIDDEN_403);
+            }
+        }
+
+        next() 
+    }
+}

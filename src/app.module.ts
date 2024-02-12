@@ -44,7 +44,7 @@ import { AccessFrequencyMiddleware } from './infrastructure/middlewares/access-m
 import { AccessService } from './features/access/application/access-service';
 import { LogRepository } from './features/access/infrastructure/access-log-repository';
 import { AccessLog, AccessLogSchema } from './features/access/domain/access-log-entity';
-import { CommentExistMiddleware, PostExistMiddleware, PostValidationMiddleware } from './infrastructure/middlewares/comment-validation-middleware';
+import { AuthorizationCommentMiddleware, CommentExistMiddleware, PostExistMiddleware, PostValidationMiddleware } from './infrastructure/middlewares/comment-validation-middleware';
 import { EmailManager } from './features/email-manager/application/email-manager';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UsersTestAllDataUseCase } from './features/users/application/use-cases/users-testing-all-data-use-case';
@@ -263,6 +263,8 @@ export class AppModule implements NestModule {
       .apply(CommentExistMiddleware)
       .forRoutes({ path: 'comments/*/like-status', method: RequestMethod.PUT })
       .apply(UserIdentificationMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.GET}) 
+      .forRoutes({ path: '*', method: RequestMethod.ALL}) 
+      .apply(AuthorizationCommentMiddleware)
+      .forRoutes({ path: 'comments/*', method: RequestMethod.PUT}) 
   }
 }

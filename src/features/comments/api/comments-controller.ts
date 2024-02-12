@@ -23,6 +23,7 @@ import { CommentsUpdateCommentCommand } from '../application/use-cases/comments-
 import { CommentsLikeStatusCommand } from '../application/use-cases/comments-like-status-use-case';
 import { CommentsDeleteCommentCommand } from '../application/use-cases/comments-delete-comment-use-case';
 import { CommentPutType } from './dto/input/comments-input-dto';
+import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
 
 @Controller('comments')
 export class CommentsController {
@@ -37,7 +38,7 @@ export class CommentsController {
   @UseGuards(JwtAuthGuard)
   @Put(':commentId/like-status')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async likeStatus(@Param('commentId') commentId: string, @Body() dto, @Req() req) {
+  async likeStatus(@Param('commentId') commentId: string, @Body() dto: LikeStatus, @Req() req) {
     const userId = req.user
     const id = commentId;
 
