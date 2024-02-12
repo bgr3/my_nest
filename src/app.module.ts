@@ -17,7 +17,7 @@ import { PostsRepository } from './features/posts/infrastructure/posts-repositor
 import { PostsQueryRepository } from './features/posts/infrastructure/posts-query-repository';
 import { PostsController } from './features/posts/api/post-controller';
 import { CommentsService } from './features/comments/application/comment-service';
-import { CommentsRepository } from './features/comments/infrastructure/comments-reppository';
+import { CommentsRepository } from './features/comments/infrastructure/comments-repository';
 import { CommentsQueryRepository } from './features/comments/infrastructure/comments-query-repository';
 import { CommentsController } from './features/comments/api/comments-controller';
 import { Blog, BlogSchema } from './features/blogs/domain/blogs-entity';

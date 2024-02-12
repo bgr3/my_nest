@@ -77,6 +77,7 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':commentId')
+  @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async deleteComment(@Param('commentId') commentId: string) {
     const foundComment = await this.commandBus.execute(new CommentsDeleteCommentCommand(commentId));
 

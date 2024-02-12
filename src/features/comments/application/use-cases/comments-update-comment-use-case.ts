@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CommentsRepository } from "../../infrastructure/comments-reppository";
+import { CommentsRepository } from "../../infrastructure/comments-repository";
 import { CommentPutType } from "../../api/dto/input/comments-input-dto";
 
 export class CommentsUpdateCommentCommand {
@@ -19,7 +19,7 @@ export class CommentsUpdateCommentUseCase implements ICommandHandler<CommentsUpd
     
         comment.updateComment(command.dto.content);
     
-        this.commentsRepository.save(comment);
+        await this.commentsRepository.save(comment);
     
         return true; 
     };

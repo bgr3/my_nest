@@ -95,7 +95,7 @@ export class CommentForPost {
 export const CommentSchema = SchemaFactory.createForClass(CommentForPost);
 
 CommentSchema.methods = {
-  updateUser: CommentForPost.prototype.updateComment,
+  updateComment: CommentForPost.prototype.updateComment,
   setLikeStatus: CommentForPost.prototype.setLikeStatus,
 };
 

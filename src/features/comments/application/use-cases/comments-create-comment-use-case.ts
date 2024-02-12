@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CommentsRepository } from "../../infrastructure/comments-reppository";
+import { CommentsRepository } from "../../infrastructure/comments-repository";
 import { CommentPostType } from "../../api/dto/input/comments-input-dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { CommentForPost, CommentModelType } from "../../domain/comments-entity";
