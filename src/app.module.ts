@@ -247,13 +247,13 @@ const useCases = [
 export class AppModule implements NestModule {
   async configure(consumer: MiddlewareConsumer) {
     consumer
-      // .apply(AccessFrequencyMiddleware)
-      // .exclude(
-      //   { path: 'auth/refresh-token', method: RequestMethod.POST },
-      //   { path: 'auth/logout', method: RequestMethod.POST },
-      //   { path: 'auth/me', method: RequestMethod.GET },
-      // )
-      // .forRoutes(AuthController)
+      .apply(AccessFrequencyMiddleware)
+      .exclude(
+        { path: 'auth/refresh-token', method: RequestMethod.POST },
+        { path: 'auth/logout', method: RequestMethod.POST },
+        { path: 'auth/me', method: RequestMethod.GET },
+      )
+      .forRoutes(AuthController)
       .apply(PostValidationMiddleware)
       .forRoutes(
         { path: 'post/*/comments', method: RequestMethod.POST },
@@ -268,4 +268,4 @@ export class AppModule implements NestModule {
       .forRoutes({ path: 'comments/*', method: RequestMethod.PUT }, {path: 'comments/*', method: RequestMethod.DELETE}) 
       
   }
-}
+} 

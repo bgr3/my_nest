@@ -11,7 +11,7 @@ export class AuthService {
   ) {}
 
   async generateTokens(userId: string, deviceId: string){
-    const expirationTimeSeconds = 600;
+    const expirationTimeSeconds = 20;
     const issuedAt = new Date();
     const expireAt = add(new Date(), {
       seconds: expirationTimeSeconds,
@@ -20,7 +20,7 @@ export class AuthService {
     const accessTokenPayload = { userId: userId };
     const refreshTokenPayload = { deviceId: deviceId };
     const accessToken = await this.jwtService.signAsync(accessTokenPayload, {
-      expiresIn: 300,
+      expiresIn: 10,
     });
 
     const refreshToken = await this.jwtService.signAsync(refreshTokenPayload, {
