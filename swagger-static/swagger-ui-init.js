@@ -80,7 +80,7 @@ window.onload = function() {
           "operationId": "AuthController_refreshToken",
           "parameters": [],
           "responses": {
-            "201": {
+            "200": {
               "description": ""
             }
           }
