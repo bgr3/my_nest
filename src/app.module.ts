@@ -28,7 +28,6 @@ import {
 } from './features/comments/domain/comments-entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import dotenv from 'dotenv';
 import { JwtStrategy } from './features/users/application/strategies/jwt-strategy';
 import { LocalStrategy } from './features/users/application/strategies/local-strategy';
 import { JwtModule } from '@nestjs/jwt';
@@ -85,7 +84,7 @@ import { TrimPipe } from './infrastructure/pipes/body-trim-pipe';
 import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-identification-middleware copy';
 import { BlogExistValidation } from './features/posts/api/dto/input/blogs-input-validator';
 
-dotenv.config();
+
 
 const url = process.env.MONGO_URL;
 
