@@ -23,14 +23,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return userId || deviceId;
   }
 
-  private static extractJWT(req: RequestType): string | null {          
+  private static extractJWT(req: RequestType): string | null {   
     if (
       req.cookies &&
       'refreshToken' in req.cookies &&
       req.cookies.refreshToken.length > 0
-    ) {
+    ) {      
       return req.cookies.refreshToken;
-    }
+    }    
     return null;
   }
 }

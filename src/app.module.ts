@@ -83,7 +83,9 @@ import { AuthDeleteAuthSessionByTokenUseCase } from './features/auth/application
 import { TrimPipe } from './infrastructure/pipes/body-trim-pipe';
 import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-identification-middleware copy';
 import { BlogExistValidation } from './features/posts/api/dto/input/blogs-input-validator';
+import dotenv from 'dotenv';
 
+dotenv.config();
 
 
 const url = process.env.MONGO_URL;

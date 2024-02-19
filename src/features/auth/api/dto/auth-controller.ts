@@ -76,6 +76,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('refresh-token')
+  @HttpCode(HTTP_STATUSES.OK_200)
   async refreshToken(@Req() req, @Res({passthrough: true}) res: Response)  {
     const deviceId = req.user;
   
