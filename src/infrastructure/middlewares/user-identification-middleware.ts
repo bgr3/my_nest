@@ -21,7 +21,7 @@ export class UserIdentificationMiddleware implements NestMiddleware {
             next()
             return
         }
-        
+         
         if (accessToken[0] === 'Bearer') {
             const accessSession = await this.authRepository.findAuthSessionByAccessToken(accessToken[1])
             
