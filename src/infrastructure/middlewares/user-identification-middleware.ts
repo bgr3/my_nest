@@ -16,23 +16,23 @@ export class UserIdentificationMiddleware implements NestMiddleware {
         const accessToken = req.headers.authorization?.split(' ')
 
         let userId = ''
-
+        
         if (!accessToken) {
             next()
             return
         }
-
-        const accessSession = await this.authRepository.findAuthSessionByAccessToken(accessToken[1])
         
-        if(!accessSession) throw new UnauthorizedException()
-
         if (accessToken[0] === 'Bearer') {
+            const accessSession = await this.authRepository.findAuthSessionByAccessToken(accessToken[1])
+            
+            if(!accessSession) throw new UnauthorizedException()
+
             try {
                 const userIdVerification = await this.jwtService.verifyAsync(accessToken[1]);
                 userId = userIdVerification.userId
             } catch (err) {}
         }
-
+        
         req.user = userId
         
         next()

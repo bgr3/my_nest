@@ -29,7 +29,6 @@ import { PostsCreatePostCommand } from '../application/use-cases/posts-create-po
 import { PostsUpdatePostCommand } from '../application/use-cases/posts-update-post-use-case';
 import { PostsLikeStatusCommand } from '../application/use-cases/posts-like-status-use-case';
 import { PostsDeletePostCommand } from '../application/use-cases/posts-delete-post-use-case';
-import { AuthGuard } from '../../../infrastructure/guards/auth-guard';
 
 @Controller('posts')
 export class PostsController {
@@ -65,7 +64,7 @@ export class PostsController {
     return newPost;
   }
 
-  @UseGuards(JwtAuthGuard, AuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post(':postId/comments')
   async createCommentForPost(
     @Param('postId') postId: string,

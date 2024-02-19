@@ -28,7 +28,6 @@ import { AuthGetMeByIdCommand } from '../../application/use-cases/auth-get-me-by
 import { AuthCreateAuthSessionCommand } from '../../application/use-cases/auth-create-auth-session-use-case';
 import { AuthUpdateTokensCommand } from '../../application/use-cases/auth-update-tokens-use-case';
 import { AuthDeleteAuthSessionByTokenCommand } from '../../application/use-cases/auth-delete-auth-session-by-token-use-case';
-import { AuthGuard } from '../../../../infrastructure/guards/auth-guard';
 
 @Controller('auth')
 export class AuthController {
