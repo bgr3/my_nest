@@ -7,7 +7,7 @@ import { get } from 'http';
 import { createWriteStream } from 'fs';
 import cookieParser from 'cookie-parser'
 import { TrimPipe } from '../infrastructure/pipes/body-trim-pipe';
-import { UserIdentificationMiddleware } from '../infrastructure/middlewares/user-identification-middleware copy';
+import { UserIdentificationMiddleware } from '../infrastructure/middlewares/user-identification-middleware';
 // import dotenv from 'dotenv';
 
 // dotenv.config();

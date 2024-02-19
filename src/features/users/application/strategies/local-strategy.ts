@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
-import { UsersService } from '../users-service';
 import { CommandBus } from '@nestjs/cqrs';
 import { UsersCheckCredentialsCommand } from '../use-cases/users-check-crefentials-use-case';
 

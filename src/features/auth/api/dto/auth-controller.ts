@@ -25,7 +25,7 @@ import { AuthRegisterUserSendEmailCommand } from '../../application/use-cases/au
 import { AuthChangePasswordEmailCommand } from '../../application/use-cases/auth-change-password-email-use-case';
 import { AuthResendEmailCommand } from '../../application/use-cases/auth-resend-email-use-case';
 import { AuthGetMeByIdCommand } from '../../application/use-cases/auth-get-me-by-id-use-case';
-import { AuthCreateAuthSessionCommand } from '../../application/use-cases/auth-create-auth-session-use-case copy';
+import { AuthCreateAuthSessionCommand } from '../../application/use-cases/auth-create-auth-session-use-case';
 import { AuthUpdateTokensCommand } from '../../application/use-cases/auth-update-tokens-use-case';
 import { AuthDeleteAuthSessionByTokenCommand } from '../../application/use-cases/auth-delete-auth-session-by-token-use-case';
 

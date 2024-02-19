@@ -28,7 +28,6 @@ import {
 } from './features/comments/domain/comments-entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import dotenv from 'dotenv';
 import { JwtStrategy } from './features/users/application/strategies/jwt-strategy';
 import { LocalStrategy } from './features/users/application/strategies/local-strategy';
 import { JwtModule } from '@nestjs/jwt';
@@ -75,17 +74,19 @@ import { AuthRegisterUserSendEmailUseCase } from './features/auth/application/us
 import { AuthChangePasswordEmailUseCase } from './features/auth/application/use-cases/auth-change-password-email-use-case';
 import { AuthResendEmailUseCase } from './features/auth/application/use-cases/auth-resend-email-use-case';
 import { AuthGetMeByIdUseCase } from './features/auth/application/use-cases/auth-get-me-by-id-use-case';
-import { AuthCreateAuthSessionUseCase } from './features/auth/application/use-cases/auth-create-auth-session-use-case copy';
+import { AuthCreateAuthSessionUseCase } from './features/auth/application/use-cases/auth-create-auth-session-use-case';
 import { AuthUpdateTokensUseCase } from './features/auth/application/use-cases/auth-update-tokens-use-case';
 import { AuthGetAuthSessionsByTokenUseCase } from './features/auth/application/use-cases/auth-get-auth-session-by-token-use-case';
 import { AuthDeleteAuthSessionsExcludeCurentUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-exclude-current-use-case copy';
 import { AuthDeleteSpecifiedAuthSessionByDeviceIdUseCase } from './features/auth/application/use-cases/auth-delete-specified-auth-session-by-device-id-use-case';
 import { AuthDeleteAuthSessionByTokenUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-by-token-use-case';
 import { TrimPipe } from './infrastructure/pipes/body-trim-pipe';
-import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-identification-middleware copy';
+import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-identification-middleware';
 import { BlogExistValidation } from './features/posts/api/dto/input/blogs-input-validator';
+import dotenv from 'dotenv';
 
 dotenv.config();
+
 
 const url = process.env.MONGO_URL;
 
@@ -236,7 +237,7 @@ const useCases = [
     TrimPipe,
     ...usersProviders,
     ...blogsProviders,
-       ...postsProviders,
+    ...postsProviders,
     ...commentsProviders,
     ...strategiesProviders,
     ...authProviders,
