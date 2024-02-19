@@ -23,6 +23,11 @@ export class AuthRepository {
     return session;
   }
 
+  async findAuthSessionByAccessToken (accessToken: string): Promise<AuthDocument | null> {
+      const session = await this.AuthModel.findOne({'JWTTokens.accessToken': accessToken});
+      return session
+  }
+
   async deleteAuthSessionsByUserId(
     userId: string,
     deviceId: string,
