@@ -39,13 +39,11 @@ export class Auth {
   JWTTokens: JWTTokens;
 
   updateAuthSession(
-    newDeviceId: string,
     accessToken: string,
     refreshToken: string,
     issuedAt: Date,
     expiredAt: Date,
     ) {
-      this.deviceId = newDeviceId
       this.issuedAt = issuedAt;
       this.expiredAt = expiredAt;
       this.JWTTokens.accessToken = accessToken;

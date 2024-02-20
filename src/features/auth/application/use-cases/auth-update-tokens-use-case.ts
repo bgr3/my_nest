@@ -3,7 +3,6 @@ import { AuthRepository } from "../../infrastructure/auth-repository";
 import { Tokens } from "../../api/dto/output/auth-output-dto";
 import { AuthService } from "../auth-service";
 import { UsersRepository } from "../../../users/infrastructure/users-repository";
-import { v4 as uuidv4 } from 'uuid';
 
 export class AuthUpdateTokensCommand {
     constructor(public deviceId: string){};
@@ -25,12 +24,10 @@ export class AuthUpdateTokensUseCase implements ICommandHandler<AuthUpdateTokens
         const user = await this.usersRepository.findUserDbByID(session.userId)
         
         if (!user) return null;
-
-        const newDeviceId = uuidv4();
     
-        const tokens = await this.authService.generateTokens(user._id.toString(), newDeviceId);
+        const tokens = await this.authService.generateTokens(user._id.toString(), session.deviceId);
     
-        await session.updateAuthSession(newDeviceId, tokens.accessToken, tokens.refreshToken, tokens.issuedAt, tokens.expireAt)
+        await session.updateAuthSession(tokens.accessToken, tokens.refreshToken, tokens.issuedAt, tokens.expireAt)
     
         await this.authRepository.save(session)
     
