@@ -84,6 +84,7 @@ import { TrimPipe } from './infrastructure/pipes/body-trim-pipe';
 import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-identification-middleware';
 import { BlogExistValidation } from './features/posts/api/dto/input/blogs-input-validator';
 import dotenv from 'dotenv';
+import { AuthorizationSecurityMiddleware } from './infrastructure/middlewares/security-validation-middleware';
 
 dotenv.config();
 
@@ -267,6 +268,7 @@ export class AppModule implements NestModule {
       .forRoutes({ path: '*', method: RequestMethod.ALL}) 
       .apply(AuthorizationCommentMiddleware)
       .forRoutes({ path: 'comments/*', method: RequestMethod.PUT }, {path: 'comments/*', method: RequestMethod.DELETE}) 
-      
+      .apply(AuthorizationSecurityMiddleware)
+      .forRoutes({ path: 'security/devices/*', method: RequestMethod.DELETE })
   }
 } 
