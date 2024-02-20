@@ -669,7 +669,16 @@ window.onload = function() {
       "/security/devices/{deviceId}": {
         "delete": {
           "operationId": "SecurityController_deleteDevice",
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "deviceId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
           "responses": {
             "200": {
               "description": ""

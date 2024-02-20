@@ -39,7 +39,7 @@ export class SecurityController {
 
     @UseGuards(JwtAuthGuard)
     @Delete(':deviceId')
-    async deleteDevice(@Param() deviceId: string) {
+    async deleteDevice(@Param('deviceId') deviceId: string) {
         const result = await this.commandBus.execute(new AuthDeleteSpecifiedAuthSessionByDeviceIdCommand(deviceId));
     
         if (!result) throw new NotFoundException();
