@@ -14,26 +14,38 @@ export class UserIdentificationMiddleware implements NestMiddleware {
         ){}
     async use(req: Request, res: Response, next: NextFunction) {
         const accessToken = req.headers.authorization?.split(' ')
+        const refreshToken = req.cookies.refreshToken
+        let userId = '';
+        let deviceId = '';
 
-        let userId = ''
-        
-        if (!accessToken) {
+        if (!accessToken && !refreshToken) {
             next()
             return
         }
          
-        if (accessToken[0] === 'Bearer') {
-            const accessSession = await this.authRepository.findAuthSessionByAccessToken(accessToken[1])
+        if(accessToken){
+            if (accessToken[0] === 'Bearer') {
+                const accessSession = await this.authRepository.findAuthSessionByAccessToken(accessToken[1])
+                
+                if(!accessSession) throw new UnauthorizedException()
+    
+                try {
+                    const userIdVerification = await this.jwtService.verifyAsync(accessToken[1]);
+                    userId = userIdVerification.userId
+                } catch (err) {}
+            }
+        } else if(refreshToken){
+            const accessSession = await this.authRepository.findAuthSessionByRefreshToken(refreshToken)
             
             if(!accessSession) throw new UnauthorizedException()
 
             try {
-                const userIdVerification = await this.jwtService.verifyAsync(accessToken[1]);
-                userId = userIdVerification.userId
+                const userIdVerification = await this.jwtService.verifyAsync(refreshToken);
+                deviceId = userIdVerification.deviceId
             } catch (err) {}
         }
         
-        req.user = userId
+        req.user = userId || deviceId
         
         next()
     }

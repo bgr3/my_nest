@@ -28,6 +28,11 @@ export class AuthRepository {
       return session
   }
 
+  async findAuthSessionByRefreshToken (refreshToken: string): Promise<AuthDocument | null> {
+    const session = await this.AuthModel.findOne({'JWTTokens.refreshToken': refreshToken});
+    return session
+}
+
   async deleteAuthSessionsByUserId(
     userId: string,
     deviceId: string,
