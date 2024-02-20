@@ -16,7 +16,6 @@ export class UserIdentificationMiddleware implements NestMiddleware {
         const accessToken = req.headers.authorization?.split(' ')
         const refreshToken = req.cookies.refreshToken
         let userId = '';
-        let deviceId = '';
 
         if (!accessToken && !refreshToken) {
             next()
@@ -38,14 +37,16 @@ export class UserIdentificationMiddleware implements NestMiddleware {
             const accessSession = await this.authRepository.findAuthSessionByRefreshToken(refreshToken)
             
             if(!accessSession) throw new UnauthorizedException()
+            accessSession.userId
 
             try {
                 const userIdVerification = await this.jwtService.verifyAsync(refreshToken);
-                deviceId = userIdVerification.deviceId
+                const deviceId = userIdVerification.deviceId
+                userId = accessSession.userId
             } catch (err) {}
         }
         
-        req.user = userId || deviceId
+        req.user = userId
         
         next()
     }
