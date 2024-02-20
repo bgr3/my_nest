@@ -17,8 +17,8 @@ export class SecurityController {
     @UseGuards(JwtAuthGuard)
     @Get()
     async getDevices(@Req() req) {
-        const refreshToken = req.payload;
-        const sessions = await this.commandBus.execute(new AuthGetAuthSessionsByTokenCommand(refreshToken));
+        const deviceId = req.user;
+        const sessions = await this.commandBus.execute(new AuthGetAuthSessionsByTokenCommand(deviceId));
     
         if (!sessions) throw new NotFoundException();
 
@@ -29,8 +29,8 @@ export class SecurityController {
     @Delete()
     @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
     async deleteDevices(@Req() req) {
-        const refreshToken = req.payload;
-        const result = await this.commandBus.execute(new AuthDeleteAuthSessionsExcludeCurentCommand(refreshToken));
+        const deviceId = req.user;
+        const result = await this.commandBus.execute(new AuthDeleteAuthSessionsExcludeCurentCommand(deviceId));
     
         if (!result) throw new NotFoundException();
         
