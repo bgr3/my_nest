@@ -12,20 +12,20 @@ export type UserModelType = Model<UserDocument> & typeof statics;
 @Schema({ _id: false })
 class EmailConfirmation {
   @Prop()
-  confirmationCode: string;
+    confirmationCode: string;
 
   @Prop({
     type: Object,
   })
-  expirationDate: object;
+    expirationDate: object;
 
   @Prop()
-  isConfirmed: boolean;
+    isConfirmed: boolean;
 
   @Prop({
     type: Object,
   })
-  nextSend: object;
+    nextSend: object;
 }
 
 const EmailConfirmationSchema = SchemaFactory.createForClass(EmailConfirmation);
@@ -44,59 +44,51 @@ const EmailConfirmationSchema = SchemaFactory.createForClass(EmailConfirmation);
 @Schema()
 export class User {
   @Prop({ required: true })
-  login: string;
+    login: string;
 
   @Prop({ required: true })
-  email: string;
+    email: string;
 
   @Prop({ required: true })
-  password: string;
+    password: string;
 
   @Prop({ required: true })
-  createdAt: string;
+    createdAt: string;
 
   @Prop({ type: EmailConfirmationSchema, ref: 'EmailConfirmation' })
-  emailConfirmation: EmailConfirmation;
+    emailConfirmation: EmailConfirmation;
 
   // @Prop({default: [], type: [{type: JWTTokensSchema, ref: 'JWTTokens'}]})
   // JWTTokens: [JWTTokens];
 
-  updateCodeForRecoveryPassword(
-    code: string,
-    expirationDate: object) {
+  updateCodeForRecoveryPassword(code: string, expirationDate: object) {
     this.emailConfirmation.confirmationCode = code;
     this.emailConfirmation.expirationDate = expirationDate;
-  };
+  }
 
-  updatePassword(
-    password: string
-  ){
+  updatePassword(password: string) {
     this.password = password;
-  };
+  }
 
-  updateConfirmation(){
+  updateConfirmation() {
     if (this.emailConfirmation.isConfirmed) return false;
 
-    this.emailConfirmation.isConfirmed = true
+    this.emailConfirmation.isConfirmed = true;
 
     return true;
-  };
+  }
 
-  resendConfirmationCode(
-    code: string
-  ){
+  resendConfirmationCode(code: string) {
     this.emailConfirmation.confirmationCode = code;
     this.emailConfirmation.expirationDate = add(new Date(), { minutes: 5 });
     this.emailConfirmation.nextSend = add(new Date(), { seconds: 0 });
-  };
+  }
 
-  getMe(
-    id: string,
-  ){
-    const me = new MeType(this.email, this.login, id.toString())
+  getMe(id: string) {
+    const me = new MeType(this.email, this.login, id.toString());
 
     return me;
-  };
+  }
 
   static createUser(
     login: string,

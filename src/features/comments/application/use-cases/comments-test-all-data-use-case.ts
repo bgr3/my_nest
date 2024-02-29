@@ -1,15 +1,17 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CommentsRepository } from "../../infrastructure/comments-repository";
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommentsRepository } from '../../infrastructure/comments-repository';
 
 export class CommentsTestAllDataCommand {
-    constructor(){};
-};
+  constructor() {}
+}
 
 @CommandHandler(CommentsTestAllDataCommand)
-export class CommentsTestAllDataUseCase implements ICommandHandler<CommentsTestAllDataCommand> {
-    constructor (private readonly commentsRepository: CommentsRepository,){}
+export class CommentsTestAllDataUseCase
+implements ICommandHandler<CommentsTestAllDataCommand>
+{
+  constructor(private readonly commentsRepository: CommentsRepository) {}
 
-    async execute(command: CommentsTestAllDataCommand): Promise<void> {
-        return await this.commentsRepository.testAllData();      
-    };
-};
+  async execute(): Promise<void> {
+    return await this.commentsRepository.testAllData();
+  }
+}

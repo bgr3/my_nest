@@ -8,7 +8,7 @@ export class BlogsRepository {
   constructor(@InjectModel(Blog.name) private BlogModel: BlogModelType) {}
 
   async testAllData(): Promise<void> {
-    const result = await this.BlogModel.deleteMany({});
+    await this.BlogModel.deleteMany({});
     //console.log('blogs delete: ', result.deletedCount)
   }
 

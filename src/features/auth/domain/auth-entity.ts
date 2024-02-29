@@ -7,10 +7,10 @@ export type AuthModelType = Model<AuthDocument> & typeof statics;
 @Schema({ _id: false })
 class JWTTokens {
   @Prop({ required: true })
-  accessToken: string;
+    accessToken: string;
 
   @Prop({ required: true })
-  refreshToken: string;
+    refreshToken: string;
 }
 
 const JWTTokensSchema = SchemaFactory.createForClass(JWTTokens);
@@ -18,37 +18,37 @@ const JWTTokensSchema = SchemaFactory.createForClass(JWTTokens);
 @Schema()
 export class Auth {
   @Prop({ required: true })
-  issuedAt: Date;
+    issuedAt: Date;
 
   @Prop({ required: true })
-  expiredAt: Date;
+    expiredAt: Date;
 
   @Prop({ required: true })
-  deviceId: string;
+    deviceId: string;
 
   @Prop({ required: true })
-  deviceIP: string;
+    deviceIP: string;
 
   @Prop({ required: true })
-  deviceName: string;
+    deviceName: string;
 
   @Prop({ required: true })
-  userId: string;
+    userId: string;
 
   @Prop({ type: JWTTokensSchema, ref: 'JWTTokens' })
-  JWTTokens: JWTTokens;
+    JWTTokens: JWTTokens;
 
   updateAuthSession(
     accessToken: string,
     refreshToken: string,
     issuedAt: Date,
     expiredAt: Date,
-    ) {
-      this.issuedAt = issuedAt;
-      this.expiredAt = expiredAt;
-      this.JWTTokens.accessToken = accessToken;
-      this.JWTTokens.refreshToken = refreshToken;
-  };
+  ) {
+    this.issuedAt = issuedAt;
+    this.expiredAt = expiredAt;
+    this.JWTTokens.accessToken = accessToken;
+    this.JWTTokens.refreshToken = refreshToken;
+  }
 
   static createAuth(
     userId: string,

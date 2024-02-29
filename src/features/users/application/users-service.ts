@@ -4,12 +4,9 @@ import bcrypt from 'bcrypt';
 
 import { UsersRepository } from '../infrastructure/users-repository';
 
-
 @Injectable()
 export class UsersService {
-  constructor(
-    protected usersRepository: UsersRepository,
-  ) {}
+  constructor(protected usersRepository: UsersRepository) {}
 
   async findUserDbByID(id: string): Promise<UserDocument | null> {
     const user = await this.usersRepository.findUserDbByID(id);

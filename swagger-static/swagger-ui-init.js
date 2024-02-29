@@ -724,7 +724,22 @@ window.onload = function() {
         },
         "BlogPostType": {
           "type": "object",
-          "properties": {}
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "websiteUrl": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "description",
+            "websiteUrl"
+          ]
         },
         "PostForBlogPostType": {
           "type": "object",

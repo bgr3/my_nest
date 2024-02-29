@@ -7,15 +7,8 @@ import {
   PostOutput,
 } from '../api/dto/output/post-output-type';
 import { Types } from 'mongoose';
-import { Filter } from '../../../infrastructure/dto/input/input-dto';
+import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
 import { Paginator } from '../../../infrastructure/dto/output/output-dto';
-
-export const postFilter = {
-  pageNumber: 1,
-  pageSize: 10,
-  sortBy: 'createdAt',
-  sortDirection: 'desc',
-};
 
 @Injectable()
 export class PostsQueryRepository {
@@ -23,7 +16,7 @@ export class PostsQueryRepository {
 
   async findPosts(
     blogId: string | null = null,
-    filter: Filter = postFilter,
+    filter: QueryFilter,
     userId: string = '',
   ): Promise<Paginator<PostOutput>> {
     const find: any = {};
@@ -81,7 +74,7 @@ const postMapper = (post: PostDocument, userId: string): PostOutput => {
   const likesCount = post.likesInfo.filter(
     (i) => i.likeStatus === 'Like',
   ).length;
-  
+
   const dislikesCount = post.likesInfo.filter(
     (i) => i.likeStatus === 'Dislike',
   ).length;

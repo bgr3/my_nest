@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -38,12 +43,26 @@ import { AuthService } from './features/auth/application/auth-service';
 import { Auth, AuthSchema } from './features/auth/domain/auth-entity';
 import { AuthController } from './features/auth/api/dto/auth-controller';
 import { SecurityController } from './features/security/api/dto/security-controller';
-import { AuthEmailConfirmValidation, AuthPasswordRecoveryCodeValidation, AuthReSendEmailConfirmValidation, UserEmailValidation, UserLoginValidation } from './features/auth/api/dto/input/auth-input-validator';
+import {
+  AuthEmailConfirmValidation,
+  AuthPasswordRecoveryCodeValidation,
+  AuthReSendEmailConfirmValidation,
+  UserEmailValidation,
+  UserLoginValidation,
+} from './features/auth/api/dto/input/auth-input-validator';
 import { AccessFrequencyMiddleware } from './infrastructure/middlewares/access-middleware';
 import { AccessService } from './features/access/application/access-service';
 import { LogRepository } from './features/access/infrastructure/access-log-repository';
-import { AccessLog, AccessLogSchema } from './features/access/domain/access-log-entity';
-import { AuthorizationCommentMiddleware, CommentExistMiddleware, PostExistMiddleware, PostValidationMiddleware } from './infrastructure/middlewares/comment-validation-middleware';
+import {
+  AccessLog,
+  AccessLogSchema,
+} from './features/access/domain/access-log-entity';
+import {
+  AuthorizationCommentMiddleware,
+  CommentExistMiddleware,
+  PostExistMiddleware,
+  PostValidationMiddleware,
+} from './infrastructure/middlewares/comment-validation-middleware';
 import { EmailManager } from './features/email-manager/application/email-manager';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UsersTestAllDataUseCase } from './features/users/application/use-cases/users-testing-all-data-use-case';
@@ -88,7 +107,6 @@ import { AuthorizationSecurityMiddleware } from './infrastructure/middlewares/se
 
 dotenv.config();
 
-
 const url = process.env.MONGO_URL;
 
 //console.log('mongo URL: ', url);
@@ -97,17 +115,9 @@ if (!url) {
   throw new Error('! URL doesn`t found');
 }
 
-const usersProviders = [
-  UsersService,
-  UsersRepository,
-  UsersQueryRepository,
-];
+const usersProviders = [UsersService, UsersRepository, UsersQueryRepository];
 
-const blogsProviders = [
-  BlogsService,
-  BlogsRepository,
-  BlogsQueryRepository,
-];
+const blogsProviders = [BlogsService, BlogsRepository, BlogsQueryRepository];
 
 const postsProviders = [
   PostsService,
@@ -122,11 +132,7 @@ const commentsProviders = [
   CommentsQueryRepository,
 ];
 
-const strategiesProviders = [
-  LocalStrategy,
-  JwtStrategy,
-  BasicStrategy,
-];
+const strategiesProviders = [LocalStrategy, JwtStrategy, BasicStrategy];
 
 const authProviders = [
   AuthService,
@@ -138,10 +144,7 @@ const authProviders = [
   UserEmailValidation,
   UserLoginValidation,
 ];
-const accessProviders = [
-  AccessService,
-  LogRepository,
-];
+const accessProviders = [AccessService, LogRepository];
 
 const useCases = [
   UsersTestAllDataUseCase,
@@ -187,6 +190,16 @@ const useCases = [
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
     }),
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: '127.0.0.1',
+    //   port: 3306,
+    //   username: 'root',
+    //   password: 'root',
+    //   database: 'test',
+    //   autoLoadEntities: true,
+    //   synchronize: true,
+    // }),
     MongooseModule.forRoot(url, {
       dbName: 'nest',
     }),
@@ -207,11 +220,11 @@ const useCases = [
         name: CommentForPost.name,
         schema: CommentSchema,
       },
-      {      
+      {
         name: Auth.name,
         schema: AuthSchema,
       },
-      {      
+      {
         name: AccessLog.name,
         schema: AccessLogSchema,
       },
@@ -250,7 +263,7 @@ export class AppModule implements NestModule {
   async configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(UserIdentificationMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL}) 
+      .forRoutes({ path: '*', method: RequestMethod.ALL })
       .apply(AccessFrequencyMiddleware)
       .exclude(
         { path: 'auth/refresh-token', method: RequestMethod.POST },
@@ -259,16 +272,17 @@ export class AppModule implements NestModule {
       )
       .forRoutes(AuthController)
       .apply(PostValidationMiddleware)
-      .forRoutes(
-        { path: 'post/*/comments', method: RequestMethod.POST },
-        )
+      .forRoutes({ path: 'post/*/comments', method: RequestMethod.POST })
       .apply(PostExistMiddleware)
       .forRoutes({ path: 'post/*/like-status', method: RequestMethod.PUT })
       .apply(CommentExistMiddleware)
       .forRoutes({ path: 'comments/*/like-status', method: RequestMethod.PUT })
       .apply(AuthorizationCommentMiddleware)
-      .forRoutes({ path: 'comments/*', method: RequestMethod.PUT }, {path: 'comments/*', method: RequestMethod.DELETE}) 
+      .forRoutes(
+        { path: 'comments/*', method: RequestMethod.PUT },
+        { path: 'comments/*', method: RequestMethod.DELETE },
+      )
       .apply(AuthorizationSecurityMiddleware)
-      .forRoutes({ path: 'security/devices/*', method: RequestMethod.DELETE })
+      .forRoutes({ path: 'security/devices/*', method: RequestMethod.DELETE });
   }
-} 
+}

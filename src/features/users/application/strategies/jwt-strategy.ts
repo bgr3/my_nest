@@ -9,7 +9,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authRepository: AuthRepository) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        ExtractJwt.fromAuthHeaderAsBearerToken(),        
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
         JwtStrategy.extractJWT,
       ]),
       ignoreExpiration: false,
@@ -17,25 +17,26 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {    
-    const userId = payload.userId
-    const deviceId = payload.deviceId
+  async validate(payload: any) {
+    const userId = payload.userId;
+    const deviceId = payload.deviceId;
 
-    const session = await this.authRepository.findAuthSessionByDeviceId(deviceId)
-    
-    if (deviceId && !session) throw new UnauthorizedException()
-    
+    const session =
+      await this.authRepository.findAuthSessionByDeviceId(deviceId);
+
+    if (deviceId && !session) throw new UnauthorizedException();
+
     return userId || deviceId;
   }
 
-  private static extractJWT(req: RequestType): string | null {   
+  private static extractJWT(req: RequestType): string | null {
     if (
       req.cookies &&
       'refreshToken' in req.cookies &&
       req.cookies.refreshToken.length > 0
-    ) {      
+    ) {
       return req.cookies.refreshToken;
-    }    
+    }
     return null;
   }
 }

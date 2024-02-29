@@ -1,4 +1,4 @@
 export class AccessLogType {
-    IP: string;
-    URL: string; 
+  IP: string;
+  URL: string;
 }

@@ -8,7 +8,7 @@ export class UsersRepository {
   constructor(@InjectModel(User.name) private UserModel: Model<UserDocument>) {}
 
   async testAllData(): Promise<void> {
-    const result = await this.UserModel.deleteMany({});
+    await this.UserModel.deleteMany({});
     //console.log('users delete: ', result.deletedCount)
   }
 

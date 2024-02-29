@@ -1,29 +1,29 @@
-import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments } from 'class-validator';
+import {
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 import { Injectable } from '@nestjs/common';
 import { BlogsRepository } from '../../../../blogs/infrastructure/blogs-repository';
 
 @ValidatorConstraint({ name: 'customText', async: true })
 @Injectable()
 export class BlogExistValidation implements ValidatorConstraintInterface {
-    constructor(
-        private readonly blogsRepository: BlogsRepository,
-      ) {}
+  constructor(private readonly blogsRepository: BlogsRepository) {}
 
-    errorMessage: string;
+  errorMessage: string;
 
-    async validate(blogId: string, args: ValidationArguments) {        
-        const blog = await this.blogsRepository.getBlogById(blogId)
+  async validate(blogId: string) {
+    const blog = await this.blogsRepository.getBlogById(blogId);
 
-        if (!blog)  {
-            this.errorMessage = 'blog doesn`t exist';
-            return false
-        }
-
-        return true
+    if (!blog) {
+      this.errorMessage = 'blog doesn`t exist';
+      return false;
     }
 
-    defaultMessage(args: ValidationArguments) {
-        return this.errorMessage;
-    }
+    return true;
+  }
+
+  defaultMessage() {
+    return this.errorMessage;
+  }
 }
-

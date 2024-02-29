@@ -13,7 +13,7 @@ export class CommentsRepository {
     @InjectModel(CommentForPost.name) private CommentModel: CommentModelType,
   ) {}
   async testAllData(): Promise<void> {
-    const result = await this.CommentModel.deleteMany({});
+    await this.CommentModel.deleteMany({});
     //console.log('comments delete: ', result.deletedCount)
   }
 
@@ -103,7 +103,7 @@ export class CommentsRepository {
     const newStatusFilter = filter(newStatus, userId);
 
     if (Types.ObjectId.isValid(commentId)) {
-      const resultPull = await this.CommentModel.updateOne(
+      await this.CommentModel.updateOne(
         { _id: commentId },
         { $pull: oldStatusFilter },
       );

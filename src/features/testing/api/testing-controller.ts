@@ -10,13 +10,11 @@ import { AuthTestAllDataCommand } from '../../auth/application/use-cases/auth-te
 
 @Controller('testing')
 export class TestingController {
-  constructor(
-    private readonly commandBus: CommandBus,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Delete('all-data')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async allData(req: Request, res: Response) {
+  async allData() {
     //videosRepository.testAllData
     await this.commandBus.execute(new BlogsTestAllDataCommand());
     await this.commandBus.execute(new PostsTestAllDataCommand());

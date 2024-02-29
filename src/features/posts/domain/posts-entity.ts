@@ -9,16 +9,16 @@ export type PostModelType = Model<PostDocument> & typeof statics;
 @Schema()
 class LikesInfo {
   @Prop({ required: true })
-  userId: string;
+    userId: string;
 
   @Prop({ required: true })
-  login: string;
+    login: string;
 
   @Prop({ required: true })
-  addedAt: string;
+    addedAt: string;
 
   @Prop({ required: true })
-  likeStatus: LikeStatusType;
+    likeStatus: LikeStatusType;
 }
 
 const LikesInfoSchema = SchemaFactory.createForClass(LikesInfo);
@@ -26,25 +26,25 @@ const LikesInfoSchema = SchemaFactory.createForClass(LikesInfo);
 @Schema()
 export class Post {
   @Prop({ required: true })
-  title: string;
+    title: string;
 
   @Prop({ required: true })
-  shortDescription: string;
+    shortDescription: string;
 
   @Prop({ required: true })
-  content: string;
+    content: string;
 
   @Prop({ required: true })
-  blogId: string;
+    blogId: string;
 
   @Prop({ required: true })
-  blogName: string;
+    blogName: string;
 
   @Prop({ required: true })
-  createdAt: string;
+    createdAt: string;
 
   @Prop({ default: [], type: [{ type: LikesInfoSchema, ref: 'LikesInfo' }] })
-  likesInfo: [LikesInfo];
+    likesInfo: [LikesInfo];
 
   updatePost(
     title: string,
@@ -60,17 +60,13 @@ export class Post {
     this.blogName = blogName;
   }
 
-  setLikeStatus(
-    userId: string,
-    login: string,
-    likeStatus: LikeStatusType,
-  ) {
-    const like = this.likesInfo.find(i => i.userId === userId);
+  setLikeStatus(userId: string, login: string, likeStatus: LikeStatusType) {
+    const like = this.likesInfo.find((i) => i.userId === userId);
 
     if (like) {
       like.likeStatus = likeStatus;
     } else {
-      const likesInfo = new LikesInfo()
+      const likesInfo = new LikesInfo();
       likesInfo.addedAt = new Date().toISOString();
       likesInfo.likeStatus = likeStatus;
       likesInfo.login = login;

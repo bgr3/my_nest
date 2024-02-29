@@ -7,15 +7,8 @@ import {
   CommentForPost,
 } from '../domain/comments-entity';
 import { CommentOutput } from '../api/dto/output/comments-output-dto';
-import { Filter } from '../../../infrastructure/dto/input/input-dto';
+import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
 import { Paginator } from '../../../infrastructure/dto/output/output-dto';
-
-export const commentFilter = {
-  pageNumber: 1,
-  pageSize: 10,
-  sortBy: 'createdAt',
-  sortDirection: 'desc',
-};
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -24,7 +17,7 @@ export class CommentsQueryRepository {
   ) {}
   async findComments(
     postId: string | null = null,
-    filter: Filter = commentFilter,
+    filter: QueryFilter,
     userId: string = '',
   ): Promise<Paginator<CommentOutput>> {
     const find: any = {};
@@ -88,8 +81,10 @@ const commentMapper = (
     },
     createdAt: comment.createdAt,
     likesInfo: {
-      likesCount: comment.likesInfo.filter((i) => i.likeStatus === 'Like').length,
-      dislikesCount: comment.likesInfo.filter((i) => i.likeStatus === 'Dislike').length,
+      likesCount: comment.likesInfo.filter((i) => i.likeStatus === 'Like')
+        .length,
+      dislikesCount: comment.likesInfo.filter((i) => i.likeStatus === 'Dislike')
+        .length,
       myStatus: myStatus,
     },
   };

@@ -1,13 +1,19 @@
-import { BadRequestException, INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { useContainer } from 'class-validator';
 import { AppModule } from '../app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ErrorExceptionFilter, HttpExceptionFilter } from '../infrastructure/exception-filters/exception-filter';
+import {
+  ErrorExceptionFilter,
+  HttpExceptionFilter,
+} from '../infrastructure/exception-filters/exception-filter';
 import { get } from 'http';
 import { createWriteStream } from 'fs';
-import cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser';
 import { TrimPipe } from '../infrastructure/pipes/body-trim-pipe';
-import { UserIdentificationMiddleware } from '../infrastructure/middlewares/user-identification-middleware';
 // import dotenv from 'dotenv';
 
 // dotenv.config();
@@ -15,10 +21,8 @@ import { UserIdentificationMiddleware } from '../infrastructure/middlewares/user
 const APP_PREFIX = '';
 const serverUrl = process.env.SERVER_URL;
 
-
 export const applyAppSettings = (app: INestApplication) => {
   setAppPrefix(app);
-
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
@@ -29,12 +33,10 @@ export const applyAppSettings = (app: INestApplication) => {
   app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter()); //order is important!
 
   app.use(cookieParser());
-  
+
   setSwagger(app);
 
-  
   setSwaggerStatic();
-  
 };
 
 const setAppPrefix = (app: INestApplication) => {
@@ -43,14 +45,14 @@ const setAppPrefix = (app: INestApplication) => {
 
 const setSwagger = (app: INestApplication) => {
   const config = new DocumentBuilder()
-  .setTitle('products example')
-  .setDescription('The products API description')
-  .setVersion('1.0')
-  .addTag('products')
-  .build();
+    .setTitle('products example')
+    .setDescription('The products API description')
+    .setVersion('1.0')
+    .addTag('products')
+    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/swagger', app, document);
-}
+};
 
 const setGlobalPipes = (app: INestApplication) => {
   app.useGlobalPipes(new TrimPipe());
@@ -70,7 +72,7 @@ const setGlobalPipes = (app: INestApplication) => {
       },
     }),
   );
-}
+};
 
 const setSwaggerStatic = () => {
   // get the swagger json file (if app is running in development mode)
@@ -97,4 +99,4 @@ const setSwaggerStatic = () => {
       response.pipe(createWriteStream('swagger-static/swagger-ui.css'));
     });
   }
-}
+};

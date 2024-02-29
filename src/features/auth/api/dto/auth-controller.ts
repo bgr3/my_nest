@@ -8,12 +8,17 @@ import {
   UseGuards,
   Res,
   NotFoundException,
-  Get
+  Get,
 } from '@nestjs/common';
 import { LocalAuthGuard } from '../../../../infrastructure/guards/local-auth-guard';
-import { AuthService } from '../../application/auth-service';
 import { Response } from 'express';
-import { AuthEmailResendingDTO, AuthNewPasswordDTO, AuthPasswordRecoveryDTO, AuthRegistrationConfirmationDTO, AuthRegistrationDTO } from './input/auth-input-dto';
+import {
+  AuthEmailResendingDTO,
+  AuthNewPasswordDTO,
+  AuthPasswordRecoveryDTO,
+  AuthRegistrationConfirmationDTO,
+  AuthRegistrationDTO,
+} from './input/auth-input-dto';
 import { HTTP_STATUSES } from '../../../../settings/http-statuses';
 import { JwtAuthGuard } from '../../../../infrastructure/guards/jwt-auth-guard';
 import { UsersUpdateCodeForRecoveryPasswordCommand } from '../../../users/application/use-cases/users-update-code-for-recovery-password-use-case';
@@ -31,76 +36,89 @@ import { AuthDeleteAuthSessionByTokenCommand } from '../../application/use-cases
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly commandBus: CommandBus,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HTTP_STATUSES.OK_200)
-  async loginUser(@Req() req, @Res({passthrough: true}) res: Response) {
+  async loginUser(@Req() req, @Res({ passthrough: true }) res: Response) {
     const deviceName: string = req.header('User-Agent')
       ? req.header('User-Agent')!
       : 'unknown device';
 
-    const result = await this.commandBus.execute(new AuthCreateAuthSessionCommand(req.user.id, req.ip, deviceName));
+    const result = await this.commandBus.execute(
+      new AuthCreateAuthSessionCommand(req.user.id, req.ip, deviceName),
+    );
 
-    res.cookie('refreshToken', result.refreshToken, {httpOnly: true, secure: true});
+    res.cookie('refreshToken', result.refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
 
-    return {accessToken: result.accessToken};
+    return { accessToken: result.accessToken };
   }
 
   @Post('password-recovery')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async passwordRecovery(@Body() dto: AuthPasswordRecoveryDTO) {
-    
-    const userId = await this.commandBus.execute(new UsersUpdateCodeForRecoveryPasswordCommand(dto.email))
-    
-    if(userId) {
-      const result = await this.commandBus.execute(new AuthChangePasswordEmailCommand(userId));
+    const userId = await this.commandBus.execute(
+      new UsersUpdateCodeForRecoveryPasswordCommand(dto.email),
+    );
+
+    if (userId) {
+      await this.commandBus.execute(new AuthChangePasswordEmailCommand(userId)) ;
     }
-    
-    return  ;
+
+    return;
   }
 
   @Post('new-password')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async newPassword(@Body() dto: AuthNewPasswordDTO) {
-    const result = await this.commandBus.execute(new UsersChangePasswordCommand(dto.recoveryCode, dto.newPassword))
+    const result = await this.commandBus.execute(
+      new UsersChangePasswordCommand(dto.recoveryCode, dto.newPassword),
+    );
 
-    if (!result) throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
+    if (!result)
+      throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
 
-    return ;
+    return;
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('refresh-token')
   @HttpCode(HTTP_STATUSES.OK_200)
-  async refreshToken(@Req() req, @Res({passthrough: true}) res: Response)  {
+  async refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
     const deviceId = req.user;
-  
-    const tokens = await this.commandBus.execute(new AuthUpdateTokensCommand(deviceId));
-  
-    if (!tokens) throw new NotFoundException() //new HttpException('NOT_FOUND', HTTP_STATUSES.UNAUTHORIZED_401);
-    
-    
-    res.cookie('refreshToken', tokens.refreshToken, {httpOnly: true, secure: true});
 
-    return {accessToken: tokens.accessToken};
+    const tokens = await this.commandBus.execute(
+      new AuthUpdateTokensCommand(deviceId),
+    );
+
+    if (!tokens) throw new NotFoundException(); //new HttpException('NOT_FOUND', HTTP_STATUSES.UNAUTHORIZED_401);
+
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+
+    return { accessToken: tokens.accessToken };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async logout(@Req() req)  {
+  async logout(@Req() req) {
     const deviceId = req.user;
-  
-    const result = await this.commandBus.execute(new AuthDeleteAuthSessionByTokenCommand(deviceId));
-  
-    if (!result) throw new HttpException('NOT_FOUND', HTTP_STATUSES.UNAUTHORIZED_401);
-    
-    return ;
+
+    const result = await this.commandBus.execute(
+      new AuthDeleteAuthSessionByTokenCommand(deviceId),
+    );
+
+    if (!result)
+      throw new HttpException('NOT_FOUND', HTTP_STATUSES.UNAUTHORIZED_401);
+
+    return;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -108,42 +126,54 @@ export class AuthController {
   async aboutMe(@Req() req) {
     const userId = req.user;
 
-    let me = await this.commandBus.execute(new AuthGetMeByIdCommand(userId));
-    
+    const me = await this.commandBus.execute(new AuthGetMeByIdCommand(userId));
+
     return me;
   }
 
   @Post('registration')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async registration(@Body() dto: AuthRegistrationDTO)  {
-    const result = await this.commandBus.execute(new UsersCreateUserCommand(dto))
-    
-    if (!result) throw new HttpException('NOT_FOUND', HTTP_STATUSES.BAD_REQUEST_400);
+  async registration(@Body() dto: AuthRegistrationDTO) {
+    const result = await this.commandBus.execute(
+      new UsersCreateUserCommand(dto),
+    );
 
-    const email = await this.commandBus.execute(new AuthRegisterUserSendEmailCommand(result));
+    if (!result)
+      throw new HttpException('NOT_FOUND', HTTP_STATUSES.BAD_REQUEST_400);
 
-    if (!email) throw new HttpException('NOT_FOUND', HTTP_STATUSES.BAD_REQUEST_400);
+    const email = await this.commandBus.execute(
+      new AuthRegisterUserSendEmailCommand(result),
+    );
 
-    return ;
+    if (!email)
+      throw new HttpException('NOT_FOUND', HTTP_STATUSES.BAD_REQUEST_400);
+
+    return;
   }
 
   @Post('registration-confirmation')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async registrationConfirmation(@Body() dto: AuthRegistrationConfirmationDTO)  {
-    const result = await this.commandBus.execute(new AuthConfirmEmailCommand(dto.code));
+  async registrationConfirmation(@Body() dto: AuthRegistrationConfirmationDTO) {
+    const result = await this.commandBus.execute(
+      new AuthConfirmEmailCommand(dto.code),
+    );
 
-    if (!result) throw new HttpException('NOT_FOUND', HTTP_STATUSES.BAD_REQUEST_400);
+    if (!result)
+      throw new HttpException('NOT_FOUND', HTTP_STATUSES.BAD_REQUEST_400);
 
-    return ;
+    return;
   }
 
   @Post('registration-email-resending')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async emailResending(@Body() dto: AuthEmailResendingDTO)  {
-    const result = await this.commandBus.execute(new AuthResendEmailCommand(dto.email));
+  async emailResending(@Body() dto: AuthEmailResendingDTO) {
+    const result = await this.commandBus.execute(
+      new AuthResendEmailCommand(dto.email),
+    );
 
-    if (!result) throw new HttpException('NOT_FOUND', HTTP_STATUSES.BAD_REQUEST_400);
+    if (!result)
+      throw new HttpException('NOT_FOUND', HTTP_STATUSES.BAD_REQUEST_400);
 
-    return ;
+    return;
   }
 }

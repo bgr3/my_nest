@@ -4,29 +4,21 @@ import { Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserOutput } from '../api/dto/output/user-output-dto';
 import { Paginator } from '../../../infrastructure/dto/output/output-dto';
-import { UserFilter } from '../api/dto/input/users-input-dto';
-
-export const userFilter = {
-  pageNumber: 1,
-  pageSize: 10,
-  sortBy: 'createdAt',
-  sortDirection: 'desc',
-  searchLoginTerm: '',
-  searchEmailTerm: '',
-};
+import { UserQueryFilter } from '../api/dto/input/users-input-dto';
 
 @Injectable()
 export class UsersQueryRepository {
   constructor(@InjectModel(User.name) private UserModel: UserModelType) {}
-  async findUsers(
-    filter: UserFilter = userFilter,
-  ): Promise<Paginator<UserOutput>> {
+  async findUsers(filter: UserQueryFilter): Promise<Paginator<UserOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
+
     const regexLogin = new RegExp(filter.searchLoginTerm, 'i');
     const regexEmail = new RegExp(filter.searchEmailTerm, 'i');
+
     const dbCount = await this.UserModel.countDocuments({
       $or: [{ login: RegExp(regexLogin) }, { email: RegExp(regexEmail) }],
     });
+
     const dbResult = await this.UserModel.find({
       $or: [{ login: RegExp(regexLogin) }, { email: RegExp(regexEmail) }],
     })
@@ -34,7 +26,6 @@ export class UsersQueryRepository {
       .skip(skip)
       .limit(filter.pageSize)
       .lean();
-    debugger;
 
     const paginator = {
       pagesCount: Math.ceil(dbCount / filter.pageSize),

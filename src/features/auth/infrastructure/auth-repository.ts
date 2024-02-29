@@ -8,7 +8,7 @@ export class AuthRepository {
   constructor(@InjectModel(Auth.name) private AuthModel: Model<AuthDocument>) {}
 
   async testAllData(): Promise<void> {
-    const result = await this.AuthModel.deleteMany({});
+    await this.AuthModel.deleteMany({});
     //console.log('users delete: ', result.deletedCount)
   }
 
@@ -23,15 +23,23 @@ export class AuthRepository {
     return session;
   }
 
-  async findAuthSessionByAccessToken (accessToken: string): Promise<AuthDocument | null> {
-      const session = await this.AuthModel.findOne({'JWTTokens.accessToken': accessToken});
-      return session
+  async findAuthSessionByAccessToken(
+    accessToken: string,
+  ): Promise<AuthDocument | null> {
+    const session = await this.AuthModel.findOne({
+      'JWTTokens.accessToken': accessToken,
+    });
+    return session;
   }
 
-  async findAuthSessionByRefreshToken (refreshToken: string): Promise<AuthDocument | null> {
-    const session = await this.AuthModel.findOne({'JWTTokens.refreshToken': refreshToken});
-    return session
-}
+  async findAuthSessionByRefreshToken(
+    refreshToken: string,
+  ): Promise<AuthDocument | null> {
+    const session = await this.AuthModel.findOne({
+      'JWTTokens.refreshToken': refreshToken,
+    });
+    return session;
+  }
 
   async deleteAuthSessionsByUserId(
     userId: string,

@@ -3,22 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogDocument, BlogModelType } from '../domain/blogs-entity';
 import { Types } from 'mongoose';
 import { BlogOutput } from '../api/dto/output/blog-output-dto';
-import { BlogFilter } from '../api/dto/input/blogs-input-dto';
 import { Paginator } from '../../../infrastructure/dto/output/output-dto';
-
-export const blogFilter = {
-  pageNumber: 1,
-  pageSize: 10,
-  sortBy: 'createdAt',
-  sortDirection: 'desc',
-  searchNameTerm: '',
-};
+import { BlogQueryFilter } from '../api/dto/input/blogs-input-dto';
 
 @Injectable()
 export class BlogsQueryRepository {
   constructor(@InjectModel(Blog.name) private BlogModel: BlogModelType) {}
 
-  async findBlogs(filter: BlogFilter = blogFilter): Promise<Paginator<BlogOutput>> {
+  async findBlogs(filter: BlogQueryFilter): Promise<Paginator<BlogOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
     const regex = new RegExp(filter.searchNameTerm, 'i');
     const dbCount = await this.BlogModel.countDocuments({

@@ -1,50 +1,55 @@
-import { IsEmail, IsString, Length, Validate } from "class-validator";
-import { AuthEmailConfirmValidation, AuthPasswordRecoveryCodeValidation, AuthReSendEmailConfirmValidation, UserEmailValidation, UserLoginValidation } from "./auth-input-validator";
+import { IsEmail, IsString, Length, Validate } from 'class-validator';
+import {
+  AuthEmailConfirmValidation,
+  AuthPasswordRecoveryCodeValidation,
+  AuthReSendEmailConfirmValidation,
+  UserEmailValidation,
+  UserLoginValidation,
+} from './auth-input-validator';
 
 export class AuthLoginInputDTO {
   @IsString()
-  loginOrEmail: string;
+    loginOrEmail: string;
 
   @IsString()
-  password: string;
-
+    password: string;
 }
 
 export class AuthPasswordRecoveryDTO {
   @IsEmail()
-  email: string;
+    email: string;
 }
 
 export class AuthNewPasswordDTO {
   @Length(6, 20)
-  newPassword: string;
+    newPassword: string;
 
   @IsString()
   @Validate(AuthPasswordRecoveryCodeValidation)
-  recoveryCode: string;
+    recoveryCode: string;
 }
 
 export class AuthRegistrationDTO {
   @Length(3, 10)
   @Validate(UserLoginValidation)
-  login: string;
+    login: string;
 
   @IsEmail()
   @Validate(UserEmailValidation)
-  email: string;
+    email: string;
 
   @Length(6, 20)
-  password: string;
+    password: string;
 }
 
 export class AuthRegistrationConfirmationDTO {
   @IsString()
   @Validate(AuthEmailConfirmValidation)
-  code: string;
+    code: string;
 }
 
 export class AuthEmailResendingDTO {
   @IsEmail()
   @Validate(AuthReSendEmailConfirmValidation)
-  email: string;
+    email: string;
 }

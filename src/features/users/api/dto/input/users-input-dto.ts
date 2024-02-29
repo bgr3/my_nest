@@ -1,4 +1,5 @@
-import { IsEmail, Length } from "class-validator";
+import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
+import { QueryFilter } from '../../../../../infrastructure/dto/input/input-dto';
 
 export class UserPost {
   @Length(3, 10)
@@ -11,11 +12,12 @@ export class UserPost {
   email: string;
 }
 
-export class UserFilter {
-  pageNumber: number;
-  pageSize: number;
-  sortBy: string;
-  sortDirection: string;
-  searchLoginTerm: string;
-  searchEmailTerm: string;
+export class UserQueryFilter extends QueryFilter {
+  @IsOptional()
+  @IsString()
+  searchLoginTerm: string = '';
+
+  @IsOptional()
+  @IsString()
+  searchEmailTerm: string = '';
 }

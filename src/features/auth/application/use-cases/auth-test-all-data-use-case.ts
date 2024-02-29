@@ -1,15 +1,17 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { AuthRepository } from "../../infrastructure/auth-repository";
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { AuthRepository } from '../../infrastructure/auth-repository';
 
 export class AuthTestAllDataCommand {
-    constructor(){};
-};
+  constructor() {}
+}
 
 @CommandHandler(AuthTestAllDataCommand)
-export class AuthTestAllDataUseCase implements ICommandHandler<AuthTestAllDataCommand> {
-    constructor (protected authRepository: AuthRepository,){}
+export class AuthTestAllDataUseCase
+implements ICommandHandler<AuthTestAllDataCommand>
+{
+  constructor(protected authRepository: AuthRepository) {}
 
-    async execute(command: AuthTestAllDataCommand): Promise<void> {
-        return this.authRepository.testAllData();      
-    };
-};
+  async execute(): Promise<void> {
+    return this.authRepository.testAllData();
+  }
+}

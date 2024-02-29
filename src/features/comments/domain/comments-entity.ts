@@ -8,10 +8,10 @@ export type CommentModelType = Model<CommentDocument> & typeof statics;
 @Schema()
 class CommentatorInfo {
   @Prop()
-  userId: string;
+    userId: string;
 
   @Prop()
-  userLogin: string;
+    userLogin: string;
 }
 
 const CommentatorInfoSchema = SchemaFactory.createForClass(CommentatorInfo);
@@ -19,16 +19,16 @@ const CommentatorInfoSchema = SchemaFactory.createForClass(CommentatorInfo);
 @Schema()
 class LikesInfo {
   @Prop({ required: true })
-  userId: string;
+    userId: string;
 
   @Prop({ required: true })
-  login: string;
+    login: string;
 
   @Prop({ required: true })
-  addedAt: string;
+    addedAt: string;
 
   @Prop({ required: true })
-  likeStatus: string;
+    likeStatus: string;
 }
 
 const LikesInfoSchema = SchemaFactory.createForClass(LikesInfo);
@@ -36,42 +36,38 @@ const LikesInfoSchema = SchemaFactory.createForClass(LikesInfo);
 @Schema()
 export class CommentForPost {
   @Prop({ required: true })
-  content: string;
+    content: string;
 
   @Prop({ type: CommentatorInfoSchema, ref: 'CommentatorInfo' })
-  commentatorInfo: CommentatorInfo;
+    commentatorInfo: CommentatorInfo;
 
   @Prop({ required: true })
-  createdAt: string;
+    createdAt: string;
 
   @Prop({ default: [], type: [{ type: LikesInfoSchema, ref: 'LikesInfo' }] })
-  likesInfo: [LikesInfo];
-  
+    likesInfo: [LikesInfo];
+
   @Prop({ required: true })
-  postId: string;
+    postId: string;
 
   updateComment(content: string) {
     this.content = content;
-  };
+  }
 
-  setLikeStatus(
-    userId: string,
-    login: string,
-    likeStatus: string,
-  ) {
-    const like = this.likesInfo.find(i => i.userId === userId);
+  setLikeStatus(userId: string, login: string, likeStatus: string) {
+    const like = this.likesInfo.find((i) => i.userId === userId);
 
     if (like) {
       like.likeStatus = likeStatus;
     } else {
-      const likesInfo = new LikesInfo()
+      const likesInfo = new LikesInfo();
       likesInfo.addedAt = new Date().toISOString();
       likesInfo.likeStatus = likeStatus;
       likesInfo.login = login;
       likesInfo.userId = userId;
       this.likesInfo.push(likesInfo);
     }
-  };
+  }
 
   static createComment(
     content: string,
