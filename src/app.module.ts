@@ -120,8 +120,6 @@ dotenv.config();
 const url = process.env.MONGO_URL;
 const postgresUrl = process.env.POSTGRES_NEON_URL;
 
-//console.log('mongo URL: ', url);
-
 if (!url) {
   throw new Error('! URL doesn`t found');
 }
