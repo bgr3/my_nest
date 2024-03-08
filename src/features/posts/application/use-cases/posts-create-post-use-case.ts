@@ -1,9 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { PostsRepository } from '../../infrastructure/posts-repository';
-import { BlogsQueryRepository } from '../../../blogs/infrastructure/blogs-query-repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostModelType } from '../../domain/posts-entity';
 import { PostPostType } from '../../api/dto/input/post-input-dto';
+import { BlogsSQLQueryRepository } from '../../../blogs/infrastructure/blogs-sql-query-repository';
+import { PostsSQLRepository } from '../../infrastructure/posts-sql-repository';
+import { PostSQL } from '../../domain/posts-sql-entity';
+// import { PostsRepository } from '../../infrastructure/posts-repository';
+// import { BlogsQueryRepository } from '../../../blogs/infrastructure/blogs-query-repository';
 
 export class PostsCreatePostCommand {
   constructor(public dto: PostPostType) {}
@@ -11,12 +14,15 @@ export class PostsCreatePostCommand {
 
 @CommandHandler(PostsCreatePostCommand)
 export class PostsCreatePostUseCase
-implements ICommandHandler<PostsCreatePostCommand>
+  implements ICommandHandler<PostsCreatePostCommand>
 {
   constructor(
     @InjectModel(Post.name) private PostModel: PostModelType,
-    private readonly postsRepository: PostsRepository,
-    private readonly blogsQueryRepository: BlogsQueryRepository,
+    // private readonly postsRepository: PostsRepository,
+    private readonly postsRepository: PostsSQLRepository,
+
+    // private readonly blogsQueryRepository: BlogsQueryRepository,
+    private readonly blogsQueryRepository: BlogsSQLQueryRepository,
   ) {}
 
   async execute(command: PostsCreatePostCommand): Promise<string | null> {
@@ -25,7 +31,7 @@ implements ICommandHandler<PostsCreatePostCommand>
     )?.name;
 
     if (blogName) {
-      const newPost = Post.createPost(
+      const newPost = PostSQL /*Post*/.createPost(
         command.dto.title,
         command.dto.shortDescription,
         command.dto.content,
@@ -33,11 +39,11 @@ implements ICommandHandler<PostsCreatePostCommand>
         blogName,
       );
 
-      const newPostModel = new this.PostModel(newPost);
+      // const newPostModel = new this.PostModel(newPost);
 
-      await this.postsRepository.save(newPostModel);
+      const result = await this.postsRepository.save(newPost /*newPostModel*/);
 
-      return newPostModel._id.toString();
+      return result /*newPostModel._id.toString()*/;
     }
 
     return null;

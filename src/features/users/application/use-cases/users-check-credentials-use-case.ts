@@ -1,7 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../infrastructure/users-repository';
 import { UsersService } from '../users-service';
 import { UserDocument } from '../../domain/users-entity';
+import { UsersSQLRepository } from '../../infrastructure/users-sql-repository';
+import { UserSQL } from '../../domain/users-sql-entity';
+//import { UsersRepository } from '../../infrastructure/users-repository';
 
 export class UsersCheckCredentialsCommand {
   constructor(
@@ -12,16 +14,17 @@ export class UsersCheckCredentialsCommand {
 
 @CommandHandler(UsersCheckCredentialsCommand)
 export class UsersCheckCredentialsUseCase
-implements ICommandHandler<UsersCheckCredentialsCommand>
+  implements ICommandHandler<UsersCheckCredentialsCommand>
 {
   constructor(
-    protected usersRepository: UsersRepository,
+    //protected usersRepository: UsersRepository,
+    protected usersRepository: UsersSQLRepository,
     protected usersService: UsersService,
   ) {}
 
   async execute(
     command: UsersCheckCredentialsCommand,
-  ): Promise<UserDocument | null> {
+  ): Promise<UserSQL /*UserDocument*/ | null> {
     const user = await this.usersRepository.findUserByLoginOrEmail(
       command.loginOrEmail,
     );

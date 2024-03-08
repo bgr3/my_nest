@@ -1,7 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../infrastructure/users-repository';
 import { add } from 'date-fns/add';
 import { v4 as uuidv4 } from 'uuid';
+import { UsersSQLRepository } from '../../infrastructure/users-sql-repository';
+//import { UsersRepository } from '../../infrastructure/users-repository';
 
 export class UsersUpdateCodeForRecoveryPasswordCommand {
   constructor(public email: string) {}
@@ -9,9 +10,12 @@ export class UsersUpdateCodeForRecoveryPasswordCommand {
 
 @CommandHandler(UsersUpdateCodeForRecoveryPasswordCommand)
 export class UsersUpdateCodeForRecoveryPasswordUseCase
-implements ICommandHandler<UsersUpdateCodeForRecoveryPasswordCommand>
+  implements ICommandHandler<UsersUpdateCodeForRecoveryPasswordCommand>
 {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    //protected usersRepository: UsersRepository
+    protected usersRepository: UsersSQLRepository,
+  ) {}
 
   async execute(
     command: UsersUpdateCodeForRecoveryPasswordCommand,
@@ -27,7 +31,8 @@ implements ICommandHandler<UsersUpdateCodeForRecoveryPasswordCommand>
     if (user) {
       user.updateCodeForRecoveryPassword(code, expirationDate);
       await this.usersRepository.save(user);
-      return user._id.toString();
+      return user.id /*_id*/
+        .toString();
     }
 
     return null;

@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { Blog, BlogDocument, BlogModelType } from '../domain/blogs-entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class BlogsRepository {
-  constructor(@InjectModel(Blog.name) private BlogModel: BlogModelType) {}
+  constructor(
+    @InjectModel(Blog.name) private BlogModel: BlogModelType,
+    @InjectDataSource() protected dataSource: DataSource,
+  ) {}
 
   async testAllData(): Promise<void> {
     await this.BlogModel.deleteMany({});

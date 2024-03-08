@@ -3,12 +3,16 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
-import { BlogsRepository } from '../../../../blogs/infrastructure/blogs-repository';
+import { BlogsSQLRepository } from '../../../../blogs/infrastructure/blogs-sql-repository';
+//import { BlogsRepository } from '../../../../blogs/infrastructure/blogs-repository';
 
 @ValidatorConstraint({ name: 'customText', async: true })
 @Injectable()
 export class BlogExistValidation implements ValidatorConstraintInterface {
-  constructor(private readonly blogsRepository: BlogsRepository) {}
+  constructor(
+    //private readonly blogsRepository: BlogsRepository
+    private readonly blogsRepository: BlogsSQLRepository,
+  ) {}
 
   errorMessage: string;
 

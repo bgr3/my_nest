@@ -1,7 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { PostsRepository } from '../../infrastructure/posts-repository';
 import { PostPutType } from '../../api/dto/input/post-input-dto';
-import { BlogsQueryRepository } from '../../../blogs/infrastructure/blogs-query-repository';
+import { BlogsSQLQueryRepository } from '../../../blogs/infrastructure/blogs-sql-query-repository';
+import { PostsSQLRepository } from '../../infrastructure/posts-sql-repository';
+// import { PostsRepository } from '../../infrastructure/posts-repository';
+// import { BlogsQueryRepository } from '../../../blogs/infrastructure/blogs-query-repository';
 
 export class PostsUpdatePostCommand {
   constructor(
@@ -12,11 +14,13 @@ export class PostsUpdatePostCommand {
 
 @CommandHandler(PostsUpdatePostCommand)
 export class PostsUpdatePostUseCase
-implements ICommandHandler<PostsUpdatePostCommand>
+  implements ICommandHandler<PostsUpdatePostCommand>
 {
   constructor(
-    private readonly postsRepository: PostsRepository,
-    private readonly blogsQueryRepository: BlogsQueryRepository,
+    // private readonly postsRepository: PostsRepository,
+    private readonly postsRepository: PostsSQLRepository,
+    // private readonly blogsQueryRepository: BlogsQueryRepository,
+    private readonly blogsQueryRepository: BlogsSQLQueryRepository,
   ) {}
 
   async execute(command: PostsUpdatePostCommand): Promise<boolean> {

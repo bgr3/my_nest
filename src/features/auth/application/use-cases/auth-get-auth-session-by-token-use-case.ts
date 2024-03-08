@@ -1,7 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AuthRepository } from '../../infrastructure/auth-repository';
-import { AuthQueryRepository } from '../../infrastructure/auth-query-repository';
 import { AuthTypeOutput } from '../../api/dto/output/auth-output-dto';
+import { AuthSQLRepository } from '../../infrastructure/auth-sql-repository';
+import { AuthSQLQueryRepository } from '../../infrastructure/auth-sql-query-repository';
+//import { AuthQueryRepository } from '../../infrastructure/auth-query-repository';
+// import { AuthRepository } from '../../infrastructure/auth-repository';
 
 export class AuthGetAuthSessionsByTokenCommand {
   constructor(public deviceId: string) {}
@@ -9,11 +11,13 @@ export class AuthGetAuthSessionsByTokenCommand {
 
 @CommandHandler(AuthGetAuthSessionsByTokenCommand)
 export class AuthGetAuthSessionsByTokenUseCase
-implements ICommandHandler<AuthGetAuthSessionsByTokenCommand>
+  implements ICommandHandler<AuthGetAuthSessionsByTokenCommand>
 {
   constructor(
-    protected authRepository: AuthRepository,
-    protected authQueryRepository: AuthQueryRepository,
+    //protected authRepository: AuthRepository,
+    protected authRepository: AuthSQLRepository,
+    //protected authQueryRepository: AuthQueryRepository,
+    protected authQueryRepository: AuthSQLQueryRepository,
   ) {}
 
   async execute(

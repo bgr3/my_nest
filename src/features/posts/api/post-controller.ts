@@ -13,7 +13,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { PostsQueryRepository } from '../infrastructure/posts-query-repository';
 import { PostPostType, PostPutType } from './dto/input/post-input-dto';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { CommentPostType } from '../../comments/api/dto/input/comments-input-dto';
@@ -31,12 +30,15 @@ import { PostsCreatePostCommand } from '../application/use-cases/posts-create-po
 import { PostsUpdatePostCommand } from '../application/use-cases/posts-update-post-use-case';
 import { PostsLikeStatusCommand } from '../application/use-cases/posts-like-status-use-case';
 import { PostsDeletePostCommand } from '../application/use-cases/posts-delete-post-use-case';
+import { PostsSQLQueryRepository } from '../infrastructure/posts-sql-query-repository';
+// import { PostsQueryRepository } from '../infrastructure/posts-query-repository';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     private readonly commentsQueryRepository: CommentsQueryRepository,
-    private readonly postsQueryRepository: PostsQueryRepository,
+    // private readonly postsQueryRepository: PostsQueryRepository,
+    protected postsQueryRepository: PostsSQLQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
 
@@ -107,7 +109,6 @@ export class PostsController {
       postId,
       userId,
     );
-    console.log(foundPost);
 
     if (!foundPost)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);

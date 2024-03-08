@@ -6,14 +6,16 @@ import {
 import { Request, Response, NextFunction } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
-import { AuthRepository } from '../../features/auth/infrastructure/auth-repository';
+import { AuthSQLRepository } from '../../features/auth/infrastructure/auth-sql-repository';
+// import { AuthRepository } from '../../features/auth/infrastructure/auth-repository';
 
 @Injectable()
 export class UserIdentificationMiddleware implements NestMiddleware {
   constructor(
     private readonly commandBus: CommandBus,
     protected jwtService: JwtService,
-    private readonly authRepository: AuthRepository,
+    //protected authRepository: AuthRepository,
+    protected authRepository: AuthSQLRepository,
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.headers.authorization?.split(' ');

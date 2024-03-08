@@ -1,9 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../infrastructure/blogs-repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogModelType } from '../../domain/blogs-entity';
 import { validateOrReject } from 'class-validator';
 import { BlogPostType } from '../../api/dto/input/blogs-input-dto';
+import { BlogsSQLRepository } from '../../infrastructure/blogs-sql-repository';
+import { BlogSQL } from '../../domain/blogs-sql-entity';
+// import { BlogsRepository } from '../../infrastructure/blogs-repository';
 
 export class BlogsCreateBlogCommand {
   constructor(public dto: BlogPostType) {}
@@ -23,20 +25,21 @@ const validateOrRejectModel = async (model: any, ctor: { new (): any }) => {
 
 @CommandHandler(BlogsCreateBlogCommand)
 export class BlogsCreateBlogUseCase
-implements ICommandHandler<BlogsCreateBlogCommand>
+  implements ICommandHandler<BlogsCreateBlogCommand>
 {
   constructor(
     @InjectModel(Blog.name) private BlogModel: BlogModelType,
-    protected blogsRepository: BlogsRepository,
+    //protected blogsRepository: BlogsRepository,
+    protected blogsRepository: BlogsSQLRepository,
   ) {}
 
   async execute(command: BlogsCreateBlogCommand): Promise<string | null> {
     validateOrRejectModel(command.dto, BlogPostType);
-    const newBlog = Blog.createBlog(command.dto);
-    const newBlogModel = new this.BlogModel(newBlog);
+    const newBlog = BlogSQL /*Blog*/.createBlog(command.dto);
+    //const newBlogModel = new this.BlogModel(newBlog);
 
-    await this.blogsRepository.save(newBlogModel);
+    const result = await this.blogsRepository.save(newBlog /*newBlogModel*/);
 
-    return newBlogModel._id.toString();
+    return result /*newBlogModel._id.toString()*/;
   }
 }

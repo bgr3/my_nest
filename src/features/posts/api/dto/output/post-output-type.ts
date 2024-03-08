@@ -1,3 +1,5 @@
+import { LikeStatusType } from '../../../../../infrastructure/dto/input/input-dto';
+
 export class PostOutput {
   constructor(
     public id: string,
@@ -29,6 +31,6 @@ export class LikesInfo {
     public userId: string,
     public login: string,
     public addedAt: string,
-    public likeStatus: string,
+    public likeStatus: LikeStatusType,
   ) {}
 }

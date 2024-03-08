@@ -1,14 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { UserDocument } from '../domain/users-entity';
 import bcrypt from 'bcrypt';
-
-import { UsersRepository } from '../infrastructure/users-repository';
+import { UsersSQLRepository } from '../infrastructure/users-sql-repository';
+import { UserSQL } from '../domain/users-sql-entity';
+//import { UsersRepository } from '../infrastructure/users-repository';
+//import { UserDocument } from '../domain/users-entity';
 
 @Injectable()
 export class UsersService {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    //protected usersRepository: UsersRepository
+    protected usersRepository: UsersSQLRepository,
+  ) {}
 
-  async findUserDbByID(id: string): Promise<UserDocument | null> {
+  async findUserDbByID(id: string): Promise<UserSQL /*UserDocument*/ | null> {
     const user = await this.usersRepository.findUserDbByID(id);
 
     return user;

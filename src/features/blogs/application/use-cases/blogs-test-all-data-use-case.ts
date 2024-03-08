@@ -1,5 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../infrastructure/blogs-repository';
+import { BlogsSQLRepository } from '../../infrastructure/blogs-sql-repository';
+// import { BlogsRepository } from '../../infrastructure/blogs-repository';
 
 export class BlogsTestAllDataCommand {
   constructor() {}
@@ -7,9 +8,12 @@ export class BlogsTestAllDataCommand {
 
 @CommandHandler(BlogsTestAllDataCommand)
 export class BlogsTestAllDatasUseCase
-implements ICommandHandler<BlogsTestAllDataCommand>
+  implements ICommandHandler<BlogsTestAllDataCommand>
 {
-  constructor(protected blogsRepository: BlogsRepository) {}
+  constructor(
+    //protected blogsRepository: BlogsRepository
+    protected blogsRepository: BlogsSQLRepository,
+  ) {}
 
   async execute(): Promise<void> {
     return this.blogsRepository.testAllData();

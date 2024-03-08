@@ -1,10 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { InjectModel } from '@nestjs/mongoose';
-import { Auth, AuthModelType } from '../../domain/auth-entity';
 import { Tokens } from '../../api/dto/output/auth-output-dto';
-import { AuthRepository } from '../../infrastructure/auth-repository';
 import { AuthService } from '../auth-service';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthSQLRepository } from '../../infrastructure/auth-sql-repository';
+import { AuthSQL } from '../../domain/auth-sql-entity';
+//import { InjectModel } from '@nestjs/mongoose';
+//import { AuthRepository } from '../../infrastructure/auth-repository';
+// import { Auth, AuthModelType } from '../../domain/auth-entity';
 
 export class AuthCreateAuthSessionCommand {
   constructor(
@@ -16,11 +18,12 @@ export class AuthCreateAuthSessionCommand {
 
 @CommandHandler(AuthCreateAuthSessionCommand)
 export class AuthCreateAuthSessionUseCase
-implements ICommandHandler<AuthCreateAuthSessionCommand>
+  implements ICommandHandler<AuthCreateAuthSessionCommand>
 {
   constructor(
-    @InjectModel(Auth.name) private AuthModel: AuthModelType,
-    protected authRepository: AuthRepository,
+    //@InjectModel(Auth.name) private AuthModel: AuthModelType,
+    //protected authRepository: AuthRepository,
+    protected authRepository: AuthSQLRepository,
     protected authService: AuthService,
   ) {}
 
@@ -32,7 +35,7 @@ implements ICommandHandler<AuthCreateAuthSessionCommand>
       deviceId,
     );
 
-    const authSession = Auth.createAuth(
+    const authSession = AuthSQL /*Auth*/.createAuth(
       command.userId,
       command.deviceIP,
       deviceId,
@@ -43,9 +46,9 @@ implements ICommandHandler<AuthCreateAuthSessionCommand>
       tokens.expireAt,
     );
 
-    const newAuthModel = new this.AuthModel(authSession);
+    //const newAuthModel = new this.AuthModel(authSession);
 
-    await this.authRepository.save(newAuthModel);
+    await this.authRepository.save(authSession /*newAuthModel*/);
 
     return {
       accessToken: tokens.accessToken,

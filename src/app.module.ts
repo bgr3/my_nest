@@ -67,14 +67,14 @@ import { EmailManager } from './features/email-manager/application/email-manager
 import { CqrsModule } from '@nestjs/cqrs';
 import { UsersTestAllDataUseCase } from './features/users/application/use-cases/users-testing-all-data-use-case';
 import { UsersCreateUserUseCase } from './features/users/application/use-cases/users-create-user-use-case';
-import { UsersCheckCredentialsUseCase } from './features/users/application/use-cases/users-check-crefentials-use-case';
+import { UsersCheckCredentialsUseCase } from './features/users/application/use-cases/users-check-credentials-use-case';
 import { UsersUpdateCodeForRecoveryPasswordUseCase } from './features/users/application/use-cases/users-update-code-for-recovery-password-use-case';
 import { UsersChangePasswordUseCase } from './features/users/application/use-cases/users-change-password-use-case';
 import { UsersDeleteUserUseCase } from './features/users/application/use-cases/users-delete-user-use-case';
 import { BlogsTestAllDatasUseCase } from './features/blogs/application/use-cases/blogs-test-all-data-use-case';
 import { BlogsCreateBlogUseCase } from './features/blogs/application/use-cases/blogs-create-blog-use-case';
 import { BlogsUpdateBlogUseCase } from './features/blogs/application/use-cases/blogs-update-blog-use-case';
-import { BlogsDeleteBlogUseCase } from './features/blogs/application/use-cases/blogs-delete-blog-use-case copy';
+import { BlogsDeleteBlogUseCase } from './features/blogs/application/use-cases/blogs-delete-blog-use-case';
 import { CommentsTestAllDataUseCase } from './features/comments/application/use-cases/comments-test-all-data-use-case';
 import { CommentsCreateCommentUseCase } from './features/comments/application/use-cases/comments-create-comment-use-case';
 import { CommentsUpdateCommentUseCase } from './features/comments/application/use-cases/comments-update-comment-use-case';
@@ -104,10 +104,21 @@ import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-
 import { BlogExistValidation } from './features/posts/api/dto/input/blogs-input-validator';
 import dotenv from 'dotenv';
 import { AuthorizationSecurityMiddleware } from './infrastructure/middlewares/security-validation-middleware';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersSQLRepository } from './features/users/infrastructure/users-sql-repository';
+import { UsersSQLQueryRepository } from './features/users/infrastructure/users-sql-query-repository';
+import { AuthSQLRepository } from './features/auth/infrastructure/auth-sql-repository';
+import { AuthSQLQueryRepository } from './features/auth/infrastructure/auth-sql-query-repository';
+import { BlogsSQLRepository } from './features/blogs/infrastructure/blogs-sql-repository';
+import { BlogsSQLQueryRepository } from './features/blogs/infrastructure/blogs-sql-query-repository';
+import { PostsSQLRepository } from './features/posts/infrastructure/posts-sql-repository';
+import { PostsSQLQueryRepository } from './features/posts/infrastructure/posts-sql-query-repository';
+import { BlogsSAController } from './features/blogs/api/blogs-sa-controller';
 
 dotenv.config();
 
 const url = process.env.MONGO_URL;
+const postgresUrl = process.env.POSTGRES_NEON_URL;
 
 //console.log('mongo URL: ', url);
 
@@ -115,15 +126,53 @@ if (!url) {
   throw new Error('! URL doesn`t found');
 }
 
-const usersProviders = [UsersService, UsersRepository, UsersQueryRepository];
+if (!postgresUrl) {
+  throw new Error('! PostgresURL doesn`t found');
+}
 
-const blogsProviders = [BlogsService, BlogsRepository, BlogsQueryRepository];
+let postgresParam;
+
+if (postgresUrl === 'development') {
+  postgresParam = {
+    type: 'postgres',
+    host: 'localhost',
+    port: 5432,
+    username: 'nodejs',
+    password: 'nodejs',
+    database: 'nest',
+    autoLoadEntities: false,
+    synchronize: false,
+  };
+} else {
+  postgresParam = {
+    type: 'postgres',
+    url: postgresUrl,
+  };
+}
+
+const usersProviders = [
+  UsersService,
+  UsersRepository,
+  UsersQueryRepository,
+  UsersSQLRepository,
+  UsersSQLQueryRepository,
+];
+
+const blogsProviders = [
+  BlogsService,
+  BlogsRepository,
+  BlogsQueryRepository,
+  BlogsSQLRepository,
+  BlogsSQLQueryRepository,
+];
 
 const postsProviders = [
   PostsService,
   PostsRepository,
   PostsQueryRepository,
   BlogExistValidation,
+  PostsSQLRepository,
+  PostsSQLQueryRepository,
 ];
 
 const commentsProviders = [
@@ -143,6 +192,8 @@ const authProviders = [
   AuthReSendEmailConfirmValidation,
   UserEmailValidation,
   UserLoginValidation,
+  AuthSQLRepository,
+  AuthSQLQueryRepository,
 ];
 const accessProviders = [AccessService, LogRepository];
 
@@ -190,16 +241,8 @@ const useCases = [
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'mysql',
-    //   host: '127.0.0.1',
-    //   port: 3306,
-    //   username: 'root',
-    //   password: 'root',
-    //   database: 'test',
-    //   autoLoadEntities: true,
-    //   synchronize: true,
-    // }),
+
+    TypeOrmModule.forRoot(postgresParam),
     MongooseModule.forRoot(url, {
       dbName: 'nest',
     }),
@@ -239,6 +282,7 @@ const useCases = [
     AppController,
     AuthController,
     BlogsController,
+    BlogsSAController,
     PostsController,
     UsersController,
     CommentsController,
@@ -264,13 +308,13 @@ export class AppModule implements NestModule {
     consumer
       .apply(UserIdentificationMiddleware)
       .forRoutes({ path: '*', method: RequestMethod.ALL })
-      .apply(AccessFrequencyMiddleware)
-      .exclude(
-        { path: 'auth/refresh-token', method: RequestMethod.POST },
-        { path: 'auth/logout', method: RequestMethod.POST },
-        { path: 'auth/me', method: RequestMethod.GET },
-      )
-      .forRoutes(AuthController)
+      // .apply(AccessFrequencyMiddleware)
+      // .exclude(
+      //   { path: 'auth/refresh-token', method: RequestMethod.POST },
+      //   { path: 'auth/logout', method: RequestMethod.POST },
+      //   { path: 'auth/me', method: RequestMethod.GET },
+      // )
+      // .forRoutes(AuthController)
       .apply(PostValidationMiddleware)
       .forRoutes({ path: 'post/*/comments', method: RequestMethod.POST })
       .apply(PostExistMiddleware)

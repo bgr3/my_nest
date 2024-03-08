@@ -1,7 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../../users/infrastructure/users-repository';
 import { EmailManager } from '../../../email-manager/application/email-manager';
 import { v4 as uuidv4 } from 'uuid';
+import { UsersSQLRepository } from '../../../users/infrastructure/users-sql-repository';
+//import { UsersRepository } from '../../../users/infrastructure/users-repository';
 
 export class AuthResendEmailCommand {
   constructor(public email: string) {}
@@ -9,10 +10,11 @@ export class AuthResendEmailCommand {
 
 @CommandHandler(AuthResendEmailCommand)
 export class AuthResendEmailUseCase
-implements ICommandHandler<AuthResendEmailCommand>
+  implements ICommandHandler<AuthResendEmailCommand>
 {
   constructor(
-    protected usersRepository: UsersRepository,
+    // protected usersRepository: UsersRepository,
+    protected usersRepository: UsersSQLRepository,
     protected emailManager: EmailManager,
   ) {}
 

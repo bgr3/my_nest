@@ -4,13 +4,17 @@ import {
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../../../users/infrastructure/users-repository';
+import { UsersSQLRepository } from '../../../../users/infrastructure/users-sql-repository';
 
 @ValidatorConstraint({ name: 'customText', async: true })
 @Injectable()
 export class AuthEmailConfirmValidation
-implements ValidatorConstraintInterface
+  implements ValidatorConstraintInterface
 {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    // protected usersRepository: UsersRepository
+    protected usersRepository: UsersSQLRepository,
+  ) {}
 
   errorMessage: string;
 
@@ -48,9 +52,12 @@ implements ValidatorConstraintInterface
 @ValidatorConstraint({ name: 'customText', async: true })
 @Injectable()
 export class AuthPasswordRecoveryCodeValidation
-implements ValidatorConstraintInterface
+  implements ValidatorConstraintInterface
 {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    // protected usersRepository: UsersRepository
+    protected usersRepository: UsersSQLRepository,
+  ) {}
 
   errorMessage: string;
 
@@ -83,9 +90,12 @@ implements ValidatorConstraintInterface
 @ValidatorConstraint({ name: 'customText', async: true })
 @Injectable()
 export class AuthReSendEmailConfirmValidation
-implements ValidatorConstraintInterface
+  implements ValidatorConstraintInterface
 {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    // protected usersRepository: UsersRepository
+    protected usersRepository: UsersSQLRepository,
+  ) {}
 
   errorMessage: string;
 
@@ -120,7 +130,10 @@ implements ValidatorConstraintInterface
 @ValidatorConstraint({ name: 'customText', async: true })
 @Injectable()
 export class UserEmailValidation implements ValidatorConstraintInterface {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    // protected usersRepository: UsersRepository
+    protected usersRepository: UsersSQLRepository,
+  ) {}
 
   errorMessage: string;
 
@@ -144,7 +157,10 @@ export class UserEmailValidation implements ValidatorConstraintInterface {
 @ValidatorConstraint({ name: 'customText', async: true })
 @Injectable()
 export class UserLoginValidation implements ValidatorConstraintInterface {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    // protected usersRepository: UsersRepository
+    protected usersRepository: UsersSQLRepository,
+  ) {}
 
   errorMessage: string;
 

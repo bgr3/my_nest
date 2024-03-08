@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MeType } from '../../api/dto/output/auth-output-dto';
-import { UsersRepository } from '../../../users/infrastructure/users-repository';
+import { UsersSQLRepository } from '../../../users/infrastructure/users-sql-repository';
+//import { UsersRepository } from '../../../users/infrastructure/users-repository';
 
 export class AuthGetMeByIdCommand {
   constructor(public userId: string) {}
@@ -8,9 +9,12 @@ export class AuthGetMeByIdCommand {
 
 @CommandHandler(AuthGetMeByIdCommand)
 export class AuthGetMeByIdUseCase
-implements ICommandHandler<AuthGetMeByIdCommand>
+  implements ICommandHandler<AuthGetMeByIdCommand>
 {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    //protected usersRepository: UsersRepository
+    protected usersRepository: UsersSQLRepository,
+  ) {}
 
   async execute(command: AuthGetMeByIdCommand): Promise<MeType | null> {
     //const userId = await this.jwtService.verifyAsync(accessToken);

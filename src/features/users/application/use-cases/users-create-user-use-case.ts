@@ -1,10 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../infrastructure/users-repository';
 import { UserPost } from '../../api/dto/input/users-input-dto';
 import { UsersService } from '../users-service';
 import bcrypt from 'bcrypt';
-import { User, UserModelType } from '../../domain/users-entity';
-import { InjectModel } from '@nestjs/mongoose';
+import { UserSQL } from '../../domain/users-sql-entity';
+import { UsersSQLRepository } from '../../infrastructure/users-sql-repository';
+// import { InjectModel } from '@nestjs/mongoose';
+// import { User, UserModelType } from '../../domain/users-entity';
+// import { UsersRepository } from '../../infrastructure/users-repository';
 
 export class UsersCreateUserCommand {
   constructor(
@@ -15,11 +17,12 @@ export class UsersCreateUserCommand {
 
 @CommandHandler(UsersCreateUserCommand)
 export class UsersCreateUserUseCase
-implements ICommandHandler<UsersCreateUserCommand>
+  implements ICommandHandler<UsersCreateUserCommand>
 {
   constructor(
-    @InjectModel(User.name) private UserModel: UserModelType,
-    protected usersRepository: UsersRepository,
+    //@InjectModel(User.name) private UserModel: UserModelType,
+    // protected usersRepository: UsersRepository,
+    protected usersRepository: UsersSQLRepository,
     protected usersService: UsersService,
   ) {}
 
@@ -30,17 +33,17 @@ implements ICommandHandler<UsersCreateUserCommand>
       passwordSalt,
     );
 
-    const newUser = User.createUser(
+    const newUser = UserSQL /*User*/.createUser(
       command.dto.login,
       command.dto.email,
       passwordHash,
       command.isSuperAdmin,
     );
 
-    const newUserModel = new this.UserModel(newUser);
+    //const newUserModel = new this.UserModel(newUser);
 
-    await this.usersRepository.save(newUserModel);
+    const result = await this.usersRepository.save(newUser /*newUserModel*/);
 
-    return newUserModel._id.toString();
+    return result /*newUserModel._id.toString()*/;
   }
 }

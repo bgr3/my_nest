@@ -1,8 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AuthRepository } from '../../infrastructure/auth-repository';
 import { Tokens } from '../../api/dto/output/auth-output-dto';
 import { AuthService } from '../auth-service';
-import { UsersRepository } from '../../../users/infrastructure/users-repository';
+import { UsersSQLRepository } from '../../../users/infrastructure/users-sql-repository';
+import { AuthSQLRepository } from '../../infrastructure/auth-sql-repository';
+// import { AuthRepository } from '../../infrastructure/auth-repository';
+//import { UsersRepository } from '../../../users/infrastructure/users-repository';
 
 export class AuthUpdateTokensCommand {
   constructor(public deviceId: string) {}
@@ -10,12 +12,14 @@ export class AuthUpdateTokensCommand {
 
 @CommandHandler(AuthUpdateTokensCommand)
 export class AuthUpdateTokensUseCase
-implements ICommandHandler<AuthUpdateTokensCommand>
+  implements ICommandHandler<AuthUpdateTokensCommand>
 {
   constructor(
-    protected authRepository: AuthRepository,
+    //protected authRepository: AuthRepository,
+    protected authRepository: AuthSQLRepository,
     protected authService: AuthService,
-    protected usersRepository: UsersRepository,
+    //protected usersRepository: UsersRepository,
+    protected usersRepository: UsersSQLRepository,
   ) {}
 
   async execute(command: AuthUpdateTokensCommand): Promise<Tokens | null> {
@@ -30,7 +34,8 @@ implements ICommandHandler<AuthUpdateTokensCommand>
     if (!user) return null;
 
     const tokens = await this.authService.generateTokens(
-      user._id.toString(),
+      user.id /*_id*/
+        .toString(),
       session.deviceId,
     );
 

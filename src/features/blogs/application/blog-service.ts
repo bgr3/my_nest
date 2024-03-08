@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { BlogsRepository } from '../infrastructure/blogs-repository';
+import { BlogsSQLRepository } from '../infrastructure/blogs-sql-repository';
+// import { BlogsRepository } from '../infrastructure/blogs-repository';
 
 @Injectable()
 export class BlogsService {
-  constructor(protected blogsRepository: BlogsRepository) {}
+  constructor(
+    //protected blogsRepository: BlogsRepository
+    protected blogsRepository: BlogsSQLRepository,
+  ) {}
 }

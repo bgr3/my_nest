@@ -66,7 +66,7 @@ export class AuthController {
     );
 
     if (userId) {
-      await this.commandBus.execute(new AuthChangePasswordEmailCommand(userId)) ;
+      await this.commandBus.execute(new AuthChangePasswordEmailCommand(userId));
     }
 
     return;

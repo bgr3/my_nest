@@ -11,21 +11,23 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
-import { UsersQueryRepository } from '../infrastructure/users-query-repository';
+//import { UsersQueryRepository } from '../infrastructure/users-query-repository';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
 import { UserPost, UserQueryFilter } from './dto/input/users-input-dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { UsersCreateUserCommand } from '../application/use-cases/users-create-user-use-case';
 import { UsersDeleteUserCommand } from '../application/use-cases/users-delete-user-use-case';
+import { UsersSQLQueryRepository } from '../infrastructure/users-sql-query-repository';
 
-@Controller('users')
+@Controller('sa/users')
+@UseGuards(BasicAuthGuard)
 export class UsersController {
   constructor(
-    private readonly usersQueryRepository: UsersQueryRepository,
+    //private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly usersQueryRepository: UsersSQLQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
 
-  @UseGuards(BasicAuthGuard)
   @Post()
   async createUser(@Body() dto: UserPost) {
     const result = await this.commandBus.execute(
@@ -40,13 +42,11 @@ export class UsersController {
     return newUser;
   }
 
-  @UseGuards(BasicAuthGuard)
   @Get()
   async getUsers(@Query() query: UserQueryFilter) {
     return await this.usersQueryRepository.findUsers(query);
   }
 
-  @UseGuards(BasicAuthGuard)
   @Delete('/:id')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async deleteUser(@Param('id') id: string) {
