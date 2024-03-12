@@ -1,21 +1,20 @@
 import { LikeStatusType } from '../../../../infrastructure/dto/input/input-dto';
 import { LikesInfo } from '../../../../infrastructure/dto/output/output-dto';
 
-export class PostRawDb {
+export class CommentsRawDb {
   constructor(
     public Id: string,
-    public Title: string,
-    public ShortDescription: string,
     public Content: string,
-    public BlogId: string,
-    public BlogName: string,
+    public UserId: string,
+    public UserLogin: string,
+    public PostId: string,
     public CreatedAt: string,
   ) {}
 
   likesInfo: LikesInfo[];
 }
 
-export class PostLikesInfoRawDb {
+export class CommentsLikesInfoRawDb {
   constructor(
     public PostId: string,
     public UserId: string,

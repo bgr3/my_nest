@@ -11,7 +11,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { CommentsQueryRepository } from '../infrastructure/comments-query-repository';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 import { CommandBus } from '@nestjs/cqrs';
@@ -20,11 +19,14 @@ import { CommentsLikeStatusCommand } from '../application/use-cases/comments-lik
 import { CommentsDeleteCommentCommand } from '../application/use-cases/comments-delete-comment-use-case';
 import { CommentPutType } from './dto/input/comments-input-dto';
 import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
+import { CommentsSQLQueryRepository } from '../infrastructure/comments-sql-query-repository';
+// import { CommentsQueryRepository } from '../infrastructure/comments-query-repository';
 
 @Controller('comments')
 export class CommentsController {
   constructor(
-    private readonly commentsQueryRepository: CommentsQueryRepository,
+    // private readonly commentsQueryRepository: CommentsQueryRepository,
+    protected commentsQueryRepository: CommentsSQLQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
 

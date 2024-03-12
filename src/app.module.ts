@@ -114,6 +114,8 @@ import { BlogsSQLQueryRepository } from './features/blogs/infrastructure/blogs-s
 import { PostsSQLRepository } from './features/posts/infrastructure/posts-sql-repository';
 import { PostsSQLQueryRepository } from './features/posts/infrastructure/posts-sql-query-repository';
 import { BlogsSAController } from './features/blogs/api/blogs-sa-controller';
+import { CommentsSQLRepository } from './features/comments/infrastructure/comments-sql-repository';
+import { CommentsSQLQueryRepository } from './features/comments/infrastructure/comments-sql-query-repository';
 
 dotenv.config();
 
@@ -177,6 +179,8 @@ const commentsProviders = [
   CommentsService,
   CommentsRepository,
   CommentsQueryRepository,
+  CommentsSQLRepository,
+  CommentsSQLQueryRepository,
 ];
 
 const strategiesProviders = [LocalStrategy, JwtStrategy, BasicStrategy];

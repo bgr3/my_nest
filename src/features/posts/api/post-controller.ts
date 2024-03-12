@@ -16,7 +16,6 @@ import {
 import { PostPostType, PostPutType } from './dto/input/post-input-dto';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { CommentPostType } from '../../comments/api/dto/input/comments-input-dto';
-import { CommentsQueryRepository } from '../../comments/infrastructure/comments-query-repository';
 import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
 import {
@@ -31,12 +30,15 @@ import { PostsUpdatePostCommand } from '../application/use-cases/posts-update-po
 import { PostsLikeStatusCommand } from '../application/use-cases/posts-like-status-use-case';
 import { PostsDeletePostCommand } from '../application/use-cases/posts-delete-post-use-case';
 import { PostsSQLQueryRepository } from '../infrastructure/posts-sql-query-repository';
+import { CommentsSQLQueryRepository } from '../../comments/infrastructure/comments-sql-query-repository';
+// import { CommentsQueryRepository } from '../../comments/infrastructure/comments-query-repository';
 // import { PostsQueryRepository } from '../infrastructure/posts-query-repository';
 
 @Controller('posts')
 export class PostsController {
   constructor(
-    private readonly commentsQueryRepository: CommentsQueryRepository,
+    // private readonly commentsQueryRepository: CommentsQueryRepository,
+    protected commentsQueryRepository: CommentsSQLQueryRepository,
     // private readonly postsQueryRepository: PostsQueryRepository,
     protected postsQueryRepository: PostsSQLQueryRepository,
     private readonly commandBus: CommandBus,

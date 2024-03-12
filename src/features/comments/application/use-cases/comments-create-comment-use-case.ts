@@ -1,11 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CommentsRepository } from '../../infrastructure/comments-repository';
 import { CommentPostType } from '../../api/dto/input/comments-input-dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommentForPost, CommentModelType } from '../../domain/comments-entity';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../../../users/application/users-service';
 import { PostsSQLQueryRepository } from '../../../posts/infrastructure/posts-sql-query-repository';
+import { CommentsSQLRepository } from '../../infrastructure/comments-sql-repository';
+import { CommentForPostSQL } from '../../domain/comments-sql-entity';
+// import { CommentsRepository } from '../../infrastructure/comments-repository';
 // import { PostsQueryRepository } from '../../../posts/infrastructure/posts-query-repository';
 
 export class CommentsCreateCommentCommand {
@@ -22,7 +24,8 @@ export class CommentsCreateCommentUseCase
 {
   constructor(
     @InjectModel(CommentForPost.name) private CommentModel: CommentModelType,
-    private readonly commentsRepository: CommentsRepository,
+    // private readonly commentsRepository: CommentsRepository,
+    private readonly commentsRepository: CommentsSQLRepository,
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     // private readonly postsQueryRepository: PostsQueryRepository,
@@ -37,7 +40,7 @@ export class CommentsCreateCommentUseCase
     const post = await this.postsQueryRepository.findPostByID(command.postId);
 
     if (post) {
-      const newComment = CommentForPost.createComment(
+      const newComment = CommentForPostSQL /*CommentForPost*/.createComment(
         command.dto.content,
         post.id,
         user.id /*_id*/
@@ -45,11 +48,13 @@ export class CommentsCreateCommentUseCase
         user.login,
       );
 
-      const newCommentModel = new this.CommentModel(newComment);
+      //const newCommentModel = new this.CommentModel(newComment);
 
-      await this.commentsRepository.save(newCommentModel);
+      const result = await this.commentsRepository.save(
+        newComment /*newCommentModel*/,
+      );
 
-      return newCommentModel._id.toString();
+      return result /*newCommentModel._id.toString()*/;
     }
 
     return null;

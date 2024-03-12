@@ -1,8 +1,9 @@
 import { HttpException, Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_STATUSES } from '../../settings/http-statuses';
-import { CommentsQueryRepository } from '../../features/comments/infrastructure/comments-query-repository';
 import { PostsSQLQueryRepository } from '../../features/posts/infrastructure/posts-sql-query-repository';
+import { CommentsSQLQueryRepository } from '../../features/comments/infrastructure/comments-sql-query-repository';
+// import { CommentsQueryRepository } from '../../features/comments/infrastructure/comments-query-repository';
 // import { PostsQueryRepository } from '../../features/posts/infrastructure/posts-query-repository';
 
 @Injectable()
@@ -26,7 +27,10 @@ export class PostValidationMiddleware implements NestMiddleware {
 
 @Injectable()
 export class CommentExistMiddleware implements NestMiddleware {
-  constructor(protected commentsQueryRepository: CommentsQueryRepository) {}
+  constructor(
+    // protected commentsQueryRepository: CommentsQueryRepository
+    protected commentsQueryRepository: CommentsSQLQueryRepository,
+  ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const comment = await this.commentsQueryRepository.findCommentByID(
       req.params[0],
@@ -61,7 +65,10 @@ export class PostExistMiddleware implements NestMiddleware {
 
 @Injectable()
 export class AuthorizationCommentMiddleware implements NestMiddleware {
-  constructor(protected commentsQueryRepository: CommentsQueryRepository) {}
+  constructor(
+    // protected commentsQueryRepository: CommentsQueryRepository
+    protected commentsQueryRepository: CommentsSQLQueryRepository,
+  ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const comment = await this.commentsQueryRepository.findCommentByID(
       req.params[0],

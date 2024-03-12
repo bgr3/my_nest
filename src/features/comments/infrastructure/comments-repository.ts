@@ -83,42 +83,42 @@ export class CommentsRepository {
   //   return null;
   // }
 
-  async setLikeStatus(
-    commentId: string,
-    userId: string,
-    oldStatus: string,
-    newStatus: string,
-  ): Promise<boolean> {
-    const filter = (status: string, userId: string) => {
-      if (status === 'Like') {
-        return { 'likesInfo.likes': userId };
-      } else if (status === 'Dislike') {
-        return { 'likesInfo.dislikes': userId };
-      } else {
-        return {};
-      }
-    };
+  // async setLikeStatus(
+  //   commentId: string,
+  //   userId: string,
+  //   oldStatus: string,
+  //   newStatus: string,
+  // ): Promise<boolean> {
+  //   const filter = (status: string, userId: string) => {
+  //     if (status === 'Like') {
+  //       return { 'likesInfo.likes': userId };
+  //     } else if (status === 'Dislike') {
+  //       return { 'likesInfo.dislikes': userId };
+  //     } else {
+  //       return {};
+  //     }
+  //   };
 
-    const oldStatusFilter = filter(oldStatus, userId);
-    const newStatusFilter = filter(newStatus, userId);
+  //   const oldStatusFilter = filter(oldStatus, userId);
+  //   const newStatusFilter = filter(newStatus, userId);
 
-    if (Types.ObjectId.isValid(commentId)) {
-      await this.CommentModel.updateOne(
-        { _id: commentId },
-        { $pull: oldStatusFilter },
-      );
-      const resultPush = await this.CommentModel.updateOne(
-        { _id: commentId },
-        { $push: newStatusFilter },
-      );
+  //   if (Types.ObjectId.isValid(commentId)) {
+  //     await this.CommentModel.updateOne(
+  //       { _id: commentId },
+  //       { $pull: oldStatusFilter },
+  //     );
+  //     const resultPush = await this.CommentModel.updateOne(
+  //       { _id: commentId },
+  //       { $push: newStatusFilter },
+  //     );
 
-      if (!resultPush) return false;
+  //     if (!resultPush) return false;
 
-      return true;
-    }
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   async deleteComment(id: string): Promise<boolean> {
     if (Types.ObjectId.isValid(id)) {

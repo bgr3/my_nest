@@ -1,13 +1,13 @@
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { LikesInfoSQL, PostSQL } from '../domain/posts-sql-entity';
+import { PostLikesInfoSQL, PostSQL } from '../domain/posts-sql-entity';
 
 export class PostsSQLRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
 
   async testAllData(): Promise<void> {
     const query = `
-    TRUNCATE public."Posts" CASCADE;
+      TRUNCATE public."Posts" CASCADE;
     `;
     await this.dataSource.query(query);
   }
@@ -143,7 +143,7 @@ export class PostsSQLRepository {
     }
 
     postLikesInfoDb.forEach((i) =>
-      post.likesInfo.push(LikesInfoSQL.likesInfoMapper(i)),
+      post.likesInfo.push(PostLikesInfoSQL.likesInfoMapper(i)),
     );
 
     return post;

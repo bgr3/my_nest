@@ -1,11 +1,12 @@
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
-import { LikesInfo } from '../api/dto/output/post-output-type';
+import { LikesInfo } from '../../../infrastructure/dto/output/output-dto';
+
 import {
   PostLikesInfoRawDb,
   PostRawDb,
 } from '../infrastructure/dto/post-repository-dto';
 
-export class LikesInfoSQL {
+export class PostLikesInfoSQL {
   userId: string;
 
   login: string;
@@ -39,7 +40,7 @@ export class PostSQL {
 
   createdAt: string;
 
-  likesInfo: LikesInfoSQL[] = [];
+  likesInfo: PostLikesInfoSQL[] = [];
 
   newPost: boolean = false;
 
@@ -63,7 +64,7 @@ export class PostSQL {
     if (like) {
       like.likeStatus = likeStatus;
     } else {
-      const likesInfo = new LikesInfoSQL();
+      const likesInfo = new PostLikesInfoSQL();
       likesInfo.addedAt = new Date().toISOString();
       likesInfo.likeStatus = likeStatus;
       likesInfo.login = login;

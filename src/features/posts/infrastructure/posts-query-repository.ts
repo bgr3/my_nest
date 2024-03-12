@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Post, PostDocument, PostModelType } from '../domain/posts-entity';
 import { InjectModel } from '@nestjs/mongoose';
+import { PostOutput } from '../api/dto/output/post-output-type';
+import { Types } from 'mongoose';
+import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
 import {
   LikesInfo,
   LikesInfoOutput,
-  PostOutput,
-} from '../api/dto/output/post-output-type';
-import { Types } from 'mongoose';
-import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
-import { Paginator } from '../../../infrastructure/dto/output/output-dto';
+  Paginator,
+} from '../../../infrastructure/dto/output/output-dto';
 
 @Injectable()
 export class PostsQueryRepository {

@@ -1,4 +1,4 @@
-import { LikeStatusType } from '../../../../../infrastructure/dto/input/input-dto';
+import { LikesInfoOutput } from '../../../../../infrastructure/dto/output/output-dto';
 
 export class PostOutput {
   constructor(
@@ -15,22 +15,5 @@ export class PostOutput {
       myStatus: string;
       newestLikes: LikesInfoOutput[];
     },
-  ) {}
-}
-
-export class LikesInfoOutput {
-  constructor(
-    public userId: string,
-    public login: string,
-    public addedAt: string,
-  ) {}
-}
-
-export class LikesInfo {
-  constructor(
-    public userId: string,
-    public login: string,
-    public addedAt: string,
-    public likeStatus: LikeStatusType,
   ) {}
 }

@@ -1,14 +1,14 @@
+import { PostOutput } from '../api/dto/output/post-output-type';
+import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
 import {
   LikesInfo,
   LikesInfoOutput,
-  PostOutput,
-} from '../api/dto/output/post-output-type';
-import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
-import { Paginator } from '../../../infrastructure/dto/output/output-dto';
+  Paginator,
+} from '../../../infrastructure/dto/output/output-dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { PostRawDb } from './dto/post-repository-dto';
-import { LikesInfoSQL } from '../domain/posts-sql-entity';
+import { PostLikesInfoSQL } from '../domain/posts-sql-entity';
 
 export class PostsSQLQueryRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
@@ -79,7 +79,7 @@ export class PostsSQLQueryRepository {
       }
 
       postLikesInfoDb.forEach((likesinfo) =>
-        post.likesInfo.push(LikesInfoSQL.likesInfoMapper(likesinfo)),
+        post.likesInfo.push(PostLikesInfoSQL.likesInfoMapper(likesinfo)),
       );
     }
 
@@ -136,7 +136,7 @@ export class PostsSQLQueryRepository {
     }
 
     postLikesInfoDb.forEach((i) =>
-      post.likesInfo.push(LikesInfoSQL.likesInfoMapper(i)),
+      post.likesInfo.push(PostLikesInfoSQL.likesInfoMapper(i)),
     );
 
     return postMapper(postsDb[0], userId);
