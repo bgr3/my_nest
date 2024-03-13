@@ -120,7 +120,7 @@ export class CommentsSQLQueryRepository {
       SELECT l.*
       FROM public."CommentsLikesInfo" l
       WHERE
-        l."CommenttId" = '${id}'
+        l."CommentId" = '${id}'
     `;
 
     let commentLikesInfoDb;
