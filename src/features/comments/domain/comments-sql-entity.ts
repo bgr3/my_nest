@@ -72,6 +72,7 @@ export class CommentForPostSQL {
     comment.commentatorInfo.userId = commentDb.UserId;
     comment.commentatorInfo.userLogin = commentDb.UserLogin;
     comment.createdAt = commentDb.CreatedAt;
+    comment.postId = commentDb.PostId;
 
     return comment;
   }

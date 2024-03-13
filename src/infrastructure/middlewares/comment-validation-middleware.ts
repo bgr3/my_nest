@@ -71,7 +71,7 @@ export class AuthorizationCommentMiddleware implements NestMiddleware {
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const comment = await this.commentsQueryRepository.findCommentByID(
-      req.params[0],
+      req.params[0].split('/')[0],
     );
     const userId = req.user;
 
