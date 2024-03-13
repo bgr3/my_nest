@@ -324,6 +324,7 @@ export class AppModule implements NestModule {
       .apply(CommentExistMiddleware)
       .forRoutes({ path: 'comments/*/like-status', method: RequestMethod.PUT })
       .apply(AuthorizationCommentMiddleware)
+      .exclude({ path: 'comments/:id/like-status', method: RequestMethod.PUT })
       .forRoutes(
         { path: 'comments/*', method: RequestMethod.PUT },
         { path: 'comments/*', method: RequestMethod.DELETE },

@@ -19,6 +19,8 @@ lerna-debug.log*
 /.nyc_output
 /test
 /__tests__
+jest.config.ts*
+
 
 # IDEs and editors
 /.idea
