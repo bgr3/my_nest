@@ -78,27 +78,25 @@ export class PostsSQLRepository {
       return null;
     }
 
+    let likesInfoUpdateQuery = `
+    INSERT INTO public."PostsLikesInfo"(
+      "UserId", "Login", "AddedAt", "LikeStatus", "PostId")
+        VALUES 
+    `;
     post.likesInfo.map(async (i) => {
-      const likesInfoUpdateQuery = `
-        INSERT INTO public."PostsLikesInfo"(
-          "UserId", "Login", "AddedAt", "LikeStatus", "PostId")
-          VALUES ($1, $2, $3, $4, $5);
-      `;
-
-      try {
-        await this.dataSource.query(likesInfoUpdateQuery, [
-          i.userId,
-          i.login,
-          i.addedAt,
-          i.likeStatus,
-          post.id,
-        ]);
-      } catch (err) {
-        console.log(err);
-
-        return null;
-      }
+      likesInfoUpdateQuery += `('${i.userId}','${i.login}','${i.addedAt}','${i.likeStatus}','${post.id}'),`;
     });
+
+    likesInfoUpdateQuery = likesInfoUpdateQuery.slice(0, -1);
+    likesInfoUpdateQuery += `;`;
+
+    try {
+      await this.dataSource.query(likesInfoUpdateQuery);
+    } catch (err) {
+      console.log(err);
+
+      return null;
+    }
 
     return null;
   }

@@ -81,27 +81,26 @@ export class CommentsSQLRepository {
       return null;
     }
 
+    let likesInfoUpdateQuery = `
+      INSERT INTO public."CommentsLikesInfo"(
+        "UserId", "Login", "AddedAt", "LikeStatus", "CommentId")
+        VALUES 
+    `;
+
     comment.likesInfo.map(async (i) => {
-      const likesInfoUpdateQuery = `
-        INSERT INTO public."CommentsLikesInfo"(
-          "UserId", "Login", "AddedAt", "LikeStatus", "CommentId")
-          VALUES ($1, $2, $3, $4, $5);
-      `;
-
-      try {
-        await this.dataSource.query(likesInfoUpdateQuery, [
-          i.userId,
-          i.login,
-          i.addedAt,
-          i.likeStatus,
-          comment.id,
-        ]);
-      } catch (err) {
-        console.log(err);
-
-        return null;
-      }
+      likesInfoUpdateQuery += `('${i.userId}','${i.login}','${i.addedAt}','${i.likeStatus}','${comment.id}'),`;
     });
+
+    likesInfoUpdateQuery = likesInfoUpdateQuery.slice(0, -1);
+    likesInfoUpdateQuery += `;`;
+
+    try {
+      await this.dataSource.query(likesInfoUpdateQuery);
+    } catch (err) {
+      console.log(err);
+
+      return null;
+    }
 
     return null;
   }
