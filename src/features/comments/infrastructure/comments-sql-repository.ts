@@ -59,7 +59,7 @@ export class CommentsSQLRepository {
         comment.content,
         comment.commentatorInfo.userId,
         comment.commentatorInfo.userLogin,
-        comment.id,
+        comment.postId,
         comment.createdAt,
         comment.id,
       ]);
