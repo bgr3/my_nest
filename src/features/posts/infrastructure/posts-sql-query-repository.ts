@@ -20,7 +20,7 @@ export class PostsSQLQueryRepository {
   ): Promise<Paginator<PostOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
-    if (blogId) {
+    if (!blogId) {
       blogId = '%%';
     }
 
