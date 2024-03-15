@@ -66,8 +66,8 @@ export class PostsSQLRepository {
     }
 
     const likesInfoDeleteQuery = `
-    DELETE FROM public."PostsLikesInfo"
-      WHERE "PostId" = $1;
+      DELETE FROM public."PostsLikesInfo"
+        WHERE "PostId" = $1;
     `;
 
     try {

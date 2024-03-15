@@ -14,24 +14,23 @@ export class PostsSQLQueryRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
 
   async findPosts(
-    blogId: string | null = null,
+    blogId: string | null,
     filter: QueryFilter,
     userId: string = '',
   ): Promise<Paginator<PostOutput>> {
-    const find: any = {};
+    const skip = (filter.pageNumber - 1) * filter.pageSize;
 
     if (blogId) {
-      find.blogId = blogId;
+      blogId = '%%';
     }
-
-    const skip = (filter.pageNumber - 1) * filter.pageSize;
 
     const preQuery = `
       SELECT count ("Id")
         FROM public."Posts"
+        WHERE "BlogId" like $1;
     `;
 
-    const preDbResult = await this.dataSource.query(preQuery);
+    const preDbResult = await this.dataSource.query(preQuery, [blogId]);
 
     const dbCount = Number(preDbResult[0].count);
 
@@ -40,11 +39,13 @@ export class PostsSQLQueryRepository {
     const query = `
     SELECT p.*
       FROM public."Posts" p
+      WHERE "BlogId" like $1;
       ORDER BY "${sortBy}" ${filter.sortDirection}
-      LIMIT $1 OFFSET $2;
+      LIMIT $2 OFFSET $3;
     `;
 
     const dbResult: [PostRawDb] = await this.dataSource.query(query, [
+      blogId,
       filter.pageSize,
       skip,
     ]);

@@ -28,7 +28,7 @@ export class BlogsCreateBlogUseCase
   implements ICommandHandler<BlogsCreateBlogCommand>
 {
   constructor(
-    @InjectModel(Blog.name) private BlogModel: BlogModelType,
+    //@InjectModel(Blog.name) private BlogModel: BlogModelType,
     //protected blogsRepository: BlogsRepository,
     protected blogsRepository: BlogsSQLRepository,
   ) {}
