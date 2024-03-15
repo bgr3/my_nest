@@ -35,9 +35,12 @@ export class CommentsSQLQueryRepository {
     const sortBy = filter.sortBy[0].toUpperCase() + filter.sortBy.slice(1);
 
     const query = `
-    SELECT c.*
+    SELECT c.*, JSON_AGG(cl.*) as "LikesInfo"
       FROM public."Comments" c
+      LEFT JOIN public."CommentsLikesInfo" cl
+      ON c."Id" = cl."CommentId"
       WHERE "PostId" like $1
+      GROUP BY "Id"
       ORDER BY "${sortBy}" ${filter.sortDirection}
       LIMIT $2 OFFSET $3;
     `;
@@ -48,46 +51,15 @@ export class CommentsSQLQueryRepository {
       skip,
     ]);
 
-    for (let i = 0; i < dbResult.length; i++) {
-      const comment = dbResult[i];
-      comment.likesInfo = [];
-      const queryLikesInfo = `
-      SELECT l.*
-      FROM public."CommentsLikesInfo" l
-      WHERE
-        l."CommentId" = '${comment.Id}'
-    `;
-
-      let commentLikesInfoDb;
-
-      try {
-        commentLikesInfoDb = await this.dataSource.query(queryLikesInfo);
-      } catch (err) {
-        console.log(err);
-
-        commentLikesInfoDb = {
-          Id: '',
-          Title: '',
-          ShortDescription: '',
-          Content: '',
-          BlogId: '',
-          BlogName: '',
-          CreatedAt: '',
-          likesInfo: [],
-        };
-      }
-
-      commentLikesInfoDb.forEach((likesinfo) =>
-        comment.likesInfo.push(CommentLikesInfoSQL.likesInfoMapper(likesinfo)),
-      );
-    }
-
     const paginator = {
       pagesCount: Math.ceil(dbCount / filter.pageSize),
       page: filter.pageNumber,
       pageSize: filter.pageSize,
       totalCount: dbCount,
-      items: dbResult.map((p: CommentsRawDb) => commentMapper(p, userId)),
+      items: dbResult.map((c: CommentsRawDb) => {
+        if (!c.LikesInfo[0]) c.LikesInfo.splice(0, 1);
+        return commentMapper(c, userId);
+      }),
     };
 
     return paginator;
@@ -98,10 +70,13 @@ export class CommentsSQLQueryRepository {
     userId: string = '',
   ): Promise<CommentOutput | null> {
     const query = `
-      SELECT c.*
+      SELECT c.*, JSON_AGG(cl.*) as "LikesInfo"
       FROM public."Comments" c
+      LEFT JOIN public."CommentsLikesInfo" cl
+      ON c."Id" = cl."CommentId"
       WHERE
-        c."Id" = $1;
+        c."Id" = $1
+        GROUP BY "Id";
     `;
 
     let commentDb;
@@ -115,30 +90,10 @@ export class CommentsSQLQueryRepository {
     if (!commentDb[0]) return null;
 
     const comment: CommentsRawDb = commentDb[0];
-    comment.likesInfo = [];
 
-    const queryLikesInfo = `
-      SELECT l.*
-      FROM public."CommentsLikesInfo" l
-      WHERE
-        l."CommentId" = '${id}'
-    `;
+    if (!comment.LikesInfo[0]) comment.LikesInfo.splice(0, 1);
 
-    let commentLikesInfoDb;
-
-    try {
-      commentLikesInfoDb = await this.dataSource.query(queryLikesInfo);
-    } catch (err) {
-      console.log(err);
-
-      return null;
-    }
-
-    commentLikesInfoDb.forEach((i) =>
-      comment.likesInfo.push(CommentLikesInfoSQL.likesInfoMapper(i)),
-    );
-
-    return commentMapper(commentDb[0], userId);
+    return commentMapper(comment, userId);
   }
 }
 
@@ -146,19 +101,19 @@ const commentMapper = (
   comment: CommentsRawDb,
   userId: string,
 ): CommentOutput => {
-  const myStatusInfo = comment.likesInfo.find((i) => i.userId === userId);
-  const myStatus = myStatusInfo ? myStatusInfo.likeStatus : 'None';
+  const myStatusInfo = comment.LikesInfo.find((i) => i.UserId === userId);
+  const myStatus = myStatusInfo ? myStatusInfo.LikeStatus : 'None';
 
   // const lastLikes = comment.likesInfo
   //   .filter((i) => i.likeStatus === 'Like')
   //   .sort((a, b) => (a.addedAt < b.addedAt ? 1 : -1));
 
-  const likesCount = comment.likesInfo.filter(
-    (i) => i.likeStatus === 'Like',
+  const likesCount = comment.LikesInfo.filter(
+    (i) => i.LikeStatus === 'Like',
   ).length;
 
-  const dislikesCount = comment.likesInfo.filter(
-    (i) => i.likeStatus === 'Dislike',
+  const dislikesCount = comment.LikesInfo.filter(
+    (i) => i.LikeStatus === 'Dislike',
   ).length;
 
   return {

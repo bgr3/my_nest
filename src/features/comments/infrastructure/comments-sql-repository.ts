@@ -5,6 +5,7 @@ import {
   CommentForPostSQL,
   CommentLikesInfoSQL,
 } from '../domain/comments-sql-entity';
+import { CommentsRawDb } from './dto/comments-repository-dto';
 
 @Injectable()
 export class CommentsSQLRepository {
@@ -107,46 +108,30 @@ export class CommentsSQLRepository {
 
   async getCommentById(id: string): Promise<CommentForPostSQL | null> {
     const query = `
-      SELECT c.*
+      SELECT c.*, JSON_AGG(cl.*) as "LikesInfo"
       FROM public."Comments" c
+      LEFT JOIN public."CommentsLikesInfo" cl
+      ON c."Id" = cl."CommentId"
       WHERE
         c."Id" = '${id}'
+      GROUP BY "Id";
     `;
 
-    let commentDb;
+    let commentDbArr;
 
     try {
-      commentDb = await this.dataSource.query(query);
+      commentDbArr = await this.dataSource.query(query);
     } catch (err) {
       console.log(err);
 
       return null;
     }
 
-    if (!commentDb[0]) return null;
+    if (!commentDbArr[0]) return null;
+    const commentDb: CommentsRawDb = commentDbArr[0];
+    if (!commentDb.LikesInfo[0]) commentDb.LikesInfo.splice(0, 1);
 
-    const comment = CommentForPostSQL.createSmartComment(commentDb[0]);
-
-    const queryLikesInfo = `
-      SELECT l.*
-      FROM public."CommentsLikesInfo" l
-      WHERE
-        l."CommentId" = '${id}'
-    `;
-
-    let commentLikesInfoDb;
-
-    try {
-      commentLikesInfoDb = await this.dataSource.query(queryLikesInfo);
-    } catch (err) {
-      console.log(err);
-
-      return null;
-    }
-
-    commentLikesInfoDb.forEach((i) =>
-      comment.likesInfo.push(CommentLikesInfoSQL.likesInfoMapper(i)),
-    );
+    const comment = CommentForPostSQL.createSmartComment(commentDb);
 
     return comment;
   }

@@ -18,15 +18,6 @@ export class CommentLikesInfoSQL {
   addedAt: string;
 
   likeStatus: string;
-
-  static likesInfoMapper(likesInfoDb: CommentsLikesInfoRawDb): LikesInfo {
-    return {
-      userId: likesInfoDb.UserId,
-      login: likesInfoDb.Login,
-      addedAt: likesInfoDb.AddedAt,
-      likeStatus: likesInfoDb.LikeStatus,
-    };
-  }
 }
 
 export class CommentForPostSQL {
@@ -73,6 +64,18 @@ export class CommentForPostSQL {
     comment.commentatorInfo.userLogin = commentDb.UserLogin;
     comment.createdAt = commentDb.CreatedAt;
     comment.postId = commentDb.PostId;
+    commentDb.LikesInfo.map((i) => {
+      const likesInfoItem = {
+        userId: i.UserId,
+
+        login: i.Login,
+
+        addedAt: i.AddedAt,
+
+        likeStatus: i.LikeStatus,
+      };
+      comment.likesInfo.push(likesInfoItem);
+    });
 
     return comment;
   }

@@ -1,5 +1,4 @@
 import { LikeStatusType } from '../../../../infrastructure/dto/input/input-dto';
-import { LikesInfo } from '../../../../infrastructure/dto/output/output-dto';
 
 export class CommentsRawDb {
   constructor(
@@ -9,9 +8,8 @@ export class CommentsRawDb {
     public UserLogin: string,
     public PostId: string,
     public CreatedAt: string,
+    public LikesInfo: CommentsLikesInfoRawDb[],
   ) {}
-
-  likesInfo: LikesInfo[];
 }
 
 export class CommentsLikesInfoRawDb {
