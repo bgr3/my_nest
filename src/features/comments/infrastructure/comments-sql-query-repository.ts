@@ -12,14 +12,12 @@ export class CommentsSQLQueryRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
 
   async findComments(
-    postId: string | null = null,
+    postId: string | null,
     filter: QueryFilter,
     userId: string = '',
   ): Promise<Paginator<CommentOutput>> {
-    const find: any = {};
-
-    if (postId) {
-      find.postId = postId;
+    if (!postId) {
+      postId = '%%';
     }
 
     const skip = (filter.pageNumber - 1) * filter.pageSize;
@@ -27,9 +25,10 @@ export class CommentsSQLQueryRepository {
     const preQuery = `
       SELECT count ("Id")
         FROM public."Comments"
+        WHERE "PostId" like $1;
     `;
 
-    const preDbResult = await this.dataSource.query(preQuery);
+    const preDbResult = await this.dataSource.query(preQuery, [postId]);
 
     const dbCount = Number(preDbResult[0].count);
 
@@ -38,11 +37,13 @@ export class CommentsSQLQueryRepository {
     const query = `
     SELECT c.*
       FROM public."Comments" c
+      WHERE "PostId" like $1
       ORDER BY "${sortBy}" ${filter.sortDirection}
-      LIMIT $1 OFFSET $2;
+      LIMIT $2 OFFSET $3;
     `;
 
     const dbResult: [CommentsRawDb] = await this.dataSource.query(query, [
+      postId,
       filter.pageSize,
       skip,
     ]);
