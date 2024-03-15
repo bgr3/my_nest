@@ -1,10 +1,7 @@
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 import { LikesInfo } from '../../../infrastructure/dto/output/output-dto';
 
-import {
-  PostLikesInfoRawDb,
-  PostRawDb,
-} from '../infrastructure/dto/post-repository-dto';
+import { PostRawDb } from '../infrastructure/dto/post-repository-dto';
 
 export class PostLikesInfoSQL {
   userId: string;
@@ -14,15 +11,6 @@ export class PostLikesInfoSQL {
   addedAt: string;
 
   likeStatus: LikeStatusType;
-
-  static likesInfoMapper(likesInfoDb: PostLikesInfoRawDb): LikesInfo {
-    return {
-      userId: likesInfoDb.UserId,
-      login: likesInfoDb.Login,
-      addedAt: likesInfoDb.AddedAt,
-      likeStatus: likesInfoDb.LikeStatus,
-    };
-  }
 }
 
 export class PostSQL {
@@ -83,6 +71,18 @@ export class PostSQL {
     post.blogId = postDb.BlogId;
     post.blogName = postDb.BlogName;
     post.createdAt = postDb.CreatedAt;
+    postDb.LikesInfo.map((i) => {
+      const likesInfoItem = {
+        userId: i.UserId,
+
+        login: i.Login,
+
+        addedAt: i.AddedAt,
+
+        likeStatus: i.LikeStatus,
+      };
+      post.likesInfo.push(likesInfoItem);
+    });
 
     return post;
   }

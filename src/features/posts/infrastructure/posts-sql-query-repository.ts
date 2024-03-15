@@ -1,14 +1,12 @@
 import { PostOutput } from '../api/dto/output/post-output-type';
 import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
 import {
-  LikesInfo,
   LikesInfoOutput,
   Paginator,
 } from '../../../infrastructure/dto/output/output-dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { PostRawDb } from './dto/post-repository-dto';
-import { PostLikesInfoSQL } from '../domain/posts-sql-entity';
+import { PostLikesInfoRawDb, PostRawDb } from './dto/post-repository-dto';
 
 export class PostsSQLQueryRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
@@ -37,9 +35,12 @@ export class PostsSQLQueryRepository {
     const sortBy = filter.sortBy[0].toUpperCase() + filter.sortBy.slice(1);
 
     const query = `
-    SELECT p.*
+    SELECT p.*, JSON_AGG(pl.*) as "LikesInfo"
       FROM public."Posts" p
+      LEFT JOIN public."PostsLikesInfo" pl
+      ON p."Id" = pl."PostId"
       WHERE "BlogId" like $1
+      GROUP BY "Id"
       ORDER BY "${sortBy}" ${filter.sortDirection}
       LIMIT $2 OFFSET $3;
     `;
@@ -50,46 +51,15 @@ export class PostsSQLQueryRepository {
       skip,
     ]);
 
-    for (let i = 0; i < dbResult.length; i++) {
-      const post = dbResult[i];
-      post.likesInfo = [];
-      const queryLikesInfo = `
-      SELECT l.*
-      FROM public."PostsLikesInfo" l
-      WHERE
-        l."PostId" = '${post.Id}'
-    `;
-
-      let postLikesInfoDb;
-
-      try {
-        postLikesInfoDb = await this.dataSource.query(queryLikesInfo);
-      } catch (err) {
-        console.log(err);
-
-        postLikesInfoDb = {
-          Id: '',
-          Title: '',
-          ShortDescription: '',
-          Content: '',
-          BlogId: '',
-          BlogName: '',
-          CreatedAt: '',
-          likesInfo: [],
-        };
-      }
-
-      postLikesInfoDb.forEach((likesinfo) =>
-        post.likesInfo.push(PostLikesInfoSQL.likesInfoMapper(likesinfo)),
-      );
-    }
-
     const paginator = {
       pagesCount: Math.ceil(dbCount / filter.pageSize),
       page: filter.pageNumber,
       pageSize: filter.pageSize,
       totalCount: dbCount,
-      items: dbResult.map((p: PostRawDb) => postMapper(p, userId)),
+      items: dbResult.map((p: PostRawDb) => {
+        if (!p.LikesInfo[0]) p.LikesInfo.splice(0, 1);
+        return postMapper(p, userId);
+      }),
     };
 
     return paginator;
@@ -100,10 +70,12 @@ export class PostsSQLQueryRepository {
     userId: string = '',
   ): Promise<PostOutput | null> {
     const query = `
-      SELECT p.*
+      SELECT p.*, JSON_AGG(pl.*) as "LikesInfo"
       FROM public."Posts" p
-      WHERE
-        p."Id" = $1;
+      LEFT JOIN public."PostsLikesInfo" pl
+      ON p."Id" = pl."PostId"
+      WHERE p."Id" = $1
+      GROUP BY "Id";
     `;
 
     let postsDb;
@@ -117,46 +89,26 @@ export class PostsSQLQueryRepository {
     if (!postsDb[0]) return null;
 
     const post: PostRawDb = postsDb[0];
-    post.likesInfo = [];
 
-    const queryLikesInfo = `
-      SELECT l.*
-      FROM public."PostsLikesInfo" l
-      WHERE
-        l."PostId" = '${id}'
-    `;
+    if (!post.LikesInfo[0]) post.LikesInfo.splice(0, 1);
 
-    let postLikesInfoDb;
-
-    try {
-      postLikesInfoDb = await this.dataSource.query(queryLikesInfo);
-    } catch (err) {
-      console.log(err);
-
-      return null;
-    }
-
-    postLikesInfoDb.forEach((i) =>
-      post.likesInfo.push(PostLikesInfoSQL.likesInfoMapper(i)),
-    );
-
-    return postMapper(postsDb[0], userId);
+    return postMapper(post, userId);
   }
 }
 
 const postMapper = (post: PostRawDb, userId: string): PostOutput => {
-  const myStatus = post.likesInfo.find((i) => i.userId === userId);
+  const myStatus = post.LikesInfo.find((i) => i.UserId === userId);
 
-  const lastLikes = post.likesInfo
-    .filter((i) => i.likeStatus === 'Like')
-    .sort((a, b) => (a.addedAt < b.addedAt ? 1 : -1));
+  const lastLikes = post.LikesInfo.filter((i) => i.LikeStatus === 'Like').sort(
+    (a, b) => (a.AddedAt < b.AddedAt ? 1 : -1),
+  );
 
-  const likesCount = post.likesInfo.filter(
-    (i) => i.likeStatus === 'Like',
+  const likesCount = post.LikesInfo.filter(
+    (i) => i.LikeStatus === 'Like',
   ).length;
 
-  const dislikesCount = post.likesInfo.filter(
-    (i) => i.likeStatus === 'Dislike',
+  const dislikesCount = post.LikesInfo.filter(
+    (i) => i.LikeStatus === 'Dislike',
   ).length;
 
   return {
@@ -170,16 +122,16 @@ const postMapper = (post: PostRawDb, userId: string): PostOutput => {
     extendedLikesInfo: {
       likesCount: likesCount,
       dislikesCount: dislikesCount,
-      myStatus: myStatus ? myStatus.likeStatus : 'None',
+      myStatus: myStatus ? myStatus.LikeStatus : 'None',
       newestLikes: lastLikes.slice(0, 3).map((i) => likesMapper(i)),
     },
   };
 };
 
-const likesMapper = (like: LikesInfo): LikesInfoOutput => {
+const likesMapper = (like: PostLikesInfoRawDb): LikesInfoOutput => {
   return {
-    userId: like.userId,
-    login: like.login,
-    addedAt: like.addedAt,
+    userId: like.UserId,
+    login: like.Login,
+    addedAt: like.AddedAt,
   };
 };

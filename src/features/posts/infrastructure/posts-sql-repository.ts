@@ -1,6 +1,7 @@
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { PostLikesInfoSQL, PostSQL } from '../domain/posts-sql-entity';
+import { PostRawDb } from './dto/post-repository-dto';
 
 export class PostsSQLRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
@@ -103,46 +104,30 @@ export class PostsSQLRepository {
 
   async getPostById(id: string): Promise<PostSQL | null> {
     const query = `
-      SELECT p.*
+      SELECT p.*, JSON_AGG(pl.*) as "LikesInfo"
       FROM public."Posts" p
+      LEFT JOIN public."PostsLikesInfo" pl
+      ON p."Id" = pl."PostId"
       WHERE
         p."Id" = '${id}'
+      GROUP BY "Id";
     `;
 
-    let postDb;
+    let postDbArr;
 
     try {
-      postDb = await this.dataSource.query(query);
+      postDbArr = await this.dataSource.query(query);
     } catch (err) {
       console.log(err);
 
       return null;
     }
 
-    if (!postDb[0]) return null;
+    if (!postDbArr[0]) return null;
+    const postDb: PostRawDb = postDbArr[0];
+    if (!postDb.LikesInfo[0]) postDb.LikesInfo.splice(0, 1);
 
-    const post = PostSQL.createSmartPost(postDb[0]);
-
-    const queryLikesInfo = `
-      SELECT l.*
-      FROM public."PostsLikesInfo" l
-      WHERE
-        l."PostId" = '${id}'
-    `;
-
-    let postLikesInfoDb;
-
-    try {
-      postLikesInfoDb = await this.dataSource.query(queryLikesInfo);
-    } catch (err) {
-      console.log(err);
-
-      return null;
-    }
-
-    postLikesInfoDb.forEach((i) =>
-      post.likesInfo.push(PostLikesInfoSQL.likesInfoMapper(i)),
-    );
+    const post = PostSQL.createSmartPost(postDb);
 
     return post;
   }

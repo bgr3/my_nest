@@ -10,9 +10,8 @@ export class PostRawDb {
     public BlogId: string,
     public BlogName: string,
     public CreatedAt: string,
+    public LikesInfo: PostLikesInfoRawDb[],
   ) {}
-
-  likesInfo: LikesInfo[];
 }
 
 export class PostLikesInfoRawDb {
