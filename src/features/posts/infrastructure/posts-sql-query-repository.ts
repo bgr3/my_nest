@@ -39,7 +39,7 @@ export class PostsSQLQueryRepository {
     const query = `
     SELECT p.*
       FROM public."Posts" p
-      WHERE "BlogId" like $1;
+      WHERE "BlogId" like $1
       ORDER BY "${sortBy}" ${filter.sortDirection}
       LIMIT $2 OFFSET $3;
     `;
