@@ -1,6 +1,6 @@
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { AuthSQL } from '../domain/auth-sql-entity';
+import { AuthSQL } from '../../domain/auth-sql-entity';
 
 export class AuthSQLRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}

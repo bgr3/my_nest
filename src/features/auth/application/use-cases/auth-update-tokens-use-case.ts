@@ -1,8 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Tokens } from '../../api/dto/output/auth-output-dto';
 import { AuthService } from '../auth-service';
-import { UsersSQLRepository } from '../../../users/infrastructure/users-sql-repository';
-import { AuthSQLRepository } from '../../infrastructure/auth-sql-repository';
+// import { AuthSQLRepository } from '../../infrastructure/sql/auth-sql-repository';
+import { UsersORMRepository } from '../../../users/infrastructure/orm/users-orm-repository';
+import { AuthORMRepository } from '../../infrastructure/orm/auth-orm-repository';
+// import { UsersSQLRepository } from '../../../users/infrastructure/sql/users-sql-repository';
 // import { AuthRepository } from '../../infrastructure/auth-repository';
 //import { UsersRepository } from '../../../users/infrastructure/users-repository';
 
@@ -16,10 +18,12 @@ export class AuthUpdateTokensUseCase
 {
   constructor(
     //protected authRepository: AuthRepository,
-    protected authRepository: AuthSQLRepository,
+    // protected authRepository: AuthSQLRepository,
+    protected authRepository: AuthORMRepository,
     protected authService: AuthService,
     //protected usersRepository: UsersRepository,
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
   ) {}
 
   async execute(command: AuthUpdateTokensCommand): Promise<Tokens | null> {

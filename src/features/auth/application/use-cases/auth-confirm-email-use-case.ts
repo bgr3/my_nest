@@ -1,5 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersSQLRepository } from '../../../users/infrastructure/users-sql-repository';
+import { UsersORMRepository } from '../../../users/infrastructure/orm/users-orm-repository';
+// import { UsersSQLRepository } from '../../../users/infrastructure/sql/users-sql-repository';
 //import { UsersRepository } from '../../../users/infrastructure/users-repository';
 
 export class AuthConfirmEmailCommand {
@@ -12,7 +13,8 @@ export class AuthConfirmEmailUseCase
 {
   constructor(
     // protected usersRepository: UsersRepository
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
   ) {}
 
   async execute(command: AuthConfirmEmailCommand): Promise<boolean> {

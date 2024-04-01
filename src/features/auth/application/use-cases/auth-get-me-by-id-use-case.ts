@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MeType } from '../../api/dto/output/auth-output-dto';
-import { UsersSQLRepository } from '../../../users/infrastructure/users-sql-repository';
+import { UsersORMRepository } from '../../../users/infrastructure/orm/users-orm-repository';
+// import { UsersSQLRepository } from '../../../users/infrastructure/sql/users-sql-repository';
 //import { UsersRepository } from '../../../users/infrastructure/users-repository';
 
 export class AuthGetMeByIdCommand {
@@ -13,7 +14,8 @@ export class AuthGetMeByIdUseCase
 {
   constructor(
     //protected usersRepository: UsersRepository
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
   ) {}
 
   async execute(command: AuthGetMeByIdCommand): Promise<MeType | null> {

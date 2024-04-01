@@ -6,14 +6,16 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
-import { AuthSQLRepository } from '../../features/auth/infrastructure/auth-sql-repository';
+import { AuthORMRepository } from '../../features/auth/infrastructure/orm/auth-orm-repository';
+// import { AuthSQLRepository } from '../../features/auth/infrastructure/sql/auth-sql-repository';
 // import { AuthRepository } from '../../features/auth/infrastructure/auth-repository';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     //protected authRepository: AuthRepository,
-    protected authRepository: AuthSQLRepository,
+    // protected authRepository: AuthSQLRepository,
+    protected authRepository: AuthORMRepository,
   ) {}
 
   canActivate(

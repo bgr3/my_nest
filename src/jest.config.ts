@@ -1,7 +1,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testRegex: 'comment.api.test.ts$',
+  testRegex: 'security.api.test.ts$',
   rootDir: '../__tests__',
   testTimeout: 100000,
 };

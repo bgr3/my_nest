@@ -1,7 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import bcrypt from 'bcrypt';
 import { UsersService } from '../users-service';
-import { UsersSQLRepository } from '../../infrastructure/users-sql-repository';
+import { UsersORMRepository } from '../../infrastructure/orm/users-orm-repository';
+// import { UsersSQLRepository } from '../../infrastructure/sql/users-sql-repository';
 //import { UsersRepository } from '../../infrastructure/users-repository';
 
 export class UsersChangePasswordCommand {
@@ -17,7 +18,8 @@ export class UsersChangePasswordUseCase
 {
   constructor(
     //protected usersRepository: UsersRepository,
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
     protected usersService: UsersService,
   ) {}
 

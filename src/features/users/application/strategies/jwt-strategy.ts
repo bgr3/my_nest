@@ -2,14 +2,16 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request as RequestType } from 'express';
-import { AuthSQLRepository } from '../../../auth/infrastructure/auth-sql-repository';
+import { AuthORMRepository } from '../../../auth/infrastructure/orm/auth-orm-repository';
+// import { AuthSQLRepository } from '../../../auth/infrastructure/sql/auth-sql-repository';
 // import { AuthRepository } from '../../../auth/infrastructure/auth-repository';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     //protected authRepository: AuthRepository,
-    protected authRepository: AuthSQLRepository,
+    // protected authRepository: AuthSQLRepository,
+    protected authRepository: AuthORMRepository,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([

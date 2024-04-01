@@ -10,8 +10,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersService } from './features/users/application/users-service';
 import { UsersController } from './features/users/api/users-controller';
 import { User, UserSchema } from './features/users/domain/users-entity';
-import { UsersRepository } from './features/users/infrastructure/users-repository';
-import { UsersQueryRepository } from './features/users/infrastructure/users-query-repository';
+import { UsersRepository } from './features/users/infrastructure/mongo/users-repository';
+import { UsersQueryRepository } from './features/users/infrastructure/mongo/users-query-repository';
 import { TestingController } from './features/testing/api/testing-controller';
 import { BlogsService } from './features/blogs/application/blog-service';
 import { BlogsQueryRepository } from './features/blogs/infrastructure/blogs-query-repository';
@@ -37,8 +37,8 @@ import { JwtStrategy } from './features/users/application/strategies/jwt-strateg
 import { LocalStrategy } from './features/users/application/strategies/local-strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { BasicStrategy } from './features/users/application/strategies/basic-strategy';
-import { AuthQueryRepository } from './features/auth/infrastructure/auth-query-repository';
-import { AuthRepository } from './features/auth/infrastructure/auth-repository';
+import { AuthQueryRepository } from './features/auth/infrastructure/mongo/auth-query-repository';
+import { AuthRepository } from './features/auth/infrastructure/mongo/auth-repository';
 import { AuthService } from './features/auth/application/auth-service';
 import { Auth, AuthSchema } from './features/auth/domain/auth-entity';
 import { AuthController } from './features/auth/api/dto/auth-controller';
@@ -104,11 +104,11 @@ import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-
 import { BlogExistValidation } from './features/posts/api/dto/input/blogs-input-validator';
 import dotenv from 'dotenv';
 import { AuthorizationSecurityMiddleware } from './infrastructure/middlewares/security-validation-middleware';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersSQLRepository } from './features/users/infrastructure/users-sql-repository';
-import { UsersSQLQueryRepository } from './features/users/infrastructure/users-sql-query-repository';
-import { AuthSQLRepository } from './features/auth/infrastructure/auth-sql-repository';
-import { AuthSQLQueryRepository } from './features/auth/infrastructure/auth-sql-query-repository';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { UsersSQLRepository } from './features/users/infrastructure/sql/users-sql-repository';
+import { UsersSQLQueryRepository } from './features/users/infrastructure/sql/users-sql-query-repository';
+import { AuthSQLRepository } from './features/auth/infrastructure/sql/auth-sql-repository';
+import { AuthSQLQueryRepository } from './features/auth/infrastructure/sql/auth-sql-query-repository';
 import { BlogsSQLRepository } from './features/blogs/infrastructure/blogs-sql-repository';
 import { BlogsSQLQueryRepository } from './features/blogs/infrastructure/blogs-sql-query-repository';
 import { PostsSQLRepository } from './features/posts/infrastructure/posts-sql-repository';
@@ -116,6 +116,14 @@ import { PostsSQLQueryRepository } from './features/posts/infrastructure/posts-s
 import { BlogsSAController } from './features/blogs/api/blogs-sa-controller';
 import { CommentsSQLRepository } from './features/comments/infrastructure/comments-sql-repository';
 import { CommentsSQLQueryRepository } from './features/comments/infrastructure/comments-sql-query-repository';
+import { UserORM } from './features/users/domain/users-orm-entity';
+import { UsersORMRepository } from './features/users/infrastructure/orm/users-orm-repository';
+import { UsersORMQueryRepository } from './features/users/infrastructure/orm/users-orm-query-repository';
+import { EmailConfirmation } from './features/users/domain/email-confirmation-entity';
+import { AuthORM } from './features/auth/domain/auth-orm-entity';
+import { JWTTokens } from './features/auth/domain/tokens-orm-entity';
+import { AuthORMQueryRepository } from './features/auth/infrastructure/orm/auth-orm-query-repository';
+import { AuthORMRepository } from './features/auth/infrastructure/orm/auth-orm-repository';
 
 dotenv.config();
 
@@ -130,7 +138,7 @@ if (!postgresUrl) {
   throw new Error('! PostgresURL doesn`t found');
 }
 
-let postgresParam;
+export let postgresParam: TypeOrmModuleOptions;
 
 if (postgresUrl === 'development') {
   postgresParam = {
@@ -139,9 +147,11 @@ if (postgresUrl === 'development') {
     port: 5432,
     username: 'nodejs',
     password: 'nodejs',
-    database: 'nest',
-    autoLoadEntities: false,
-    synchronize: false,
+    database: 'nestORM',
+    // namingStrategy:
+    logging: ['query'],
+    autoLoadEntities: true,
+    synchronize: true,
   };
 } else {
   postgresParam = {
@@ -156,6 +166,8 @@ const usersProviders = [
   UsersQueryRepository,
   UsersSQLRepository,
   UsersSQLQueryRepository,
+  UsersORMRepository,
+  UsersORMQueryRepository,
 ];
 
 const blogsProviders = [
@@ -196,6 +208,8 @@ const authProviders = [
   UserLoginValidation,
   AuthSQLRepository,
   AuthSQLQueryRepository,
+  AuthORMRepository,
+  AuthORMQueryRepository,
 ];
 const accessProviders = [AccessService, LogRepository];
 
@@ -237,6 +251,8 @@ const useCases = [
   AuthDeleteAuthSessionByTokenUseCase,
 ];
 
+const entities = [UserORM, EmailConfirmation, AuthORM, JWTTokens];
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -248,6 +264,9 @@ const useCases = [
     MongooseModule.forRoot(url, {
       dbName: 'nest',
     }),
+
+    TypeOrmModule.forFeature([...entities]),
+
     MongooseModule.forFeature([
       {
         name: User.name,

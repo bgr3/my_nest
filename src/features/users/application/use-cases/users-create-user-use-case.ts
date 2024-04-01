@@ -2,8 +2,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserPost } from '../../api/dto/input/users-input-dto';
 import { UsersService } from '../users-service';
 import bcrypt from 'bcrypt';
-import { UserSQL } from '../../domain/users-sql-entity';
-import { UsersSQLRepository } from '../../infrastructure/users-sql-repository';
+import { UsersORMRepository } from '../../infrastructure/orm/users-orm-repository';
+import { UserORM } from '../../domain/users-orm-entity';
+// import { UserSQL } from '../../domain/users-sql-entity';
+// import { UsersSQLRepository } from '../../infrastructure/sql/users-sql-repository';
 // import { InjectModel } from '@nestjs/mongoose';
 // import { User, UserModelType } from '../../domain/users-entity';
 // import { UsersRepository } from '../../infrastructure/users-repository';
@@ -22,7 +24,8 @@ export class UsersCreateUserUseCase
   constructor(
     //@InjectModel(User.name) private UserModel: UserModelType,
     // protected usersRepository: UsersRepository,
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
     protected usersService: UsersService,
   ) {}
 
@@ -33,7 +36,7 @@ export class UsersCreateUserUseCase
       passwordSalt,
     );
 
-    const newUser = UserSQL /*User*/.createUser(
+    const newUser = UserORM /*UserSQL*/ /*User*/.createUser(
       command.dto.login,
       command.dto.email,
       passwordHash,

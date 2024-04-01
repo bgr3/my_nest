@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { EmailManager } from '../../../email-manager/application/email-manager';
-import { UsersSQLRepository } from '../../../users/infrastructure/users-sql-repository';
+import { UsersORMRepository } from '../../../users/infrastructure/orm/users-orm-repository';
+// import { UsersSQLRepository } from '../../../users/infrastructure/sql/users-sql-repository';
 //import { UsersRepository } from '../../../users/infrastructure/users-repository';
 
 export class AuthChangePasswordEmailCommand {
@@ -13,7 +14,8 @@ export class AuthChangePasswordEmailUseCase
 {
   constructor(
     //protected usersRepository: UsersRepository,
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
     protected emailManager: EmailManager,
   ) {}
 

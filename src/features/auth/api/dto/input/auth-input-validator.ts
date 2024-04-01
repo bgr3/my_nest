@@ -3,8 +3,9 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
-import { UsersRepository } from '../../../../users/infrastructure/users-repository';
-import { UsersSQLRepository } from '../../../../users/infrastructure/users-sql-repository';
+import { UsersORMRepository } from '../../../../users/infrastructure/orm/users-orm-repository';
+// import { UsersRepository } from '../../../../users/infrastructure/mongo/users-repository';
+// import { UsersSQLRepository } from '../../../../users/infrastructure/sql/users-sql-repository';
 
 @ValidatorConstraint({ name: 'customText', async: true })
 @Injectable()
@@ -13,7 +14,8 @@ export class AuthEmailConfirmValidation
 {
   constructor(
     // protected usersRepository: UsersRepository
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
   ) {}
 
   errorMessage: string;
@@ -56,7 +58,8 @@ export class AuthPasswordRecoveryCodeValidation
 {
   constructor(
     // protected usersRepository: UsersRepository
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
   ) {}
 
   errorMessage: string;
@@ -94,7 +97,8 @@ export class AuthReSendEmailConfirmValidation
 {
   constructor(
     // protected usersRepository: UsersRepository
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
   ) {}
 
   errorMessage: string;
@@ -132,7 +136,8 @@ export class AuthReSendEmailConfirmValidation
 export class UserEmailValidation implements ValidatorConstraintInterface {
   constructor(
     // protected usersRepository: UsersRepository
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
   ) {}
 
   errorMessage: string;
@@ -159,7 +164,8 @@ export class UserEmailValidation implements ValidatorConstraintInterface {
 export class UserLoginValidation implements ValidatorConstraintInterface {
   constructor(
     // protected usersRepository: UsersRepository
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
   ) {}
 
   errorMessage: string;

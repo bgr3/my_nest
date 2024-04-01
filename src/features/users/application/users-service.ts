@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt';
-import { UsersSQLRepository } from '../infrastructure/users-sql-repository';
-import { UserSQL } from '../domain/users-sql-entity';
+import { UsersORMRepository } from '../infrastructure/orm/users-orm-repository';
+import { UserORM } from '../domain/users-orm-entity';
+// import { UserSQL } from '../domain/users-sql-entity';
+// import { UsersSQLRepository } from '../infrastructure/sql/users-sql-repository';
 //import { UsersRepository } from '../infrastructure/users-repository';
 //import { UserDocument } from '../domain/users-entity';
 
@@ -9,10 +11,13 @@ import { UserSQL } from '../domain/users-sql-entity';
 export class UsersService {
   constructor(
     //protected usersRepository: UsersRepository
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
   ) {}
 
-  async findUserDbByID(id: string): Promise<UserSQL /*UserDocument*/ | null> {
+  async findUserDbByID(
+    id: string,
+  ): Promise<UserORM /*UserSQL*/ /*UserDocument*/ | null> {
     const user = await this.usersRepository.findUserDbByID(id);
 
     return user;

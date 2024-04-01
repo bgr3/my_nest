@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { UserOutput } from '../api/dto/output/user-output-dto';
-import { Paginator } from '../../../infrastructure/dto/output/output-dto';
-import { UserQueryFilter } from '../api/dto/input/users-input-dto';
+import { UserOutput } from '../../api/dto/output/user-output-dto';
+import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
+import { UserQueryFilter } from '../../api/dto/input/users-input-dto';
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { UserRawDb } from './dto/users-repository-dto';
+import { UserRawDb } from '../dto/users-repository-dto';
 
 @Injectable()
 export class UsersSQLQueryRepository {
@@ -40,7 +40,6 @@ export class UsersSQLQueryRepository {
     const dbResult = await this.dataSource.query(query, [
       `%${filter.searchLoginTerm}%`,
       `%${filter.searchEmailTerm}%`,
-      //filter.sortBy[0].toUpperCase() + filter.sortBy.slice(1),
       filter.pageSize,
       skip,
     ]);

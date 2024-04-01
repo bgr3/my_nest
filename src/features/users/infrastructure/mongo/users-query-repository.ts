@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { User, UserDocument, UserModelType } from '../domain/users-entity';
+import { User, UserDocument, UserModelType } from '../../domain/users-entity';
 import { Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserOutput } from '../api/dto/output/user-output-dto';
-import { Paginator } from '../../../infrastructure/dto/output/output-dto';
-import { UserQueryFilter } from '../api/dto/input/users-input-dto';
+import { UserOutput } from '../../api/dto/output/user-output-dto';
+import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
+import { UserQueryFilter } from '../../api/dto/input/users-input-dto';
 
 @Injectable()
 export class UsersQueryRepository {

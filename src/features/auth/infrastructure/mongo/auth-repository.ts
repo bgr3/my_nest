@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { Auth, AuthDocument } from '../domain/auth-entity';
+import { Auth, AuthDocument } from '../../domain/auth-entity';
 
 @Injectable()
 export class AuthRepository {

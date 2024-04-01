@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { AuthORMRepository } from '../../infrastructure/orm/auth-orm-repository';
 //import { AuthRepository } from '../../infrastructure/auth-repository';
-import { AuthSQLRepository } from '../../infrastructure/auth-sql-repository';
+// import { AuthSQLRepository } from '../../infrastructure/sql/auth-sql-repository';
 
 export class AuthDeleteAuthSessionByTokenCommand {
   constructor(public deviceId: string) {}
@@ -12,7 +13,8 @@ export class AuthDeleteAuthSessionByTokenUseCase
 {
   constructor(
     //protected authRepository: AuthRepository,
-    protected authRepository: AuthSQLRepository,
+    // protected authRepository: AuthSQLRepository,
+    protected authRepository: AuthORMRepository,
   ) {}
 
   async execute(

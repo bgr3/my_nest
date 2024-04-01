@@ -1,8 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersService } from '../users-service';
-import { UserDocument } from '../../domain/users-entity';
-import { UsersSQLRepository } from '../../infrastructure/users-sql-repository';
-import { UserSQL } from '../../domain/users-sql-entity';
+import { UsersORMRepository } from '../../infrastructure/orm/users-orm-repository';
+import { UserORM } from '../../domain/users-orm-entity';
+// import { UserSQL } from '../../domain/users-sql-entity';
+// import { UserDocument } from '../../domain/users-entity';
+// import { UsersSQLRepository } from '../../infrastructure/sql/users-sql-repository';
 //import { UsersRepository } from '../../infrastructure/users-repository';
 
 export class UsersCheckCredentialsCommand {
@@ -18,13 +20,14 @@ export class UsersCheckCredentialsUseCase
 {
   constructor(
     //protected usersRepository: UsersRepository,
-    protected usersRepository: UsersSQLRepository,
+    // protected usersRepository: UsersSQLRepository,
+    protected usersRepository: UsersORMRepository,
     protected usersService: UsersService,
   ) {}
 
   async execute(
     command: UsersCheckCredentialsCommand,
-  ): Promise<UserSQL /*UserDocument*/ | null> {
+  ): Promise<UserORM /*UserSQL*/ /*UserDocument*/ | null> {
     const user = await this.usersRepository.findUserByLoginOrEmail(
       command.loginOrEmail,
     );
