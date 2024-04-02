@@ -157,6 +157,9 @@ if (postgresUrl === 'development') {
   postgresParam = {
     type: 'postgres',
     url: postgresUrl,
+    database: 'nestORM',
+    autoLoadEntities: true,
+    synchronize: true,
   };
 }
 
