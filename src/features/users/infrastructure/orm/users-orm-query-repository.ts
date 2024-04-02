@@ -21,7 +21,7 @@ export class UsersORMQueryRepository {
       .where('u.login ilike :login', {
         login: `%${filter.searchLoginTerm}%`,
       })
-      .andWhere('u.email ilike :email', {
+      .orWhere('u.email ilike :email', {
         email: `%${filter.searchEmailTerm}%`,
       })
       .orderBy(
@@ -38,7 +38,7 @@ export class UsersORMQueryRepository {
       .where('u.login ilike :login', {
         login: `%${filter.searchLoginTerm}%`,
       })
-      .andWhere('u.email ilike :email', {
+      .orWhere('u.email ilike :email', {
         email: `%${filter.searchEmailTerm}%`,
       })
       .orderBy(
