@@ -124,6 +124,8 @@ import { AuthORM } from './features/auth/domain/auth-orm-entity';
 import { JWTTokens } from './features/auth/domain/tokens-orm-entity';
 import { AuthORMQueryRepository } from './features/auth/infrastructure/orm/auth-orm-query-repository';
 import { AuthORMRepository } from './features/auth/infrastructure/orm/auth-orm-repository';
+import { LogORMRepository } from './features/access/infrastructure/access-log-orm-repository';
+import { AccessLogORM } from './features/access/domain/access-log-orm-entity';
 
 dotenv.config();
 
@@ -214,7 +216,8 @@ const authProviders = [
   AuthORMRepository,
   AuthORMQueryRepository,
 ];
-const accessProviders = [AccessService, LogRepository];
+
+const accessProviders = [AccessService, LogRepository, LogORMRepository];
 
 const useCases = [
   UsersTestAllDataUseCase,
@@ -254,7 +257,7 @@ const useCases = [
   AuthDeleteAuthSessionByTokenUseCase,
 ];
 
-const entities = [UserORM, EmailConfirmation, AuthORM, JWTTokens];
+const entities = [UserORM, EmailConfirmation, AuthORM, JWTTokens, AccessLogORM];
 
 @Module({
   imports: [

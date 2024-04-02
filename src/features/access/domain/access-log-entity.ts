@@ -9,13 +9,13 @@ export type AccessLogModelType = Model<AccessLogDocument> & typeof statics;
 @Schema()
 export class AccessLog {
   @Prop({ required: true })
-    IP: string;
+  IP: string;
 
   @Prop({ required: true })
-    URL: string;
+  URL: string;
 
   @Prop({ required: true })
-    date: Date;
+  date: Date;
 
   updateAccessLog(inputModel: AccessLogType) {
     this.IP = inputModel.IP;

@@ -1,16 +1,7 @@
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns/add';
 import { MeType } from '../../auth/api/dto/output/auth-output-dto';
-import { UserRawDb } from '../infrastructure/dto/users-repository-dto';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  OneToOne,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { EmailConfirmation } from './email-confirmation-entity';
 
 @Entity()

@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
-import { AuthRawDb } from '../infrastructure/dto/auth-repository-dto';
 import { JWTTokens } from './tokens-orm-entity';
 
 @Entity()

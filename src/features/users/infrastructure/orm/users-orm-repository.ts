@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserORM } from '../../domain/users-orm-entity';
-import { EntityManager, Repository } from 'typeorm';
-import { EmailConfirmation } from '../../domain/email-confirmation-entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersORMRepository {
   constructor(
     @InjectRepository(UserORM)
     private readonly usersRepository: Repository<UserORM>,
-    //private readonly entitymanager: EntityManager,
   ) {}
 
   async testAllData(): Promise<void> {
