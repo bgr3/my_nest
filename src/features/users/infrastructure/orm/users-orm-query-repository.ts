@@ -15,24 +15,38 @@ export class UsersORMQueryRepository {
   async findUsers(filter: UserQueryFilter): Promise<Paginator<UserOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
-    const preDbResult = await this.usersRepository.findAndCount({
+    const dbCount = await this.usersRepository.count({
       where: [
         { login: Like(`%${filter.searchLoginTerm}%`) },
         { email: Like(`%${filter.searchEmailTerm}%`) },
       ],
       skip: skip,
       take: filter.pageSize,
-      order: { createdAt: 'DESC' },
     });
 
-    const dbResult = await this.usersRepository.find({
-      where: [
-        { login: Like(`%${filter.searchLoginTerm}%`) },
-        { email: Like(`%${filter.searchEmailTerm}%`) },
-      ],
-    });
+    const dbResult = await this.usersRepository
+      .createQueryBuilder('u')
+      .select()
+      .where('u.login like :login', {
+        login: `%${filter.searchLoginTerm}%`,
+      })
+      .andWhere('u.email like :email', {
+        email: `%${filter.searchEmailTerm}%`,
+      })
+      .skip(skip)
+      .take(filter.pageSize)
+      .orderBy(
+        /*filter.sortBy*/ 'u.createdAt',
+        (filter.sortDirection = 'asc' ? 'ASC' : 'DESC'),
+      )
+      .getMany();
 
-    const dbCount = preDbResult[1];
+    // const dbResult = await this.usersRepository.find({
+    //   where: [
+    //     { login: Like(`%${filter.searchLoginTerm}%`) },
+    //     { email: Like(`%${filter.searchEmailTerm}%`) },
+    //   ],
+    // });
 
     const paginator = {
       pagesCount: Math.ceil(dbCount / filter.pageSize),
