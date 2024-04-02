@@ -24,6 +24,8 @@ export class UsersORMQueryRepository {
       take: filter.pageSize,
     });
 
+    console.log(filter);
+
     const dbResult = await this.usersRepository
       .createQueryBuilder('u')
       .select()
@@ -33,20 +35,15 @@ export class UsersORMQueryRepository {
       .andWhere('u.email like :email', {
         email: `%${filter.searchEmailTerm}%`,
       })
+      .orderBy(
+        `u.${filter.sortBy}`,
+        filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
+      )
       .skip(skip)
       .take(filter.pageSize)
-      .orderBy(
-        /*filter.sortBy*/ 'u.createdAt',
-        (filter.sortDirection = 'asc' ? 'ASC' : 'DESC'),
-      )
       .getMany();
 
-    // const dbResult = await this.usersRepository.find({
-    //   where: [
-    //     { login: Like(`%${filter.searchLoginTerm}%`) },
-    //     { email: Like(`%${filter.searchEmailTerm}%`) },
-    //   ],
-    // });
+    console.log(filter);
 
     const paginator = {
       pagesCount: Math.ceil(dbCount / filter.pageSize),
