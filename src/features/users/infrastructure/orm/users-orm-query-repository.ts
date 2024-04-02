@@ -15,24 +15,30 @@ export class UsersORMQueryRepository {
   async findUsers(filter: UserQueryFilter): Promise<Paginator<UserOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
-    const dbCount = await this.usersRepository.count({
-      where: [
-        { login: Like(`%${filter.searchLoginTerm}%`) },
-        { email: Like(`%${filter.searchEmailTerm}%`) },
-      ],
-      skip: skip,
-      take: filter.pageSize,
-    });
+    const dbCount = await this.usersRepository
+      .createQueryBuilder('u')
+      .select()
+      .where('u.login ilike :login', {
+        login: `%${filter.searchLoginTerm}%`,
+      })
+      .andWhere('u.email ilike :email', {
+        email: `%${filter.searchEmailTerm}%`,
+      })
+      .orderBy(
+        `u.${filter.sortBy}`,
+        filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
+      )
+      .getCount();
 
     console.log(filter);
 
     const dbResult = await this.usersRepository
       .createQueryBuilder('u')
       .select()
-      .where('u.login like :login', {
+      .where('u.login ilike :login', {
         login: `%${filter.searchLoginTerm}%`,
       })
-      .andWhere('u.email like :email', {
+      .andWhere('u.email ilike :email', {
         email: `%${filter.searchEmailTerm}%`,
       })
       .orderBy(
