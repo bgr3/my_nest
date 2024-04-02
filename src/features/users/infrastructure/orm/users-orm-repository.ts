@@ -67,7 +67,7 @@ export class UsersORMRepository {
       return false;
     }
 
-    if (result[1] === 0) return false;
+    if (result.affected === 0) return false;
 
     return true;
   }

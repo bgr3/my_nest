@@ -22,6 +22,7 @@ export class UsersORMQueryRepository {
       ],
       skip: skip,
       take: filter.pageSize,
+      order: { createdAt: 'DESC' },
     });
 
     const dbResult = await this.usersRepository.find({
