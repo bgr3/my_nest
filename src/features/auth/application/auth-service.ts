@@ -8,8 +8,8 @@ export class AuthService {
   constructor(protected jwtService: JwtService) {}
 
   async generateTokens(userId: string, deviceId: string) {
-    const accessTokenExpirationTimeSeconds = 10;
-    const refreshTokenExpirationTimeSeconds = 20;
+    const accessTokenExpirationTimeSeconds = 300;
+    const refreshTokenExpirationTimeSeconds = 600;
     const issuedAt = new Date();
     const expireAt = add(new Date(), {
       seconds: refreshTokenExpirationTimeSeconds,
