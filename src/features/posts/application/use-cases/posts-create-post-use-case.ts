@@ -2,9 +2,12 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostModelType } from '../../domain/posts-entity';
 import { PostPostType } from '../../api/dto/input/post-input-dto';
-import { BlogsSQLQueryRepository } from '../../../blogs/infrastructure/blogs-sql-query-repository';
-import { PostsSQLRepository } from '../../infrastructure/posts-sql-repository';
+// import { PostsSQLRepository } from '../../infrastructure/sql/posts-sql-repository';
 import { PostSQL } from '../../domain/posts-sql-entity';
+import { BlogsORMQueryRepository } from '../../../blogs/infrastructure/orm/blogs-orm-query-repository';
+import { PostsORMRepository } from '../../infrastructure/orm/posts-orm-repository';
+import { PostORM } from '../../domain/posts-orm-entity';
+// import { BlogsSQLQueryRepository } from '../../../blogs/infrastructure/sql/blogs-sql-query-repository';
 // import { PostsRepository } from '../../infrastructure/posts-repository';
 // import { BlogsQueryRepository } from '../../../blogs/infrastructure/blogs-query-repository';
 
@@ -19,10 +22,11 @@ export class PostsCreatePostUseCase
   constructor(
     @InjectModel(Post.name) private PostModel: PostModelType,
     // private readonly postsRepository: PostsRepository,
-    private readonly postsRepository: PostsSQLRepository,
-
+    // private readonly postsRepository: PostsSQLRepository,
+    private readonly postsRepository: PostsORMRepository,
     // private readonly blogsQueryRepository: BlogsQueryRepository,
-    private readonly blogsQueryRepository: BlogsSQLQueryRepository,
+    // private readonly blogsQueryRepository: BlogsSQLQueryRepository,
+    private readonly blogsQueryRepository: BlogsORMQueryRepository,
   ) {}
 
   async execute(command: PostsCreatePostCommand): Promise<string | null> {
@@ -31,7 +35,7 @@ export class PostsCreatePostUseCase
     )?.name;
 
     if (blogName) {
-      const newPost = PostSQL /*Post*/.createPost(
+      const newPost = PostORM /*PostSQL*/ /*Post*/.createPost(
         command.dto.title,
         command.dto.shortDescription,
         command.dto.content,

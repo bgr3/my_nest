@@ -1,5 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { PostsSQLRepository } from '../../infrastructure/posts-sql-repository';
+import { PostsORMRepository } from '../../infrastructure/orm/posts-orm-repository';
+// import { PostsSQLRepository } from '../../infrastructure/sql/posts-sql-repository';
 // import { PostsRepository } from '../../infrastructure/posts-repository';
 
 export class PostsTestAllDataCommand {
@@ -12,7 +13,8 @@ export class PostsTestAllDataUseCase
 {
   constructor(
     // private readonly postsRepository: PostsRepository
-    private readonly postsRepository: PostsSQLRepository,
+    // private readonly postsRepository: PostsSQLRepository,
+    private readonly postsRepository: PostsORMRepository,
   ) {}
 
   async execute(): Promise<void> {

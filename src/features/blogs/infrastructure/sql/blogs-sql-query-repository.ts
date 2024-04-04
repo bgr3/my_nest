@@ -1,9 +1,9 @@
-import { BlogOutput } from '../api/dto/output/blog-output-dto';
-import { Paginator } from '../../../infrastructure/dto/output/output-dto';
-import { BlogQueryFilter } from '../api/dto/input/blogs-input-dto';
+import { BlogOutput } from '../../api/dto/output/blog-output-dto';
+import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
+import { BlogQueryFilter } from '../../api/dto/input/blogs-input-dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { BlogRawDb } from './dto/blog-repository-dto';
+import { BlogRawDb } from '../dto/blog-repository-dto';
 
 export class BlogsSQLQueryRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}

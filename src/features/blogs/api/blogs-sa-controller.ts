@@ -31,10 +31,12 @@ import { BlogsUpdateBlogCommand } from '../application/use-cases/blogs-update-bl
 import { BlogsDeleteBlogCommand } from '../application/use-cases/blogs-delete-blog-use-case';
 import { PostsCreatePostCommand } from '../../posts/application/use-cases/posts-create-post-use-case';
 import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
-import { BlogsSQLQueryRepository } from '../infrastructure/blogs-sql-query-repository';
-import { PostsSQLQueryRepository } from '../../posts/infrastructure/posts-sql-query-repository';
+// import { PostsSQLQueryRepository } from '../../posts/infrastructure/sql/posts-sql-query-repository';
 import { PostsUpdatePostCommand } from '../../posts/application/use-cases/posts-update-post-use-case';
 import { PostsDeletePostCommand } from '../../posts/application/use-cases/posts-delete-post-use-case';
+import { BlogsORMQueryRepository } from '../infrastructure/orm/blogs-orm-query-repository';
+import { PostsORMQueryRepository } from '../../posts/infrastructure/orm/posts-orm-query-repository';
+// import { BlogsSQLQueryRepository } from '../infrastructure/sql/blogs-sql-query-repository';
 // import { BlogsQueryRepository } from '../infrastructure/blogs-query-repository';
 // import { PostsQueryRepository } from '../../posts/infrastructure/posts-query-repository';
 
@@ -43,9 +45,11 @@ import { PostsDeletePostCommand } from '../../posts/application/use-cases/posts-
 export class BlogsSAController {
   constructor(
     // private readonly blogsQueryRepository: BlogsQueryRepository,
-    private readonly blogsQueryRepository: BlogsSQLQueryRepository,
+    // private readonly blogsQueryRepository: BlogsSQLQueryRepository,
+    private readonly blogsQueryRepository: BlogsORMQueryRepository,
     //private readonly postsQueryRepository: PostsQueryRepository,
-    protected postsQueryRepository: PostsSQLQueryRepository,
+    // protected postsQueryRepository: PostsSQLQueryRepository,
+    protected postsQueryRepository: PostsORMQueryRepository,
     //private readonly jwtService: JwtService,
     private readonly commandBus: CommandBus,
   ) {}

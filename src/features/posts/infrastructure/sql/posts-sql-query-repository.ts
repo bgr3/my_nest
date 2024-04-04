@@ -1,12 +1,12 @@
-import { PostOutput } from '../api/dto/output/post-output-type';
-import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
+import { PostOutput } from '../../api/dto/output/post-output-type';
+import { QueryFilter } from '../../../../infrastructure/dto/input/input-dto';
 import {
   LikesInfoOutput,
   Paginator,
-} from '../../../infrastructure/dto/output/output-dto';
+} from '../../../../infrastructure/dto/output/output-dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { PostLikesInfoRawDb, PostRawDb } from './dto/post-repository-dto';
+import { PostLikesInfoRawDb, PostRawDb } from '../dto/post-repository-dto';
 
 export class PostsSQLQueryRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}

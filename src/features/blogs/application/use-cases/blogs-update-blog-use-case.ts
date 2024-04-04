@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogPutType } from '../../api/dto/input/blogs-input-dto';
-import { BlogsSQLRepository } from '../../infrastructure/blogs-sql-repository';
+import { BlogsORMRepository } from '../../infrastructure/orm/blogs-orm-repository';
+// import { BlogsSQLRepository } from '../../infrastructure/sql/blogs-sql-repository';
 //import { BlogsRepository } from '../../infrastructure/blogs-repository';
 
 export class BlogsUpdateBlogCommand {
@@ -16,7 +17,8 @@ export class BlogsUpdateBlogUseCase
 {
   constructor(
     //protected blogsRepository: BlogsRepository
-    protected blogsRepository: BlogsSQLRepository,
+    // protected blogsRepository: BlogsSQLRepository,
+    private readonly blogsRepository: BlogsORMRepository,
   ) {}
 
   async execute(command: BlogsUpdateBlogCommand): Promise<boolean> {

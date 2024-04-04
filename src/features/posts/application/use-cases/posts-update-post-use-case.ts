@@ -1,7 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PostPutType } from '../../api/dto/input/post-input-dto';
-import { BlogsSQLQueryRepository } from '../../../blogs/infrastructure/blogs-sql-query-repository';
-import { PostsSQLRepository } from '../../infrastructure/posts-sql-repository';
+import { BlogsORMQueryRepository } from '../../../blogs/infrastructure/orm/blogs-orm-query-repository';
+import { PostsORMRepository } from '../../infrastructure/orm/posts-orm-repository';
+// import { PostsSQLRepository } from '../../infrastructure/sql/posts-sql-repository';
+// import { BlogsSQLQueryRepository } from '../../../blogs/infrastructure/sql/blogs-sql-query-repository';
 // import { PostsRepository } from '../../infrastructure/posts-repository';
 // import { BlogsQueryRepository } from '../../../blogs/infrastructure/blogs-query-repository';
 
@@ -18,9 +20,11 @@ export class PostsUpdatePostUseCase
 {
   constructor(
     // private readonly postsRepository: PostsRepository,
-    private readonly postsRepository: PostsSQLRepository,
+    // private readonly postsRepository: PostsSQLRepository,
+    private readonly postsRepository: PostsORMRepository,
     // private readonly blogsQueryRepository: BlogsQueryRepository,
-    private readonly blogsQueryRepository: BlogsSQLQueryRepository,
+    // private readonly blogsQueryRepository: BlogsSQLQueryRepository,
+    private readonly blogsQueryRepository: BlogsORMQueryRepository,
   ) {}
 
   async execute(command: PostsUpdatePostCommand): Promise<boolean> {

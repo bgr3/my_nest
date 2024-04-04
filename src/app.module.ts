@@ -14,12 +14,12 @@ import { UsersRepository } from './features/users/infrastructure/mongo/users-rep
 import { UsersQueryRepository } from './features/users/infrastructure/mongo/users-query-repository';
 import { TestingController } from './features/testing/api/testing-controller';
 import { BlogsService } from './features/blogs/application/blog-service';
-import { BlogsQueryRepository } from './features/blogs/infrastructure/blogs-query-repository';
-import { BlogsRepository } from './features/blogs/infrastructure/blogs-repository';
+import { BlogsQueryRepository } from './features/blogs/infrastructure/mongo/blogs-query-repository';
+import { BlogsRepository } from './features/blogs/infrastructure/mongo/blogs-repository';
 import { BlogsController } from './features/blogs/api/blogs-controller';
 import { PostsService } from './features/posts/application/post-service';
-import { PostsRepository } from './features/posts/infrastructure/posts-repository';
-import { PostsQueryRepository } from './features/posts/infrastructure/posts-query-repository';
+import { PostsRepository } from './features/posts/infrastructure/mongo/posts-repository';
+import { PostsQueryRepository } from './features/posts/infrastructure/mongo/posts-query-repository';
 import { PostsController } from './features/posts/api/post-controller';
 import { CommentsService } from './features/comments/application/comment-service';
 import { CommentsRepository } from './features/comments/infrastructure/comments-repository';
@@ -109,10 +109,10 @@ import { UsersSQLRepository } from './features/users/infrastructure/sql/users-sq
 import { UsersSQLQueryRepository } from './features/users/infrastructure/sql/users-sql-query-repository';
 import { AuthSQLRepository } from './features/auth/infrastructure/sql/auth-sql-repository';
 import { AuthSQLQueryRepository } from './features/auth/infrastructure/sql/auth-sql-query-repository';
-import { BlogsSQLRepository } from './features/blogs/infrastructure/blogs-sql-repository';
-import { BlogsSQLQueryRepository } from './features/blogs/infrastructure/blogs-sql-query-repository';
-import { PostsSQLRepository } from './features/posts/infrastructure/posts-sql-repository';
-import { PostsSQLQueryRepository } from './features/posts/infrastructure/posts-sql-query-repository';
+import { BlogsSQLRepository } from './features/blogs/infrastructure/sql/blogs-sql-repository';
+import { BlogsSQLQueryRepository } from './features/blogs/infrastructure/sql/blogs-sql-query-repository';
+import { PostsSQLRepository } from './features/posts/infrastructure/sql/posts-sql-repository';
+import { PostsSQLQueryRepository } from './features/posts/infrastructure/sql/posts-sql-query-repository';
 import { BlogsSAController } from './features/blogs/api/blogs-sa-controller';
 import { CommentsSQLRepository } from './features/comments/infrastructure/comments-sql-repository';
 import { CommentsSQLQueryRepository } from './features/comments/infrastructure/comments-sql-query-repository';
@@ -126,6 +126,13 @@ import { AuthORMQueryRepository } from './features/auth/infrastructure/orm/auth-
 import { AuthORMRepository } from './features/auth/infrastructure/orm/auth-orm-repository';
 import { LogORMRepository } from './features/access/infrastructure/access-log-orm-repository';
 import { AccessLogORM } from './features/access/domain/access-log-orm-entity';
+import { BlogsORMRepository } from './features/blogs/infrastructure/orm/blogs-orm-repository';
+import { BlogORM } from './features/blogs/domain/blogs-orm-entity';
+import { BlogsORMQueryRepository } from './features/blogs/infrastructure/orm/blogs-orm-query-repository';
+import { PostORM } from './features/posts/domain/posts-orm-entity';
+import { PostLikesInfoORM } from './features/posts/domain/posts-likesinfo-orm-entity';
+import { PostsORMRepository } from './features/posts/infrastructure/orm/posts-orm-repository';
+import { PostsORMQueryRepository } from './features/posts/infrastructure/orm/posts-orm-query-repository';
 
 dotenv.config();
 
@@ -151,7 +158,7 @@ if (postgresUrl === 'development') {
     password: 'nodejs',
     database: 'nestORM',
     // namingStrategy:
-    logging: ['query'],
+    // logging: ['query'],
     autoLoadEntities: true,
     synchronize: true,
   };
@@ -181,6 +188,8 @@ const blogsProviders = [
   BlogsQueryRepository,
   BlogsSQLRepository,
   BlogsSQLQueryRepository,
+  BlogsORMRepository,
+  BlogsORMQueryRepository,
 ];
 
 const postsProviders = [
@@ -190,6 +199,8 @@ const postsProviders = [
   BlogExistValidation,
   PostsSQLRepository,
   PostsSQLQueryRepository,
+  PostsORMRepository,
+  PostsORMQueryRepository,
 ];
 
 const commentsProviders = [
@@ -257,7 +268,16 @@ const useCases = [
   AuthDeleteAuthSessionByTokenUseCase,
 ];
 
-const entities = [UserORM, EmailConfirmation, AuthORM, JWTTokens, AccessLogORM];
+const entities = [
+  UserORM,
+  EmailConfirmation,
+  AuthORM,
+  JWTTokens,
+  AccessLogORM,
+  BlogORM,
+  PostORM,
+  PostLikesInfoORM,
+];
 
 @Module({
   imports: [

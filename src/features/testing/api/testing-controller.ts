@@ -15,12 +15,11 @@ export class TestingController {
   @Delete('all-data')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async allData() {
-    //videosRepository.testAllData
-    // await this.commandBus.execute(new BlogsTestAllDataCommand());
-    // await this.commandBus.execute(new PostsTestAllDataCommand());
+    await this.commandBus.execute(new BlogsTestAllDataCommand());
+    await this.commandBus.execute(new PostsTestAllDataCommand());
     await this.commandBus.execute(new UsersTestAllDataCommand());
     // await this.commandBus.execute(new CommentsTestAllDataCommand());
-    // await this.commandBus.execute(new AccessTestAllDataCommand());
+    await this.commandBus.execute(new AccessTestAllDataCommand());
     await this.commandBus.execute(new AuthTestAllDataCommand());
     return;
   }

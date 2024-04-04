@@ -15,22 +15,22 @@ export class UsersORMQueryRepository {
   async findUsers(filter: UserQueryFilter): Promise<Paginator<UserOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
-    const dbCount = await this.usersRepository
-      .createQueryBuilder('u')
-      .select()
-      .where('u.login ilike :login', {
-        login: `%${filter.searchLoginTerm}%`,
-      })
-      .orWhere('u.email ilike :email', {
-        email: `%${filter.searchEmailTerm}%`,
-      })
-      .orderBy(
-        `u.${filter.sortBy}`,
-        filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
-      )
-      .getCount();
+    // const dbCount = await this.usersRepository
+    //   .createQueryBuilder('u')
+    //   .select()
+    //   .where('u.login ilike :login', {
+    //     login: `%${filter.searchLoginTerm}%`,
+    //   })
+    //   .orWhere('u.email ilike :email', {
+    //     email: `%${filter.searchEmailTerm}%`,
+    //   })
+    //   .orderBy(
+    //     `u.${filter.sortBy}`,
+    //     filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
+    //   )
+    //   .getCount();
 
-    console.log(filter);
+    // console.log(filter);
 
     const dbResult = await this.usersRepository
       .createQueryBuilder('u')
@@ -45,36 +45,38 @@ export class UsersORMQueryRepository {
         `u.${filter.sortBy}`,
         filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
       )
-      .skip(skip)
-      .take(filter.pageSize)
-      .getMany();
+      .skip(skip) //use with joins
+      .take(filter.pageSize) //use with joins
+      // .offset(skip)            //use with regular query
+      // .limit(filter.pageSize)  //use with regular query
+      .getManyAndCount();
 
-    console.log(filter);
+    const dbCount = dbResult[1];
 
     const paginator = {
       pagesCount: Math.ceil(dbCount / filter.pageSize),
       page: filter.pageNumber,
       pageSize: filter.pageSize,
       totalCount: dbCount,
-      items: dbResult.map((p: UserORM) => userMapper(p)),
+      items: dbResult[0].map((p: UserORM) => userMapper(p)),
     };
 
     return paginator;
   }
 
   async findUserByID(id: string): Promise<UserOutput | null> {
-    let userDb;
+    let user;
 
     try {
-      userDb = await this.usersRepository.findOne({
+      user = await this.usersRepository.findOne({
         where: { id: id },
       });
     } catch (err) {
       return null;
     }
 
-    if (userDb) {
-      return userMapper(userDb);
+    if (user) {
+      return userMapper(user);
     }
     return null;
   }

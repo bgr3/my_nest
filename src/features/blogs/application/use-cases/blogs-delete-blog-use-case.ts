@@ -1,5 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsSQLRepository } from '../../infrastructure/blogs-sql-repository';
+import { BlogsORMRepository } from '../../infrastructure/orm/blogs-orm-repository';
+// import { BlogsSQLRepository } from '../../infrastructure/sql/blogs-sql-repository';
 // import { BlogsRepository } from '../../infrastructure/blogs-repository';
 
 export class BlogsDeleteBlogCommand {
@@ -12,7 +13,8 @@ export class BlogsDeleteBlogUseCase
 {
   constructor(
     //protected blogsRepository: BlogsRepository
-    protected blogsRepository: BlogsSQLRepository,
+    // protected blogsRepository: BlogsSQLRepository,
+    private readonly blogsRepository: BlogsORMRepository,
   ) {}
 
   async execute(command: BlogsDeleteBlogCommand): Promise<boolean> {

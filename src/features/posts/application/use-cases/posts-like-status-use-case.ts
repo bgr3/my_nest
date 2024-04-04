@@ -1,7 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LikeStatus } from '../../../../infrastructure/dto/input/input-dto';
 import { UsersService } from '../../../users/application/users-service';
-import { PostsSQLRepository } from '../../infrastructure/posts-sql-repository';
+import { PostsORMRepository } from '../../infrastructure/orm/posts-orm-repository';
+// import { PostsSQLRepository } from '../../infrastructure/sql/posts-sql-repository';
 // import { PostsRepository } from '../../infrastructure/posts-repository';
 
 export class PostsLikeStatusCommand {
@@ -18,8 +19,8 @@ export class PostsLikeStatusUseCase
 {
   constructor(
     // private readonly postsRepository: PostsRepository,
-    private readonly postsRepository: PostsSQLRepository,
-
+    // private readonly postsRepository: PostsSQLRepository,
+    private readonly postsRepository: PostsORMRepository,
     private readonly usersService: UsersService,
   ) {}
 

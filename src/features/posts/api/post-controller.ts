@@ -29,8 +29,9 @@ import { PostsCreatePostCommand } from '../application/use-cases/posts-create-po
 import { PostsUpdatePostCommand } from '../application/use-cases/posts-update-post-use-case';
 import { PostsLikeStatusCommand } from '../application/use-cases/posts-like-status-use-case';
 import { PostsDeletePostCommand } from '../application/use-cases/posts-delete-post-use-case';
-import { PostsSQLQueryRepository } from '../infrastructure/posts-sql-query-repository';
+// import { PostsSQLQueryRepository } from '../infrastructure/sql/posts-sql-query-repository';
 import { CommentsSQLQueryRepository } from '../../comments/infrastructure/comments-sql-query-repository';
+import { PostsORMQueryRepository } from '../infrastructure/orm/posts-orm-query-repository';
 // import { CommentsQueryRepository } from '../../comments/infrastructure/comments-query-repository';
 // import { PostsQueryRepository } from '../infrastructure/posts-query-repository';
 
@@ -40,7 +41,8 @@ export class PostsController {
     // private readonly commentsQueryRepository: CommentsQueryRepository,
     protected commentsQueryRepository: CommentsSQLQueryRepository,
     // private readonly postsQueryRepository: PostsQueryRepository,
-    protected postsQueryRepository: PostsSQLQueryRepository,
+    // protected postsQueryRepository: PostsSQLQueryRepository,
+    protected postsQueryRepository: PostsORMQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
 

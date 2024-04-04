@@ -1,37 +1,18 @@
 import {
-  BadRequestException,
-  Body,
   Controller,
-  Delete,
   Get,
-  HttpCode,
   HttpException,
-  NotFoundException,
   Param,
-  Post,
-  Put,
   Query,
   Req,
-  UseGuards,
 } from '@nestjs/common';
-import {
-  BlogPostType,
-  BlogPutType,
-  BlogQueryFilter,
-  PostForBlogPostType,
-} from './dto/input/blogs-input-dto';
+import { BlogQueryFilter } from './dto/input/blogs-input-dto';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
-import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
-import { CustomValidationPipe } from '../../../infrastructure/pipes/auth-email-confirm-validation-pipe';
-import { BlogOutput } from './dto/output/blog-output-dto';
-import { CommandBus } from '@nestjs/cqrs';
-import { BlogsCreateBlogCommand } from '../application/use-cases/blogs-create-blog-use-case';
-import { BlogsUpdateBlogCommand } from '../application/use-cases/blogs-update-blog-use-case';
-import { BlogsDeleteBlogCommand } from '../application/use-cases/blogs-delete-blog-use-case';
-import { PostsCreatePostCommand } from '../../posts/application/use-cases/posts-create-post-use-case';
 import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
-import { BlogsSQLQueryRepository } from '../infrastructure/blogs-sql-query-repository';
-import { PostsSQLQueryRepository } from '../../posts/infrastructure/posts-sql-query-repository';
+// import { PostsSQLQueryRepository } from '../../posts/infrastructure/sql/posts-sql-query-repository';
+import { BlogsORMQueryRepository } from '../infrastructure/orm/blogs-orm-query-repository';
+import { PostsORMQueryRepository } from '../../posts/infrastructure/orm/posts-orm-query-repository';
+// import { BlogsSQLQueryRepository } from '../infrastructure/sql/blogs-sql-query-repository';
 // import { BlogsQueryRepository } from '../infrastructure/blogs-query-repository';
 // import { PostsQueryRepository } from '../../posts/infrastructure/posts-query-repository';
 
@@ -39,9 +20,11 @@ import { PostsSQLQueryRepository } from '../../posts/infrastructure/posts-sql-qu
 export class BlogsController {
   constructor(
     // private readonly blogsQueryRepository: BlogsQueryRepository,
-    private readonly blogsQueryRepository: BlogsSQLQueryRepository,
+    // private readonly blogsQueryRepository: BlogsSQLQueryRepository,
+    private readonly blogsQueryRepository: BlogsORMQueryRepository,
     //private readonly postsQueryRepository: PostsQueryRepository,
-    protected postsQueryRepository: PostsSQLQueryRepository,
+    // protected postsQueryRepository: PostsSQLQueryRepository,
+    protected postsQueryRepository: PostsORMQueryRepository,
   ) {}
 
   @Get()

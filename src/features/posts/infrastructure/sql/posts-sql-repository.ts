@@ -1,7 +1,7 @@
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { PostLikesInfoSQL, PostSQL } from '../domain/posts-sql-entity';
-import { PostRawDb } from './dto/post-repository-dto';
+import { PostSQL } from '../../domain/posts-sql-entity';
+import { PostRawDb } from '../dto/post-repository-dto';
 
 export class PostsSQLRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
