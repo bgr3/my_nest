@@ -18,7 +18,7 @@ export class TestingController {
     await this.commandBus.execute(new BlogsTestAllDataCommand());
     await this.commandBus.execute(new PostsTestAllDataCommand());
     await this.commandBus.execute(new UsersTestAllDataCommand());
-    // await this.commandBus.execute(new CommentsTestAllDataCommand());
+    await this.commandBus.execute(new CommentsTestAllDataCommand());
     await this.commandBus.execute(new AccessTestAllDataCommand());
     await this.commandBus.execute(new AuthTestAllDataCommand());
     return;

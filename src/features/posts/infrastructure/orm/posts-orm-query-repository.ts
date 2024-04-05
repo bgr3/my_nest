@@ -80,7 +80,7 @@ export class PostsORMQueryRepository {
       return null;
     }
 
-    if (post) return null;
+    if (!post) return null;
 
     return postMapper(post, userId);
   }

@@ -133,7 +133,7 @@ import { PostORM } from './features/posts/domain/posts-orm-entity';
 import { PostLikesInfoORM } from './features/posts/domain/posts-likesinfo-orm-entity';
 import { PostsORMRepository } from './features/posts/infrastructure/orm/posts-orm-repository';
 import { PostsORMQueryRepository } from './features/posts/infrastructure/orm/posts-orm-query-repository';
-import { CommentatorInfo } from './features/comments/domain/comments-commentator-info-entity';
+import { CommentatorInfo } from './features/comments/domain/comments-commentator-info-orm-entity';
 import { CommentLikesInfoORM } from './features/comments/domain/comments-likes-info-orm-entity';
 import { CommentForPostORM } from './features/comments/domain/comments-orm-entity';
 import { CommentsORMRepository } from './features/comments/infrastructure/orm/comments-orm-repository';

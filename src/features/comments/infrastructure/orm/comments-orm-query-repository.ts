@@ -20,6 +20,7 @@ export class CommentsORMQueryRepository {
   ): Promise<Paginator<CommentOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
     const sortDirection = filter.sortDirection == 'asc' ? 'ASC' : 'DESC';
+    const sortBy = `c.${filter.sortBy}`;
 
     let dbResult;
     try {
@@ -31,7 +32,7 @@ export class CommentsORMQueryRepository {
         .where(postId ? 'c.postId = :postId' : '', {
           postId: postId,
         })
-        .orderBy(filter.sortBy, sortDirection)
+        .orderBy(sortBy, sortDirection)
         .skip(skip)
         .take(filter.pageSize)
         .getManyAndCount();
@@ -47,10 +48,9 @@ export class CommentsORMQueryRepository {
       page: filter.pageNumber,
       pageSize: filter.pageSize,
       totalCount: dbCount,
-      items: dbResult.map((c: CommentForPostORM) => {
-        if (!c.likesInfo[0]) c.likesInfo.splice(0, 1);
-        return commentMapper(c, userId);
-      }),
+      items: dbResult[0].map((c: CommentForPostORM) =>
+        commentMapper(c, userId),
+      ),
     };
 
     return paginator;

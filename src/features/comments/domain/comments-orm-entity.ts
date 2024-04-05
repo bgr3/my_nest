@@ -5,7 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CommentatorInfo } from './comments-commentator-info-entity';
+import { CommentatorInfo } from './comments-commentator-info-orm-entity';
 import { CommentLikesInfoORM } from './comments-likes-info-orm-entity';
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 
@@ -23,7 +23,6 @@ export class CommentForPostORM {
     {
       eager: true,
       cascade: true,
-      // onDelete: 'CASCADE',
     },
   )
   commentatorInfo: CommentatorInfo;
