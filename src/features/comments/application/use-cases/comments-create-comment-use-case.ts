@@ -2,12 +2,14 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CommentPostType } from '../../api/dto/input/comments-input-dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommentForPost, CommentModelType } from '../../domain/comments-entity';
-import { JwtService } from '@nestjs/jwt';
+// import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../../../users/application/users-service';
 // import { PostsSQLQueryRepository } from '../../../posts/infrastructure/sql/posts-sql-query-repository';
-import { CommentsSQLRepository } from '../../infrastructure/comments-sql-repository';
-import { CommentForPostSQL } from '../../domain/comments-sql-entity';
+// import { CommentsSQLRepository } from '../../infrastructure/sql/comments-sql-repository';
+// import { CommentForPostSQL } from '../../domain/comments-sql-entity';
 import { PostsORMQueryRepository } from '../../../posts/infrastructure/orm/posts-orm-query-repository';
+import { CommentsORMRepository } from '../../infrastructure/orm/comments-orm-repository';
+import { CommentForPostORM } from '../../domain/comments-orm-entity';
 // import { CommentsRepository } from '../../infrastructure/comments-repository';
 // import { PostsQueryRepository } from '../../../posts/infrastructure/posts-query-repository';
 
@@ -26,8 +28,9 @@ export class CommentsCreateCommentUseCase
   constructor(
     @InjectModel(CommentForPost.name) private CommentModel: CommentModelType,
     // private readonly commentsRepository: CommentsRepository,
-    private readonly commentsRepository: CommentsSQLRepository,
-    private readonly jwtService: JwtService,
+    // private readonly commentsRepository: CommentsSQLRepository,
+    private readonly commentsRepository: CommentsORMRepository,
+    // private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     // private readonly postsQueryRepository: PostsQueryRepository,
     // protected postsQueryRepository: PostsSQLQueryRepository,
@@ -42,13 +45,14 @@ export class CommentsCreateCommentUseCase
     const post = await this.postsQueryRepository.findPostByID(command.postId);
 
     if (post) {
-      const newComment = CommentForPostSQL /*CommentForPost*/.createComment(
-        command.dto.content,
-        post.id,
-        user.id /*_id*/
-          .toString(),
-        user.login,
-      );
+      const newComment =
+        CommentForPostORM /*CommentForPostSQL*/ /*CommentForPost*/.createComment(
+          command.dto.content,
+          post.id,
+          user.id /*_id*/
+            .toString(),
+          user.login,
+        );
 
       //const newCommentModel = new this.CommentModel(newComment);
 

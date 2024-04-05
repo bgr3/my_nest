@@ -5,10 +5,10 @@ import {
   CommentDocument,
   CommentModelType,
   CommentForPost,
-} from '../domain/comments-entity';
-import { CommentOutput } from '../api/dto/output/comments-output-dto';
-import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
-import { Paginator } from '../../../infrastructure/dto/output/output-dto';
+} from '../../domain/comments-entity';
+import { CommentOutput } from '../../api/dto/output/comments-output-dto';
+import { QueryFilter } from '../../../../infrastructure/dto/input/input-dto';
+import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
 
 @Injectable()
 export class CommentsQueryRepository {

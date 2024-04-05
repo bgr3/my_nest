@@ -19,14 +19,16 @@ import { CommentsLikeStatusCommand } from '../application/use-cases/comments-lik
 import { CommentsDeleteCommentCommand } from '../application/use-cases/comments-delete-comment-use-case';
 import { CommentPutType } from './dto/input/comments-input-dto';
 import { LikeStatus } from '../../../infrastructure/dto/input/input-dto';
-import { CommentsSQLQueryRepository } from '../infrastructure/comments-sql-query-repository';
+import { CommentsORMQueryRepository } from '../infrastructure/orm/comments-orm-query-repository';
+// import { CommentsSQLQueryRepository } from '../infrastructure/sql/comments-sql-query-repository';
 // import { CommentsQueryRepository } from '../infrastructure/comments-query-repository';
 
 @Controller('comments')
 export class CommentsController {
   constructor(
     // private readonly commentsQueryRepository: CommentsQueryRepository,
-    protected commentsQueryRepository: CommentsSQLQueryRepository,
+    // protected commentsQueryRepository: CommentsSQLQueryRepository,
+    protected commentsQueryRepository: CommentsORMQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
 

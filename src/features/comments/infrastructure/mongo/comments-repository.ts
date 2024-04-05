@@ -5,7 +5,7 @@ import {
   CommentForPost,
   CommentDocument,
   CommentModelType,
-} from '../domain/comments-entity';
+} from '../../domain/comments-entity';
 
 @Injectable()
 export class CommentsRepository {

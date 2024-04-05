@@ -2,8 +2,9 @@ import { HttpException, Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_STATUSES } from '../../settings/http-statuses';
 // import { PostsSQLQueryRepository } from '../../features/posts/infrastructure/sql/posts-sql-query-repository';
-import { CommentsSQLQueryRepository } from '../../features/comments/infrastructure/comments-sql-query-repository';
+// import { CommentsSQLQueryRepository } from '../../features/comments/infrastructure/sql/comments-sql-query-repository';
 import { PostsORMQueryRepository } from '../../features/posts/infrastructure/orm/posts-orm-query-repository';
+import { CommentsORMQueryRepository } from '../../features/comments/infrastructure/orm/comments-orm-query-repository';
 // import { CommentsQueryRepository } from '../../features/comments/infrastructure/comments-query-repository';
 // import { PostsQueryRepository } from '../../features/posts/infrastructure/posts-query-repository';
 
@@ -31,7 +32,8 @@ export class PostValidationMiddleware implements NestMiddleware {
 export class CommentExistMiddleware implements NestMiddleware {
   constructor(
     // protected commentsQueryRepository: CommentsQueryRepository
-    protected commentsQueryRepository: CommentsSQLQueryRepository,
+    // protected commentsQueryRepository: CommentsSQLQueryRepository,
+    protected commentsQueryRepository: CommentsORMQueryRepository,
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const comment = await this.commentsQueryRepository.findCommentByID(
@@ -70,7 +72,8 @@ export class PostExistMiddleware implements NestMiddleware {
 export class AuthorizationCommentMiddleware implements NestMiddleware {
   constructor(
     // protected commentsQueryRepository: CommentsQueryRepository
-    protected commentsQueryRepository: CommentsSQLQueryRepository,
+    // protected commentsQueryRepository: CommentsSQLQueryRepository,
+    protected commentsQueryRepository: CommentsORMQueryRepository,
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const comment = await this.commentsQueryRepository.findCommentByID(

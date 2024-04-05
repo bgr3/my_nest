@@ -22,8 +22,8 @@ import { PostsRepository } from './features/posts/infrastructure/mongo/posts-rep
 import { PostsQueryRepository } from './features/posts/infrastructure/mongo/posts-query-repository';
 import { PostsController } from './features/posts/api/post-controller';
 import { CommentsService } from './features/comments/application/comment-service';
-import { CommentsRepository } from './features/comments/infrastructure/comments-repository';
-import { CommentsQueryRepository } from './features/comments/infrastructure/comments-query-repository';
+import { CommentsRepository } from './features/comments/infrastructure/mongo/comments-repository';
+import { CommentsQueryRepository } from './features/comments/infrastructure/mongo/comments-query-repository';
 import { CommentsController } from './features/comments/api/comments-controller';
 import { Blog, BlogSchema } from './features/blogs/domain/blogs-entity';
 import { Post, PostSchema } from './features/posts/domain/posts-entity';
@@ -114,8 +114,8 @@ import { BlogsSQLQueryRepository } from './features/blogs/infrastructure/sql/blo
 import { PostsSQLRepository } from './features/posts/infrastructure/sql/posts-sql-repository';
 import { PostsSQLQueryRepository } from './features/posts/infrastructure/sql/posts-sql-query-repository';
 import { BlogsSAController } from './features/blogs/api/blogs-sa-controller';
-import { CommentsSQLRepository } from './features/comments/infrastructure/comments-sql-repository';
-import { CommentsSQLQueryRepository } from './features/comments/infrastructure/comments-sql-query-repository';
+import { CommentsSQLRepository } from './features/comments/infrastructure/sql/comments-sql-repository';
+import { CommentsSQLQueryRepository } from './features/comments/infrastructure/sql/comments-sql-query-repository';
 import { UserORM } from './features/users/domain/users-orm-entity';
 import { UsersORMRepository } from './features/users/infrastructure/orm/users-orm-repository';
 import { UsersORMQueryRepository } from './features/users/infrastructure/orm/users-orm-query-repository';
@@ -133,6 +133,11 @@ import { PostORM } from './features/posts/domain/posts-orm-entity';
 import { PostLikesInfoORM } from './features/posts/domain/posts-likesinfo-orm-entity';
 import { PostsORMRepository } from './features/posts/infrastructure/orm/posts-orm-repository';
 import { PostsORMQueryRepository } from './features/posts/infrastructure/orm/posts-orm-query-repository';
+import { CommentatorInfo } from './features/comments/domain/comments-commentator-info-entity';
+import { CommentLikesInfoORM } from './features/comments/domain/comments-likes-info-orm-entity';
+import { CommentForPostORM } from './features/comments/domain/comments-orm-entity';
+import { CommentsORMRepository } from './features/comments/infrastructure/orm/comments-orm-repository';
+import { CommentsORMQueryRepository } from './features/comments/infrastructure/orm/comments-orm-query-repository';
 
 dotenv.config();
 
@@ -209,6 +214,8 @@ const commentsProviders = [
   CommentsQueryRepository,
   CommentsSQLRepository,
   CommentsSQLQueryRepository,
+  CommentsORMRepository,
+  CommentsORMQueryRepository,
 ];
 
 const strategiesProviders = [LocalStrategy, JwtStrategy, BasicStrategy];
@@ -277,6 +284,9 @@ const entities = [
   BlogORM,
   PostORM,
   PostLikesInfoORM,
+  CommentForPostORM,
+  CommentatorInfo,
+  CommentLikesInfoORM,
 ];
 
 @Module({

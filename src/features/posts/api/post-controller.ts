@@ -30,8 +30,9 @@ import { PostsUpdatePostCommand } from '../application/use-cases/posts-update-po
 import { PostsLikeStatusCommand } from '../application/use-cases/posts-like-status-use-case';
 import { PostsDeletePostCommand } from '../application/use-cases/posts-delete-post-use-case';
 // import { PostsSQLQueryRepository } from '../infrastructure/sql/posts-sql-query-repository';
-import { CommentsSQLQueryRepository } from '../../comments/infrastructure/comments-sql-query-repository';
+// import { CommentsSQLQueryRepository } from '../../comments/infrastructure/sql/comments-sql-query-repository';
 import { PostsORMQueryRepository } from '../infrastructure/orm/posts-orm-query-repository';
+import { CommentsORMQueryRepository } from '../../comments/infrastructure/orm/comments-orm-query-repository';
 // import { CommentsQueryRepository } from '../../comments/infrastructure/comments-query-repository';
 // import { PostsQueryRepository } from '../infrastructure/posts-query-repository';
 
@@ -39,7 +40,8 @@ import { PostsORMQueryRepository } from '../infrastructure/orm/posts-orm-query-r
 export class PostsController {
   constructor(
     // private readonly commentsQueryRepository: CommentsQueryRepository,
-    protected commentsQueryRepository: CommentsSQLQueryRepository,
+    // protected commentsQueryRepository: CommentsSQLQueryRepository,
+    protected commentsQueryRepository: CommentsORMQueryRepository,
     // private readonly postsQueryRepository: PostsQueryRepository,
     // protected postsQueryRepository: PostsSQLQueryRepository,
     protected postsQueryRepository: PostsORMQueryRepository,

@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import {
-  CommentForPostSQL,
-  CommentLikesInfoSQL,
-} from '../domain/comments-sql-entity';
-import { CommentsRawDb } from './dto/comments-repository-dto';
+import { CommentForPostSQL } from '../../domain/comments-sql-entity';
+import { CommentsRawDb } from '../dto/comments-repository-dto';
 
 @Injectable()
 export class CommentsSQLRepository {

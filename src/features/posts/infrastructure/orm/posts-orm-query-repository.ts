@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostORM } from '../../domain/posts-orm-entity';
 import { PostLikesInfoORM } from '../../domain/posts-likesinfo-orm-entity';
-import { BlogORM } from '../../../blogs/domain/blogs-orm-entity';
 
 export class PostsORMQueryRepository {
   constructor(
@@ -26,6 +25,8 @@ export class PostsORMQueryRepository {
     const sortBy =
       filter.sortBy == 'blogName' ? 'b.name' : `p.${filter.sortBy}`;
 
+    const sortDirection = filter.sortDirection == 'asc' ? 'ASC' : 'DESC';
+
     let dbResult;
     try {
       dbResult = await this.postsRepository
@@ -36,7 +37,7 @@ export class PostsORMQueryRepository {
         .where(blogId ? 'p.blogId = :blogId' : '', {
           blogId: blogId,
         })
-        .orderBy(sortBy, filter.sortDirection == 'asc' ? 'ASC' : 'DESC')
+        .orderBy(sortBy, sortDirection)
         .skip(skip)
         .take(filter.pageSize)
         .getManyAndCount();
@@ -79,10 +80,9 @@ export class PostsORMQueryRepository {
       return null;
     }
 
-    if (post) {
-      return postMapper(post, userId);
-    }
-    return null;
+    if (post) return null;
+
+    return postMapper(post, userId);
   }
 }
 
