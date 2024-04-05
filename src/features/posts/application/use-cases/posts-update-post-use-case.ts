@@ -43,7 +43,7 @@ export class PostsUpdatePostUseCase
       command.dto.blogId,
       blogName,
     );
-    this.postsRepository.save(post);
+    await this.postsRepository.save(post);
 
     return true;
   }

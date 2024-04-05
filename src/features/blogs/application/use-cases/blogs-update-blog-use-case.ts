@@ -26,7 +26,7 @@ export class BlogsUpdateBlogUseCase
 
     if (blog) {
       blog.updateBlog(command.dto);
-      this.blogsRepository.save(blog);
+      await this.blogsRepository.save(blog);
       return true;
     }
 
