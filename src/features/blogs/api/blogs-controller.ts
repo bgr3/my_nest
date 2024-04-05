@@ -58,9 +58,6 @@ export class BlogsController {
 
     const posts = await this.postsQueryRepository.findPosts(id, query, userId);
 
-    if (!posts)
-      throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
-
     return posts;
   }
 }

@@ -23,6 +23,9 @@ export class PostsORMQueryRepository {
   ): Promise<Paginator<PostOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
+    const sortBy =
+      filter.sortBy == 'blogName' ? 'b.name' : `p.${filter.sortBy}`;
+
     let dbResult;
     try {
       dbResult = await this.postsRepository
@@ -33,10 +36,7 @@ export class PostsORMQueryRepository {
         .where(blogId ? 'p.blogId = :blogId' : '', {
           blogId: blogId,
         })
-        .orderBy(
-          `p.${filter.sortBy}`,
-          filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
-        )
+        .orderBy(sortBy, filter.sortDirection == 'asc' ? 'ASC' : 'DESC')
         .skip(skip)
         .take(filter.pageSize)
         .getManyAndCount();
