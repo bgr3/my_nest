@@ -75,6 +75,7 @@ export class PostsORMQueryRepository {
         })
         .getOne();
     } catch (err) {
+      console.log(err);
       return null;
     }
 

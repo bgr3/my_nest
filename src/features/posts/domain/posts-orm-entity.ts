@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -24,10 +25,10 @@ export class PostORM {
   @Column()
   content: string;
 
-  @OneToOne(() => BlogORM, (blog) => blog.post, {
+  @ManyToOne(() => BlogORM, (blog) => blog.post, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
+  // @JoinColumn()
   blog: BlogORM;
   @Column({ type: 'uuid' })
   blogId: string;
