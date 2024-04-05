@@ -28,6 +28,8 @@ export class PostsORMRepository {
         },
       });
     } catch (err) {
+      console.log(err);
+
       return null;
     }
 

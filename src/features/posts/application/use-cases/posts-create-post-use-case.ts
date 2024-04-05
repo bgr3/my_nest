@@ -30,11 +30,11 @@ export class PostsCreatePostUseCase
   ) {}
 
   async execute(command: PostsCreatePostCommand): Promise<string | null> {
-    // const blogName = (
-    //   await this.blogsQueryRepository.findBlogByID(command.dto.blogId.trim())
-    // )?.name;
+    const blog = await this.blogsQueryRepository.findBlogByID(
+      command.dto.blogId.trim(),
+    );
 
-    // if (blogName) {
+    if (!blog) return null;
     const newPost = PostORM /*PostSQL*/ /*Post*/.createPost(
       command.dto.title,
       command.dto.shortDescription,

@@ -23,21 +23,27 @@ export class PostsORMQueryRepository {
   ): Promise<Paginator<PostOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
-    const dbResult = await this.postsRepository
-      .createQueryBuilder('p')
-      .select()
-      .leftJoinAndSelect('p.likesInfo', 'l')
-      .leftJoinAndSelect('p.blog', 'b')
-      .where(blogId ? 'p.blogId = :blogId' : '', {
-        blogId: blogId,
-      })
-      .orderBy(
-        `p.${filter.sortBy}`,
-        filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
-      )
-      .skip(skip)
-      .take(filter.pageSize)
-      .getManyAndCount();
+    let dbResult;
+    try {
+      dbResult = await this.postsRepository
+        .createQueryBuilder('p')
+        .select()
+        .leftJoinAndSelect('p.likesInfo', 'l')
+        .leftJoinAndSelect('p.blog', 'b')
+        .where(blogId ? 'p.blogId = :blogId' : '', {
+          blogId: blogId,
+        })
+        .orderBy(
+          `p.${filter.sortBy}`,
+          filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
+        )
+        .skip(skip)
+        .take(filter.pageSize)
+        .getManyAndCount();
+    } catch (err) {
+      console.log(err);
+      dbResult = [];
+    }
 
     const dbCount = dbResult[1];
 

@@ -28,13 +28,13 @@ export class PostsUpdatePostUseCase
   ) {}
 
   async execute(command: PostsUpdatePostCommand): Promise<boolean> {
-    // const blogName = (
-    //   await this.blogsQueryRepository.findBlogByID(command.dto.blogId.trim())
-    // )?.name;
+    const blog = await this.blogsQueryRepository.findBlogByID(
+      command.dto.blogId.trim(),
+    );
 
     const post = await this.postsRepository.getPostById(command.id);
 
-    if (!post /*|| !blogName*/) return false;
+    if (!post || !blog) return false;
 
     post.updatePost(
       command.dto.title,
