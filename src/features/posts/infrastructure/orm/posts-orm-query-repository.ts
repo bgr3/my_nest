@@ -42,7 +42,7 @@ export class PostsORMQueryRepository {
         .getManyAndCount();
     } catch (err) {
       console.log(err);
-      dbResult = [];
+      dbResult = [[], 0];
     }
 
     const dbCount = dbResult[1];
