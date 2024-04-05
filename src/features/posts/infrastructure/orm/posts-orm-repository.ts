@@ -40,6 +40,8 @@ export class PostsORMRepository {
     try {
       result = await this.postsRepository.delete(id);
     } catch (err) {
+      console.log(err);
+
       return false;
     }
 

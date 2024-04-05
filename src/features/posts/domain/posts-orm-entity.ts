@@ -1,6 +1,14 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 import { PostLikesInfoORM } from './posts-likesinfo-orm-entity';
+import { BlogORM } from '../../blogs/domain/blogs-orm-entity';
 
 @Entity()
 export class PostORM {
@@ -16,11 +24,16 @@ export class PostORM {
   @Column()
   content: string;
 
-  @Column()
+  @OneToOne(() => BlogORM, (blog) => blog.post, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  blog: BlogORM;
+  @Column({ type: 'uuid' })
   blogId: string;
 
-  @Column()
-  blogName: string;
+  // @Column()
+  // blogName: string;
 
   @Column()
   createdAt: string;
@@ -40,13 +53,13 @@ export class PostORM {
     shortDescription: string,
     content: string,
     blogId: string,
-    blogName: string,
+    // blogName: string,
   ) {
     this.title = title;
     this.shortDescription = shortDescription;
     this.content = content;
     this.blogId = blogId;
-    this.blogName = blogName;
+    // this.blogName = blogName;
   }
 
   setLikeStatus(userId: string, login: string, likeStatus: LikeStatusType) {
@@ -69,7 +82,7 @@ export class PostORM {
     shortDescription: string,
     content: string,
     blogId: string,
-    blogName: string,
+    // blogName: string,
   ): PostORM {
     const post = new this();
 
@@ -77,7 +90,7 @@ export class PostORM {
     post.shortDescription = shortDescription;
     post.content = content;
     post.blogId = blogId;
-    post.blogName = blogName;
+    // post.blogName = blogName;
     post.createdAt = new Date().toISOString();
 
     return post;

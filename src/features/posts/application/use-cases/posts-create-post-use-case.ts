@@ -30,26 +30,26 @@ export class PostsCreatePostUseCase
   ) {}
 
   async execute(command: PostsCreatePostCommand): Promise<string | null> {
-    const blogName = (
-      await this.blogsQueryRepository.findBlogByID(command.dto.blogId.trim())
-    )?.name;
+    // const blogName = (
+    //   await this.blogsQueryRepository.findBlogByID(command.dto.blogId.trim())
+    // )?.name;
 
-    if (blogName) {
-      const newPost = PostORM /*PostSQL*/ /*Post*/.createPost(
-        command.dto.title,
-        command.dto.shortDescription,
-        command.dto.content,
-        command.dto.blogId,
-        blogName,
-      );
+    // if (blogName) {
+    const newPost = PostORM /*PostSQL*/ /*Post*/.createPost(
+      command.dto.title,
+      command.dto.shortDescription,
+      command.dto.content,
+      command.dto.blogId,
+      // blogName,
+    );
 
-      // const newPostModel = new this.PostModel(newPost);
+    // const newPostModel = new this.PostModel(newPost);
 
-      const result = await this.postsRepository.save(newPost /*newPostModel*/);
+    const result = await this.postsRepository.save(newPost /*newPostModel*/);
 
-      return result /*newPostModel._id.toString()*/;
-    }
+    return result /*newPostModel._id.toString()*/;
+    // }
 
-    return null;
+    // return null;
   }
 }

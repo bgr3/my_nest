@@ -46,6 +46,8 @@ export class BlogsORMRepository {
     try {
       result = await this.blogsRepository.delete(id);
     } catch (err) {
+      console.log(err);
+
       return false;
     }
 

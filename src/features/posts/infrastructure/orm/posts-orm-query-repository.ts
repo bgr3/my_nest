@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostORM } from '../../domain/posts-orm-entity';
 import { PostLikesInfoORM } from '../../domain/posts-likesinfo-orm-entity';
+import { BlogORM } from '../../../blogs/domain/blogs-orm-entity';
 
 export class PostsORMQueryRepository {
   constructor(
@@ -26,6 +27,7 @@ export class PostsORMQueryRepository {
       .createQueryBuilder('p')
       .select()
       .leftJoinAndSelect('p.likesInfo', 'l')
+      .leftJoinAndSelect('p.blog', 'b')
       .where(blogId ? 'p.blogId = :blogId' : '', {
         blogId: blogId,
       })
@@ -57,9 +59,15 @@ export class PostsORMQueryRepository {
     let post;
 
     try {
-      post = await this.postsRepository.findOne({
-        where: { id: id },
-      });
+      post = await this.postsRepository
+        .createQueryBuilder('p')
+        .select()
+        .leftJoinAndSelect('p.likesInfo', 'l')
+        .leftJoinAndSelect('p.blog', 'b')
+        .where('p.id = :id', {
+          id: id,
+        })
+        .getOne();
     } catch (err) {
       return null;
     }
@@ -92,7 +100,7 @@ const postMapper = (post: PostORM, userId: string): PostOutput => {
     shortDescription: post.shortDescription,
     content: post.content,
     blogId: post.blogId,
-    blogName: post.blogName,
+    blogName: post.blog.name,
     createdAt: post.createdAt,
     extendedLikesInfo: {
       likesCount: likesCount,

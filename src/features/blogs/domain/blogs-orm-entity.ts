@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BlogPostType, BlogPutType } from '../api/dto/input/blogs-input-dto';
+import { PostORM } from '../../posts/domain/posts-orm-entity';
 
 @Entity()
 export class BlogORM {
@@ -20,6 +21,9 @@ export class BlogORM {
 
   @Column({ type: 'boolean' })
   isMembership: boolean;
+
+  @OneToOne(() => PostORM, (post) => post.blog)
+  post: PostORM;
 
   updateBlog(inputModel: BlogPutType) {
     this.name = inputModel.name;

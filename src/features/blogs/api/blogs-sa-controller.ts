@@ -115,15 +115,17 @@ export class BlogsSAController {
   ) {
     const foundBlog = await this.blogsQueryRepository.findBlogByID(id);
 
+    if (!foundBlog)
+      throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
+
     const userId = req.user;
 
     const posts = await this.postsQueryRepository.findPosts(id, query, userId);
 
-    if (!foundBlog) {
+    if (!posts)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
-    } else {
-      return posts;
-    }
+
+    return posts;
   }
 
   @Put(':id')

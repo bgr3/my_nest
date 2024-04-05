@@ -62,6 +62,8 @@ export class UsersORMRepository {
     try {
       result = await this.usersRepository.delete(id);
     } catch (err) {
+      console.log(err);
+
       return false;
     }
 
