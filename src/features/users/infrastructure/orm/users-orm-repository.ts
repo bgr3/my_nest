@@ -11,7 +11,7 @@ export class UsersORMRepository {
   ) {}
 
   async testAllData(): Promise<void> {
-    this.usersRepository.delete({});
+    await this.usersRepository.delete({});
   }
 
   async save(user: UserORM): Promise<string> {

@@ -18,6 +18,6 @@ export class BlogsTestAllDatasUseCase
   ) {}
 
   async execute(): Promise<void> {
-    return this.blogsRepository.testAllData();
+    return await this.blogsRepository.testAllData();
   }
 }

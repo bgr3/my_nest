@@ -9,7 +9,7 @@ export class PostsORMRepository {
   ) {}
 
   async testAllData(): Promise<void> {
-    this.postsRepository.delete({});
+    await this.postsRepository.delete({});
   }
 
   async save(post: PostORM): Promise<string | null> {

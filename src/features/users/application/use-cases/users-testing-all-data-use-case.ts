@@ -16,6 +16,6 @@ export class UsersTestAllDataUseCase
   ) {}
 
   async execute(): Promise<void> {
-    return this.usersRepository.testAllData();
+    return await this.usersRepository.testAllData();
   }
 }
