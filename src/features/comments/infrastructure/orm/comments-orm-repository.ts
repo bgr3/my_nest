@@ -15,6 +15,8 @@ export class CommentsORMRepository {
   }
 
   async save(comment: CommentForPostORM): Promise<string | null> {
+    console.log('save: ', comment);
+
     const commentResult = await this.commentsRepository.save(comment);
 
     return commentResult.id;
@@ -34,6 +36,7 @@ export class CommentsORMRepository {
 
       return null;
     }
+    console.log('getbyid: ', comment);
 
     return comment;
   }

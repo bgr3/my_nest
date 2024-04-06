@@ -1,9 +1,18 @@
-import { Entity, Column, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 import { CommentForPostORM } from './comments-orm-entity';
 
 @Entity()
 export class CommentLikesInfoORM {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
   @Column()
   userId: string;
 
@@ -20,6 +29,6 @@ export class CommentLikesInfoORM {
     onDelete: 'CASCADE',
   })
   comment: CommentForPostORM;
-  @PrimaryColumn({ type: 'uuid' })
+  @Column({ type: 'uuid' })
   commentId: string;
 }
