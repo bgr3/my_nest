@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns/add';
 import { MeType } from '../../auth/api/dto/output/auth-output-dto';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { EmailConfirmation } from './email-confirmation-entity';
+import { EmailConfirmation } from './email-confirmation-orm-entity';
 
 @Entity()
 export class UserORM {

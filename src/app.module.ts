@@ -119,7 +119,7 @@ import { CommentsSQLQueryRepository } from './features/comments/infrastructure/s
 import { UserORM } from './features/users/domain/users-orm-entity';
 import { UsersORMRepository } from './features/users/infrastructure/orm/users-orm-repository';
 import { UsersORMQueryRepository } from './features/users/infrastructure/orm/users-orm-query-repository';
-import { EmailConfirmation } from './features/users/domain/email-confirmation-entity';
+import { EmailConfirmation } from './features/users/domain/email-confirmation-orm-entity';
 import { AuthORM } from './features/auth/domain/auth-orm-entity';
 import { JWTTokens } from './features/auth/domain/tokens-orm-entity';
 import { AuthORMQueryRepository } from './features/auth/infrastructure/orm/auth-orm-query-repository';
@@ -165,7 +165,7 @@ if (postgresUrl === 'development') {
     // namingStrategy:
     // logging: ['query'],
     autoLoadEntities: true,
-    synchronize: true,
+    synchronize: false,
   };
 } else {
   postgresParam = {
@@ -365,13 +365,13 @@ export class AppModule implements NestModule {
     consumer
       .apply(UserIdentificationMiddleware)
       .forRoutes({ path: '*', method: RequestMethod.ALL })
-      // .apply(AccessFrequencyMiddleware)
-      // .exclude(
-      //   { path: 'auth/refresh-token', method: RequestMethod.POST },
-      //   { path: 'auth/logout', method: RequestMethod.POST },
-      //   { path: 'auth/me', method: RequestMethod.GET },
-      // )
-      // .forRoutes(AuthController)
+      .apply(AccessFrequencyMiddleware)
+      .exclude(
+        { path: 'auth/refresh-token', method: RequestMethod.POST },
+        { path: 'auth/logout', method: RequestMethod.POST },
+        { path: 'auth/me', method: RequestMethod.GET },
+      )
+      .forRoutes(AuthController)
       .apply(PostValidationMiddleware)
       .forRoutes({ path: 'post/*/comments', method: RequestMethod.POST })
       .apply(PostExistMiddleware)
