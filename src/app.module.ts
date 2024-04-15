@@ -173,7 +173,7 @@ if (postgresUrl === 'development') {
     url: postgresUrl,
     database: 'nestORM',
     autoLoadEntities: true,
-    synchronize: true,
+    synchronize: false,
   };
 }
 
