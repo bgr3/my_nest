@@ -1,6 +1,7 @@
-import { AuthTypeOutput } from '../../api/dto/output/auth-output-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { AuthTypeOutput } from '../../api/dto/output/auth-output-dto';
 import { AuthORM } from '../../domain/auth-orm-entity';
 
 export class AuthORMQueryRepository {

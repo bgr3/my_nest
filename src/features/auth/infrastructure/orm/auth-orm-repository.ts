@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { AuthORM } from '../../domain/auth-orm-entity';
 
 export class AuthORMRepository {

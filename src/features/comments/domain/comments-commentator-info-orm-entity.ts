@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+
 import { CommentForPostORM } from './comments-orm-entity';
 
 @Entity()

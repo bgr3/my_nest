@@ -1,5 +1,4 @@
 import { LikeStatusType } from '../../../../infrastructure/dto/input/input-dto';
-import { LikesInfo } from '../../../../infrastructure/dto/output/output-dto';
 
 export class PostRawDb {
   constructor(

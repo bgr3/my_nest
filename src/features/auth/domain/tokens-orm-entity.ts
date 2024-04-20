@@ -1,4 +1,5 @@
-import { Entity, Column, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+
 import { AuthORM } from './auth-orm-entity';
 
 @Entity()

@@ -1,10 +1,11 @@
 import { HttpException, Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import { HTTP_STATUSES } from '../../settings/http-statuses';
+import { NextFunction, Request, Response } from 'express';
+
+import { CommentsORMQueryRepository } from '../../features/comments/infrastructure/orm/comments-orm-query-repository';
 // import { PostsSQLQueryRepository } from '../../features/posts/infrastructure/sql/posts-sql-query-repository';
 // import { CommentsSQLQueryRepository } from '../../features/comments/infrastructure/sql/comments-sql-query-repository';
 import { PostsORMQueryRepository } from '../../features/posts/infrastructure/orm/posts-orm-query-repository';
-import { CommentsORMQueryRepository } from '../../features/comments/infrastructure/orm/comments-orm-query-repository';
+import { HTTP_STATUSES } from '../../settings/http-statuses';
 // import { CommentsQueryRepository } from '../../features/comments/infrastructure/comments-query-repository';
 // import { PostsQueryRepository } from '../../features/posts/infrastructure/posts-query-repository';
 

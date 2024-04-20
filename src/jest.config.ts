@@ -3,5 +3,5 @@ module.exports = {
   testEnvironment: 'node',
   testRegex: 'comment.api.test.ts$',
   rootDir: '../__tests__',
-  testTimeout: 100000,
+  testTimeout: 15000,
 };

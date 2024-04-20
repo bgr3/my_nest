@@ -8,13 +8,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from '../../../auth/application/auth-service';
+import { CommandBus } from '@nestjs/cqrs';
+
 import { JwtAuthGuard } from '../../../../infrastructure/guards/jwt-auth-guard';
 import { HTTP_STATUSES } from '../../../../settings/http-statuses';
-import { CommandBus } from '@nestjs/cqrs';
-import { AuthGetAuthSessionsByTokenCommand } from '../../../auth/application/use-cases/auth-get-auth-session-by-token-use-case';
+import { AuthService } from '../../../auth/application/auth-service';
 import { AuthDeleteAuthSessionsExcludeCurentCommand } from '../../../auth/application/use-cases/auth-delete-auth-session-exclude-current-use-case copy';
 import { AuthDeleteSpecifiedAuthSessionByDeviceIdCommand } from '../../../auth/application/use-cases/auth-delete-specified-auth-session-by-device-id-use-case';
+import { AuthGetAuthSessionsByTokenCommand } from '../../../auth/application/use-cases/auth-get-auth-session-by-token-use-case';
 
 @Controller('security/devices')
 export class SecurityController {

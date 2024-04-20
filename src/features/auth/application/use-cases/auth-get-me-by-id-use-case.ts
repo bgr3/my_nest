@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { MeType } from '../../api/dto/output/auth-output-dto';
+
 import { UsersORMRepository } from '../../../users/infrastructure/orm/users-orm-repository';
+import { MeType } from '../../api/dto/output/auth-output-dto';
 // import { UsersSQLRepository } from '../../../users/infrastructure/sql/users-sql-repository';
 //import { UsersRepository } from '../../../users/infrastructure/users-repository';
 

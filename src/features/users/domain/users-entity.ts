@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
-import { HydratedDocument, Model } from 'mongoose';
 import { add } from 'date-fns/add';
+import { HydratedDocument, Model } from 'mongoose';
+
 import { MeType } from '../../auth/api/dto/output/auth-output-dto';
 
 export type UserDocument = HydratedDocument<User>;
@@ -12,20 +13,20 @@ export type UserModelType = Model<UserDocument> & typeof statics;
 @Schema({ _id: false })
 class EmailConfirmation {
   @Prop()
-    confirmationCode: string;
+  confirmationCode: string;
 
   @Prop({
     type: Object,
   })
-    expirationDate: object;
+  expirationDate: object;
 
   @Prop()
-    isConfirmed: boolean;
+  isConfirmed: boolean;
 
   @Prop({
     type: Object,
   })
-    nextSend: object;
+  nextSend: object;
 }
 
 const EmailConfirmationSchema = SchemaFactory.createForClass(EmailConfirmation);
@@ -44,19 +45,19 @@ const EmailConfirmationSchema = SchemaFactory.createForClass(EmailConfirmation);
 @Schema()
 export class User {
   @Prop({ required: true })
-    login: string;
+  login: string;
 
   @Prop({ required: true })
-    email: string;
+  email: string;
 
   @Prop({ required: true })
-    password: string;
+  password: string;
 
   @Prop({ required: true })
-    createdAt: string;
+  createdAt: string;
 
   @Prop({ type: EmailConfirmationSchema, ref: 'EmailConfirmation' })
-    emailConfirmation: EmailConfirmation;
+  emailConfirmation: EmailConfirmation;
 
   // @Prop({default: [], type: [{type: JWTTokensSchema, ref: 'JWTTokens'}]})
   // JWTTokens: [JWTTokens];

@@ -13,26 +13,29 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { PostPostType, PostPutType } from './dto/input/post-input-dto';
-import { HTTP_STATUSES } from '../../../settings/http-statuses';
-import { CommentPostType } from '../../comments/api/dto/input/comments-input-dto';
-import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
-import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
+import { CommandBus } from '@nestjs/cqrs';
+
 import {
   LikeStatus,
   QueryFilter,
 } from '../../../infrastructure/dto/input/input-dto';
-import { PostOutput } from './dto/output/post-output-type';
-import { CommandBus } from '@nestjs/cqrs';
+import { Paginator } from '../../../infrastructure/dto/output/output-dto';
+import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
+import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
+import { HTTP_STATUSES } from '../../../settings/http-statuses';
+import { CommentPostType } from '../../comments/api/dto/input/comments-input-dto';
+import { CommentOutput } from '../../comments/api/dto/output/comments-output-dto';
 import { CommentsCreateCommentCommand } from '../../comments/application/use-cases/comments-create-comment-use-case';
+import { CommentsORMQueryRepository } from '../../comments/infrastructure/orm/comments-orm-query-repository';
 import { PostsCreatePostCommand } from '../application/use-cases/posts-create-post-use-case';
-import { PostsUpdatePostCommand } from '../application/use-cases/posts-update-post-use-case';
-import { PostsLikeStatusCommand } from '../application/use-cases/posts-like-status-use-case';
 import { PostsDeletePostCommand } from '../application/use-cases/posts-delete-post-use-case';
+import { PostsLikeStatusCommand } from '../application/use-cases/posts-like-status-use-case';
+import { PostsUpdatePostCommand } from '../application/use-cases/posts-update-post-use-case';
 // import { PostsSQLQueryRepository } from '../infrastructure/sql/posts-sql-query-repository';
 // import { CommentsSQLQueryRepository } from '../../comments/infrastructure/sql/comments-sql-query-repository';
 import { PostsORMQueryRepository } from '../infrastructure/orm/posts-orm-query-repository';
-import { CommentsORMQueryRepository } from '../../comments/infrastructure/orm/comments-orm-query-repository';
+import { PostPostType, PostPutType } from './dto/input/post-input-dto';
+import { PostOutput } from './dto/output/post-output-type';
 // import { CommentsQueryRepository } from '../../comments/infrastructure/comments-query-repository';
 // import { PostsQueryRepository } from '../infrastructure/posts-query-repository';
 
@@ -55,7 +58,7 @@ export class PostsController {
     @Body() dto: LikeStatus,
     @Req() req,
     @Param('id') id: string,
-  ) {
+  ): Promise<void> {
     const userId = req.user;
     const result = await this.commandBus.execute(
       new PostsLikeStatusCommand(id, userId, dto),
@@ -87,7 +90,7 @@ export class PostsController {
     @Param('postId') postId: string,
     @Body() dto: CommentPostType,
     @Req() req,
-  ) {
+  ): Promise<CommentOutput | null> {
     const userId = req.user;
     const result = await this.commandBus.execute(
       new CommentsCreateCommentCommand(dto, userId, postId),
@@ -101,14 +104,20 @@ export class PostsController {
   }
 
   @Get()
-  async getPosts(@Req() req, @Query() query: QueryFilter) {
+  async getPosts(
+    @Req() req,
+    @Query() query: QueryFilter,
+  ): Promise<Paginator<PostOutput>> {
     const userId = req.user;
 
-    return await this.postsQueryRepository.findPosts(null, query, userId);
+    return this.postsQueryRepository.findPosts(null, query, userId);
   }
 
   @Get(':postId')
-  async getPost(@Param('postId') postId: string, @Req() req) {
+  async getPost(
+    @Param('postId') postId: string,
+    @Req() req,
+  ): Promise<PostOutput> {
     const userId = req.user;
 
     const foundPost = await this.postsQueryRepository.findPostByID(
@@ -127,7 +136,7 @@ export class PostsController {
     @Param('postId') postId: string,
     @Query() query: QueryFilter,
     @Req() req,
-  ) {
+  ): Promise<Paginator<CommentOutput>> {
     const post = await this.postsQueryRepository.findPostByID(postId);
 
     const userId = req.user;
@@ -147,7 +156,10 @@ export class PostsController {
   @UseGuards(BasicAuthGuard)
   @Put(':postId')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async updatePost(@Param('postId') postId: string, @Body() dto: PostPutType) {
+  async updatePost(
+    @Param('postId') postId: string,
+    @Body() dto: PostPutType,
+  ): Promise<void> {
     const updatedPost = await this.commandBus.execute(
       new PostsUpdatePostCommand(postId, dto),
     );
@@ -161,7 +173,7 @@ export class PostsController {
   @UseGuards(BasicAuthGuard)
   @Delete(':postId')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async deletePost(@Param('postId') postId: string) {
+  async deletePost(@Param('postId') postId: string): Promise<void> {
     const foundPost = await this.commandBus.execute(
       new PostsDeletePostCommand(postId),
     );

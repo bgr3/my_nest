@@ -1,13 +1,14 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { BlogPostType, BlogPutType } from '../api/dto/input/blogs-input-dto';
+
 import { PostORM } from '../../posts/domain/posts-orm-entity';
+import { BlogPostType, BlogPutType } from '../api/dto/input/blogs-input-dto';
 
 @Entity()
 export class BlogORM {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ collation: 'C' })
   name: string;
 
   @Column()

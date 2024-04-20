@@ -1,7 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { add } from 'date-fns/add';
-import { LogORMRepository } from '../../infrastructure/access-log-orm-repository';
+
 import { AccessLogORM } from '../../domain/access-log-orm-entity';
+import { LogORMRepository } from '../../infrastructure/access-log-orm-repository';
 // import { AccessLog, AccessLogModelType } from '../../domain/access-log-entity';
 // import { InjectModel } from '@nestjs/mongoose';
 // import { LogRepository } from '../../infrastructure/access-log-repository';

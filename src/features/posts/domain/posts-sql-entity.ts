@@ -1,6 +1,4 @@
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
-import { LikesInfo } from '../../../infrastructure/dto/output/output-dto';
-
 import { PostRawDb } from '../infrastructure/dto/post-repository-dto';
 
 export class PostLikesInfoSQL {

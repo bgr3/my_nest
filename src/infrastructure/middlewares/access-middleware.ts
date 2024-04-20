@@ -1,8 +1,9 @@
 import { HttpException, Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import { HTTP_STATUSES } from '../../settings/http-statuses';
 import { CommandBus } from '@nestjs/cqrs';
+import { NextFunction, Request, Response } from 'express';
+
 import { AccessCheckAccessFrequencyCommand } from '../../features/access/application/use-cases/access-check-access-frequency-use-case';
+import { HTTP_STATUSES } from '../../settings/http-statuses';
 
 @Injectable()
 export class AccessFrequencyMiddleware implements NestMiddleware {

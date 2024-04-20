@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt';
-import { UsersORMRepository } from '../infrastructure/orm/users-orm-repository';
+
 import { UserORM } from '../domain/users-orm-entity';
+import { UsersORMRepository } from '../infrastructure/orm/users-orm-repository';
 // import { UserSQL } from '../domain/users-sql-entity';
 // import { UsersSQLRepository } from '../infrastructure/sql/users-sql-repository';
 //import { UsersRepository } from '../infrastructure/users-repository';
@@ -23,13 +24,13 @@ export class UsersService {
     return user;
   }
 
-  async generateHash(password: string, salt: string) {
+  async generateHash(password: string, salt: string): Promise<string> {
     const hash = await bcrypt.hash(password, salt);
 
     return hash;
   }
 
-  async getSalt(password: string) {
+  async getSalt(password: string): Promise<string> {
     const salt = password.match(/\$..\$..\$.{22}/g);
 
     if (salt) {

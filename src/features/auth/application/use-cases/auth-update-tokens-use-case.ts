@@ -1,9 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Tokens } from '../../api/dto/output/auth-output-dto';
-import { AuthService } from '../auth-service';
+
 // import { AuthSQLRepository } from '../../infrastructure/sql/auth-sql-repository';
 import { UsersORMRepository } from '../../../users/infrastructure/orm/users-orm-repository';
+import { Tokens } from '../../api/dto/output/auth-output-dto';
 import { AuthORMRepository } from '../../infrastructure/orm/auth-orm-repository';
+import { AuthService } from '../auth-service';
 // import { UsersSQLRepository } from '../../../users/infrastructure/sql/users-sql-repository';
 // import { AuthRepository } from '../../infrastructure/auth-repository';
 //import { UsersRepository } from '../../../users/infrastructure/users-repository';

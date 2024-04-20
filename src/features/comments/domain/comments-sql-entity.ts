@@ -1,8 +1,4 @@
-import { LikesInfo } from '../../../infrastructure/dto/output/output-dto';
-import {
-  CommentsLikesInfoRawDb,
-  CommentsRawDb,
-} from '../infrastructure/dto/comments-repository-dto';
+import { CommentsRawDb } from '../infrastructure/dto/comments-repository-dto';
 
 class CommentatorInfo {
   userId: string;

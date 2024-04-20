@@ -1,37 +1,42 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es2021": true
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: 'tsconfig.json',
+    tsconfigRootDir: __dirname,
+    sourceType: 'module',
+  },
+  plugins: ['@typescript-eslint/eslint-plugin', 'unused-imports', 'simple-import-sort'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+    'prettier',
+  ],
+  root: true,
+  env: {
+    node: true,
+    jest: true,
+  },
+  ignorePatterns: ['.eslintrc.js', 'scripts'],
+  rules: {
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'error',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'error',
+    'no-return-await': 'error',
+    'unused-imports/no-unused-imports-ts': 2,
+    '@typescript-eslint/typedef': 'off',
+    'import/order': 'off',
+    'simple-import-sort/exports': 'error',
+    'simple-import-sort/imports': ['error'],
+    //'@typescript-eslint/member-ordering': 'error',
+    'no-underscore-dangle': 'off',
+  },
+  overrides: [
+    {
+      files: ['*.spec.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
     },
-    "extends": [
-        "standard-with-typescript",
-        "eslint:standard",
-        "plugin:@typescript-eslint/recommended"
-    ],
-    "overrides": [
-        {
-            "env": {
-                "node": true
-            },
-            "files": [
-                ".eslintrc.{js,cjs}"
-            ],
-            "parserOptions": {
-                "sourceType": "script"
-            }
-        }
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint"
-    ],
-    "rules": {
-        "semi": ["error", "always"],
-        "quotes": ["error", "double"],
-        "no-var": "error",
-    }
-}
+  ],
+};

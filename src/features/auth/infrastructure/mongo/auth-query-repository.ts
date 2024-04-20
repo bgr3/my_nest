@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Auth, AuthDocument } from '../../domain/auth-entity';
-import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 import { AuthTypeOutput } from '../../api/dto/output/auth-output-dto';
+import { Auth, AuthDocument } from '../../domain/auth-entity';
 
 @Injectable()
 export class AuthQueryRepository {

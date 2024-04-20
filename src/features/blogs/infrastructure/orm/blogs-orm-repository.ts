@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { BlogORM } from '../../domain/blogs-orm-entity';
 
 export class BlogsORMRepository {

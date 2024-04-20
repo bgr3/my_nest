@@ -1,15 +1,14 @@
 import {
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
-import { PostLikesInfoORM } from './posts-likesinfo-orm-entity';
 import { BlogORM } from '../../blogs/domain/blogs-orm-entity';
+import { PostLikesInfoORM } from './posts-likesinfo-orm-entity';
 
 @Entity()
 export class PostORM {
@@ -55,15 +54,20 @@ export class PostORM {
     content: string,
     blogId: string,
     // blogName: string,
-  ) {
+  ): void {
     this.title = title;
     this.shortDescription = shortDescription;
     this.content = content;
     this.blogId = blogId;
     // this.blogName = blogName;
+    return;
   }
 
-  setLikeStatus(userId: string, login: string, likeStatus: LikeStatusType) {
+  setLikeStatus(
+    userId: string,
+    login: string,
+    likeStatus: LikeStatusType,
+  ): void {
     const like = this.likesInfo.find((i) => i.userId === userId);
 
     if (like) {
@@ -76,6 +80,8 @@ export class PostORM {
       likesInfo.userId = userId;
       this.likesInfo.push(likesInfo);
     }
+
+    return;
   }
 
   static createPost(

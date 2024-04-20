@@ -1,5 +1,6 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { AccessLogType } from '../application/access-log-dto';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class AccessLogORM {

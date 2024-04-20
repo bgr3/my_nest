@@ -3,8 +3,9 @@ import {
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { NextFunction, Request, Response } from 'express';
+
 import { AuthORMRepository } from '../../features/auth/infrastructure/orm/auth-orm-repository';
 // import { AuthSQLRepository } from '../../features/auth/infrastructure/sql/auth-sql-repository';
 // import { AuthRepository } from '../../features/auth/infrastructure/auth-repository';

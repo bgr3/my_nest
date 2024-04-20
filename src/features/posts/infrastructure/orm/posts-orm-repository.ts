@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { PostORM } from '../../domain/posts-orm-entity';
 
 export class PostsORMRepository {

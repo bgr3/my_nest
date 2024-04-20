@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+
 import { UserSQL } from '../../domain/users-sql-entity';
 
 @Injectable()

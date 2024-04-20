@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CommentOutput } from '../../api/dto/output/comments-output-dto';
-import { QueryFilter } from '../../../../infrastructure/dto/input/input-dto';
-import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+
+import { QueryFilter } from '../../../../infrastructure/dto/input/input-dto';
+import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
+import { CommentOutput } from '../../api/dto/output/comments-output-dto';
 import { CommentsRawDb } from '../dto/comments-repository-dto';
 
 @Injectable()

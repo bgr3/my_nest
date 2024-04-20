@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { UserOutput } from '../../api/dto/output/user-output-dto';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+
 import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
 import { UserQueryFilter } from '../../api/dto/input/users-input-dto';
-import { DataSource } from 'typeorm';
-import { InjectDataSource } from '@nestjs/typeorm';
+import { UserOutput } from '../../api/dto/output/user-output-dto';
 import { UserRawDb } from '../dto/users-repository-dto';
 
 @Injectable()

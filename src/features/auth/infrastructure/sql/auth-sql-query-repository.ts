@@ -1,6 +1,7 @@
-import { AuthTypeOutput } from '../../api/dto/output/auth-output-dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+
+import { AuthTypeOutput } from '../../api/dto/output/auth-output-dto';
 import { AuthRawDb } from '../dto/auth-repository-dto';
 
 export class AuthSQLQueryRepository {

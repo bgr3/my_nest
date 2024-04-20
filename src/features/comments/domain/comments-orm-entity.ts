@@ -5,9 +5,10 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 import { CommentatorInfo } from './comments-commentator-info-orm-entity';
 import { CommentLikesInfoORM } from './comments-likes-info-orm-entity';
-import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 
 @Entity()
 export class CommentForPostORM {

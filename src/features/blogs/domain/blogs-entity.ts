@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
+
 import { BlogPostType, BlogPutType } from '../api/dto/input/blogs-input-dto';
 
 export type BlogDocument = HydratedDocument<Blog>;
@@ -9,19 +10,19 @@ export type BlogModelType = Model<BlogDocument> & typeof statics;
 @Schema()
 export class Blog {
   @Prop({ required: true })
-    name: string;
+  name: string;
 
   @Prop({ required: true })
-    description: string;
+  description: string;
 
   @Prop({ required: true })
-    websiteUrl: string;
+  websiteUrl: string;
 
   @Prop({ required: true })
-    createdAt: string;
+  createdAt: string;
 
   @Prop({ required: true })
-    isMembership: boolean;
+  isMembership: boolean;
 
   updateBlog(inputModel: BlogPutType) {
     this.name = inputModel.name;

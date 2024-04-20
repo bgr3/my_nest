@@ -1,13 +1,14 @@
-import { PostOutput } from '../../api/dto/output/post-output-type';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { QueryFilter } from '../../../../infrastructure/dto/input/input-dto';
 import {
   LikesInfoOutput,
   Paginator,
 } from '../../../../infrastructure/dto/output/output-dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PostORM } from '../../domain/posts-orm-entity';
+import { PostOutput } from '../../api/dto/output/post-output-type';
 import { PostLikesInfoORM } from '../../domain/posts-likesinfo-orm-entity';
+import { PostORM } from '../../domain/posts-orm-entity';
 
 export class PostsORMQueryRepository {
   constructor(

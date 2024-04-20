@@ -14,7 +14,7 @@ export class Start1712766632252 implements MigrationInterface {
       /*sql*/ `CREATE TABLE "post_likes_info_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "userId" character varying NOT NULL, "login" character varying NOT NULL, "addedAt" character varying NOT NULL, "likeStatus" character varying NOT NULL, "postId" uuid NOT NULL, CONSTRAINT "PK_22de31701ba2ec8e7bf777c2aaf" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      /*sql*/ `CREATE TABLE "blog_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "description" character varying NOT NULL, "websiteUrl" character varying NOT NULL, "createdAt" character varying NOT NULL, "isMembership" boolean NOT NULL, CONSTRAINT "PK_138b665280101e97fb5327875e9" PRIMARY KEY ("id"))`,
+      /*sql*/ `CREATE TABLE "blog_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying COLLATE "C" NOT NULL, "description" character varying NOT NULL, "websiteUrl" character varying NOT NULL, "createdAt" character varying NOT NULL, "isMembership" boolean NOT NULL, CONSTRAINT "PK_138b665280101e97fb5327875e9" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       /*sql*/ `CREATE TABLE "post_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "title" character varying NOT NULL, "shortDescription" character varying NOT NULL, "content" character varying NOT NULL, "blogId" uuid NOT NULL, "createdAt" character varying NOT NULL, CONSTRAINT "PK_5e39320d6f9900a9b42f0e553d3" PRIMARY KEY ("id"))`,

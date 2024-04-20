@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+
 import {
-  CommentForPost,
   CommentDocument,
+  CommentForPost,
   CommentModelType,
 } from '../../domain/comments-entity';
 

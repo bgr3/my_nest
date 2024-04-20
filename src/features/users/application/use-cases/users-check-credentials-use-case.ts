@@ -1,7 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersService } from '../users-service';
-import { UsersORMRepository } from '../../infrastructure/orm/users-orm-repository';
+
 import { UserORM } from '../../domain/users-orm-entity';
+import { UsersORMRepository } from '../../infrastructure/orm/users-orm-repository';
+import { UsersService } from '../users-service';
 // import { UserSQL } from '../../domain/users-sql-entity';
 // import { UserDocument } from '../../domain/users-entity';
 // import { UsersSQLRepository } from '../../infrastructure/sql/users-sql-repository';

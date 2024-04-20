@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { UserOutput } from '../../api/dto/output/user-output-dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
 import { UserQueryFilter } from '../../api/dto/input/users-input-dto';
-import { Like, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { UserOutput } from '../../api/dto/output/user-output-dto';
 import { UserORM } from '../../domain/users-orm-entity';
 
 @Injectable()

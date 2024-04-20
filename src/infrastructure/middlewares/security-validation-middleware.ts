@@ -1,7 +1,8 @@
 import { HttpException, Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import { HTTP_STATUSES } from '../../settings/http-statuses';
+import { NextFunction, Request, Response } from 'express';
+
 import { AuthORMRepository } from '../../features/auth/infrastructure/orm/auth-orm-repository';
+import { HTTP_STATUSES } from '../../settings/http-statuses';
 // import { AuthSQLRepository } from '../../features/auth/infrastructure/sql/auth-sql-repository';
 // import { AuthRepository } from '../../features/auth/infrastructure/auth-repository';
 

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
+
 import { AccessLogType } from '../application/access-log-dto';
 
 export type AccessLogDocument = HydratedDocument<AccessLog>;

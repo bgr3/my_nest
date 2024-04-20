@@ -1,11 +1,12 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { Request } from 'express';
+import { Observable } from 'rxjs';
+
 import { AuthORMRepository } from '../../features/auth/infrastructure/orm/auth-orm-repository';
 // import { AuthSQLRepository } from '../../features/auth/infrastructure/sql/auth-sql-repository';
 // import { AuthRepository } from '../../features/auth/infrastructure/auth-repository';

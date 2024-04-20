@@ -1,15 +1,16 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CommentPostType } from '../../api/dto/input/comments-input-dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { CommentForPost, CommentModelType } from '../../domain/comments-entity';
-// import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../../../users/application/users-service';
+
 // import { PostsSQLQueryRepository } from '../../../posts/infrastructure/sql/posts-sql-query-repository';
 // import { CommentsSQLRepository } from '../../infrastructure/sql/comments-sql-repository';
 // import { CommentForPostSQL } from '../../domain/comments-sql-entity';
 import { PostsORMQueryRepository } from '../../../posts/infrastructure/orm/posts-orm-query-repository';
-import { CommentsORMRepository } from '../../infrastructure/orm/comments-orm-repository';
+// import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '../../../users/application/users-service';
+import { CommentPostType } from '../../api/dto/input/comments-input-dto';
+import { CommentForPost, CommentModelType } from '../../domain/comments-entity';
 import { CommentForPostORM } from '../../domain/comments-orm-entity';
+import { CommentsORMRepository } from '../../infrastructure/orm/comments-orm-repository';
 // import { CommentsRepository } from '../../infrastructure/comments-repository';
 // import { PostsQueryRepository } from '../../../posts/infrastructure/posts-query-repository';
 

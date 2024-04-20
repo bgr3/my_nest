@@ -1,12 +1,13 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
-import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { CommandBus } from '@nestjs/cqrs';
-import { UsersTestAllDataCommand } from '../../users/application/use-cases/users-testing-all-data-use-case';
+
+import { HTTP_STATUSES } from '../../../settings/http-statuses';
+import { AccessTestAllDataCommand } from '../../access/application/use-cases/access-test-all-data-use-case';
+import { AuthTestAllDataCommand } from '../../auth/application/use-cases/auth-test-all-data-use-case';
 import { BlogsTestAllDataCommand } from '../../blogs/application/use-cases/blogs-test-all-data-use-case';
 import { CommentsTestAllDataCommand } from '../../comments/application/use-cases/comments-test-all-data-use-case';
 import { PostsTestAllDataCommand } from '../../posts/application/use-cases/posts-test-all-data-use-case';
-import { AccessTestAllDataCommand } from '../../access/application/use-cases/access-test-all-data-use-case';
-import { AuthTestAllDataCommand } from '../../auth/application/use-cases/auth-test-all-data-use-case';
+import { UsersTestAllDataCommand } from '../../users/application/use-cases/users-testing-all-data-use-case';
 
 @Controller('testing')
 export class TestingController {

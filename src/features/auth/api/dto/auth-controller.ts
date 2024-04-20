@@ -1,17 +1,32 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpException,
+  NotFoundException,
   Post,
   Req,
-  UseGuards,
   Res,
-  NotFoundException,
-  Get,
+  UseGuards,
 } from '@nestjs/common';
-import { LocalAuthGuard } from '../../../../infrastructure/guards/local-auth-guard';
+import { CommandBus } from '@nestjs/cqrs';
 import { Response } from 'express';
+
+import { JwtAuthGuard } from '../../../../infrastructure/guards/jwt-auth-guard';
+import { LocalAuthGuard } from '../../../../infrastructure/guards/local-auth-guard';
+import { HTTP_STATUSES } from '../../../../settings/http-statuses';
+import { UsersChangePasswordCommand } from '../../../users/application/use-cases/users-change-password-use-case';
+import { UsersCreateUserCommand } from '../../../users/application/use-cases/users-create-user-use-case';
+import { UsersUpdateCodeForRecoveryPasswordCommand } from '../../../users/application/use-cases/users-update-code-for-recovery-password-use-case';
+import { AuthChangePasswordEmailCommand } from '../../application/use-cases/auth-change-password-email-use-case';
+import { AuthConfirmEmailCommand } from '../../application/use-cases/auth-confirm-email-use-case';
+import { AuthCreateAuthSessionCommand } from '../../application/use-cases/auth-create-auth-session-use-case';
+import { AuthDeleteAuthSessionByTokenCommand } from '../../application/use-cases/auth-delete-auth-session-by-token-use-case';
+import { AuthGetMeByIdCommand } from '../../application/use-cases/auth-get-me-by-id-use-case';
+import { AuthRegisterUserSendEmailCommand } from '../../application/use-cases/auth-register-user-send-email-use-case';
+import { AuthResendEmailCommand } from '../../application/use-cases/auth-resend-email-use-case';
+import { AuthUpdateTokensCommand } from '../../application/use-cases/auth-update-tokens-use-case';
 import {
   AuthEmailResendingDTO,
   AuthNewPasswordDTO,
@@ -19,20 +34,6 @@ import {
   AuthRegistrationConfirmationDTO,
   AuthRegistrationDTO,
 } from './input/auth-input-dto';
-import { HTTP_STATUSES } from '../../../../settings/http-statuses';
-import { JwtAuthGuard } from '../../../../infrastructure/guards/jwt-auth-guard';
-import { UsersUpdateCodeForRecoveryPasswordCommand } from '../../../users/application/use-cases/users-update-code-for-recovery-password-use-case';
-import { CommandBus } from '@nestjs/cqrs';
-import { UsersCreateUserCommand } from '../../../users/application/use-cases/users-create-user-use-case';
-import { UsersChangePasswordCommand } from '../../../users/application/use-cases/users-change-password-use-case';
-import { AuthConfirmEmailCommand } from '../../application/use-cases/auth-confirm-email-use-case';
-import { AuthRegisterUserSendEmailCommand } from '../../application/use-cases/auth-register-user-send-email-use-case';
-import { AuthChangePasswordEmailCommand } from '../../application/use-cases/auth-change-password-email-use-case';
-import { AuthResendEmailCommand } from '../../application/use-cases/auth-resend-email-use-case';
-import { AuthGetMeByIdCommand } from '../../application/use-cases/auth-get-me-by-id-use-case';
-import { AuthCreateAuthSessionCommand } from '../../application/use-cases/auth-create-auth-session-use-case';
-import { AuthUpdateTokensCommand } from '../../application/use-cases/auth-update-tokens-use-case';
-import { AuthDeleteAuthSessionByTokenCommand } from '../../application/use-cases/auth-delete-auth-session-by-token-use-case';
 
 @Controller('auth')
 export class AuthController {

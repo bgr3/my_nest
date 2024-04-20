@@ -3,16 +3,17 @@ import {
   INestApplication,
   ValidationPipe,
 } from '@nestjs/common';
-import { useContainer } from 'class-validator';
-import { AppModule } from '../app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { useContainer } from 'class-validator';
+import cookieParser from 'cookie-parser';
+import { createWriteStream } from 'fs';
+import { get } from 'http';
+
+import { AppModule } from '../app.module';
 import {
   ErrorExceptionFilter,
   HttpExceptionFilter,
 } from '../infrastructure/exception-filters/exception-filter';
-import { get } from 'http';
-import { createWriteStream } from 'fs';
-import cookieParser from 'cookie-parser';
 import { TrimPipe } from '../infrastructure/pipes/body-trim-pipe';
 // import dotenv from 'dotenv';
 

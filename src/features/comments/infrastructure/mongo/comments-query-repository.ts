@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import {
-  CommentDocument,
-  CommentModelType,
-  CommentForPost,
-} from '../../domain/comments-entity';
-import { CommentOutput } from '../../api/dto/output/comments-output-dto';
+
 import { QueryFilter } from '../../../../infrastructure/dto/input/input-dto';
 import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
+import { CommentOutput } from '../../api/dto/output/comments-output-dto';
+import {
+  CommentDocument,
+  CommentForPost,
+  CommentModelType,
+} from '../../domain/comments-entity';
 
 @Injectable()
 export class CommentsQueryRepository {

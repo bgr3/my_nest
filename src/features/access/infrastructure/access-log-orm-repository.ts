@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AccessLogORM } from '../domain/access-log-orm-entity';
 import { Repository } from 'typeorm';
+
+import { AccessLogORM } from '../domain/access-log-orm-entity';
 
 @Injectable()
 export class LogORMRepository {

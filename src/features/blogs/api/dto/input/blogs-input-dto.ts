@@ -1,13 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, TransformFnParams } from 'class-transformer';
-import {
-  IsIn,
-  IsOptional,
-  IsPositive,
-  IsString,
-  Length,
-  Matches,
-} from 'class-validator';
+import { IsOptional, IsString, Length, Matches } from 'class-validator';
+
 import { QueryFilter } from '../../../../../infrastructure/dto/input/input-dto';
 
 export class BlogPostType {

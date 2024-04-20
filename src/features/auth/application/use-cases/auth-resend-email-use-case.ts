@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { EmailManager } from '../../../email-manager/application/email-manager';
 import { v4 as uuidv4 } from 'uuid';
+
+import { EmailManager } from '../../../email-manager/application/email-manager';
 import { UsersORMRepository } from '../../../users/infrastructure/orm/users-orm-repository';
 // import { UsersSQLRepository } from '../../../users/infrastructure/sql/users-sql-repository';
 //import { UsersRepository } from '../../../users/infrastructure/users-repository';

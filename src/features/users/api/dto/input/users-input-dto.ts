@@ -1,4 +1,5 @@
 import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
+
 import { QueryFilter } from '../../../../../infrastructure/dto/input/input-dto';
 
 export class UserPost {

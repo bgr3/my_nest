@@ -1,7 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request as RequestType } from 'express';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+
 import { AuthORMRepository } from '../../../auth/infrastructure/orm/auth-orm-repository';
 // import { AuthSQLRepository } from '../../../auth/infrastructure/sql/auth-sql-repository';
 // import { AuthRepository } from '../../../auth/infrastructure/auth-repository';

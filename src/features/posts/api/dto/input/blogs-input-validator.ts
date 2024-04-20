@@ -1,8 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { Injectable } from '@nestjs/common';
+
 import { BlogsORMRepository } from '../../../../blogs/infrastructure/orm/blogs-orm-repository';
 // import { BlogsSQLRepository } from '../../../../blogs/infrastructure/sql/blogs-sql-repository';
 //import { BlogsRepository } from '../../../../blogs/infrastructure/blogs-repository';

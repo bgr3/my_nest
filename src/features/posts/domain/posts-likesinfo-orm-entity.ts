@@ -1,4 +1,5 @@
-import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 import { PostORM } from './posts-orm-entity';
 

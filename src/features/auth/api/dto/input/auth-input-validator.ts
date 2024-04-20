@@ -1,8 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { Injectable } from '@nestjs/common';
+
 import { UsersORMRepository } from '../../../../users/infrastructure/orm/users-orm-repository';
 // import { UsersRepository } from '../../../../users/infrastructure/mongo/users-repository';
 // import { UsersSQLRepository } from '../../../../users/infrastructure/sql/users-sql-repository';
@@ -103,8 +104,9 @@ export class AuthReSendEmailConfirmValidation
 
   errorMessage: string;
 
-  async validate(code: string) {
-    const user = await this.usersRepository.findUserByLoginOrEmail(code);
+  async validate(loginOrEmail: string) {
+    const user =
+      await this.usersRepository.findUserByLoginOrEmail(loginOrEmail);
 
     if (!user) {
       this.errorMessage = 'User doesn`t exist';
