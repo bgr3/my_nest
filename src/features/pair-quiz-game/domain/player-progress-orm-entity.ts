@@ -31,7 +31,7 @@ export class PlayerProgressORM {
   @ManyToOne(() => UserORM, (player) => player.playerProgressId, {
     nullable: true,
     eager: true,
-    // cascade: true,
+    cascade: true,
   })
   player: UserORM;
   @Column({ type: 'uuid' })

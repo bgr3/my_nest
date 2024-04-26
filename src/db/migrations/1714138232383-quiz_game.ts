@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class QuizGame1713899050616 implements MigrationInterface {
-    name = 'QuizGame1713899050616'
+export class QuizGame1714138232383 implements MigrationInterface {
+    name = 'QuizGame1714138232383'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "answer_history_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "questionId" character varying NOT NULL, "answerStatus" character varying, "addedAt" TIMESTAMP NOT NULL, "playerProgressIdId" uuid, CONSTRAINT "PK_3be48e2bde21f08bbfc28e65b9a" PRIMARY KEY ("id"))`);

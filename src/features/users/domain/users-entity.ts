@@ -62,16 +62,16 @@ export class User {
   // @Prop({default: [], type: [{type: JWTTokensSchema, ref: 'JWTTokens'}]})
   // JWTTokens: [JWTTokens];
 
-  updateCodeForRecoveryPassword(code: string, expirationDate: object) {
+  updateCodeForRecoveryPassword(code: string, expirationDate: object): void {
     this.emailConfirmation.confirmationCode = code;
     this.emailConfirmation.expirationDate = expirationDate;
   }
 
-  updatePassword(password: string) {
+  updatePassword(password: string): void {
     this.password = password;
   }
 
-  updateConfirmation() {
+  updateConfirmation(): boolean {
     if (this.emailConfirmation.isConfirmed) return false;
 
     this.emailConfirmation.isConfirmed = true;
@@ -79,13 +79,13 @@ export class User {
     return true;
   }
 
-  resendConfirmationCode(code: string) {
+  resendConfirmationCode(code: string): void {
     this.emailConfirmation.confirmationCode = code;
     this.emailConfirmation.expirationDate = add(new Date(), { minutes: 5 });
     this.emailConfirmation.nextSend = add(new Date(), { seconds: 0 });
   }
 
-  getMe(id: string) {
+  getMe(id: string): MeType {
     const me = new MeType(this.email, this.login, id.toString());
 
     return me;
