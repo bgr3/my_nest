@@ -169,30 +169,15 @@ if (!postgresUrl) {
   throw new Error('! PostgresURL doesn`t found');
 }
 
-export let postgresParam: TypeOrmModuleOptions;
-
-if (postgresUrl === 'development') {
-  postgresParam = {
-    type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'nodejs',
-    password: 'nodejs',
-    database: 'nestORM',
-    // namingStrategy:
-    // logging: ['query'],
-    autoLoadEntities: true,
-    synchronize: false,
-  };
-} else {
-  postgresParam = {
-    type: 'postgres',
-    url: postgresUrl,
-    database: 'nestORM',
-    autoLoadEntities: true,
-    synchronize: false,
-  };
-}
+export const postgresParam: TypeOrmModuleOptions = {
+  type: 'postgres',
+  url: postgresUrl,
+  database: 'nestORM',
+  // namingStrategy:
+  // logging: ['query'],
+  autoLoadEntities: true,
+  synchronize: false,
+};
 
 const usersProviders = [
   UsersService,
