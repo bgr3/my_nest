@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { QuestionORM } from '../domain/posts-orm-entity';
+import { QuestionORM } from '../domain/questions-orm-entity';
 
 export class QuestionORMRepository {
   constructor(
@@ -35,6 +35,24 @@ export class QuestionORMRepository {
     }
 
     return question;
+  }
+
+  async getAllPublishedQuestions(): Promise<[QuestionORM[], number]> {
+    let questions;
+
+    try {
+      questions = await this.questionRepository.findAndCount({
+        where: {
+          published: true,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+
+      return [[], 0];
+    }
+
+    return questions;
   }
 
   async deleteQuestion(id: string): Promise<boolean> {

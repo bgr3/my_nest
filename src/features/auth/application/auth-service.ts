@@ -6,9 +6,10 @@ import { add } from 'date-fns/add';
 export class AuthService {
   constructor(protected jwtService: JwtService) {}
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   async generateTokens(userId: string, deviceId: string) {
-    const accessTokenExpirationTimeSeconds = 300;
-    const refreshTokenExpirationTimeSeconds = 600;
+    const accessTokenExpirationTimeSeconds = 10000;
+    const refreshTokenExpirationTimeSeconds = 20000;
     const issuedAt = new Date();
     const expireAt = add(new Date(), {
       seconds: refreshTokenExpirationTimeSeconds,

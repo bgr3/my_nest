@@ -1,8 +1,15 @@
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns/add';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { MeType } from '../../auth/api/dto/output/auth-output-dto';
+import { PlayerProgressORM } from '../../pair-quiz-game/domain/player-progress-orm-entity';
 import { EmailConfirmation } from './email-confirmation-orm-entity';
 
 @Entity()
@@ -34,16 +41,19 @@ export class UserORM {
   // @JoinColumn()
   emailConfirmation: EmailConfirmation;
 
-  updateCodeForRecoveryPassword(code: string, expirationDate: object) {
+  @OneToMany(() => PlayerProgressORM, (playerProgress) => playerProgress.player)
+  playerProgressId: PlayerProgressORM;
+
+  updateCodeForRecoveryPassword(code: string, expirationDate: object): void {
     this.emailConfirmation.confirmationCode = code;
     this.emailConfirmation.expirationDate = expirationDate;
   }
 
-  updatePassword(password: string) {
+  updatePassword(password: string): void {
     this.password = password;
   }
 
-  updateConfirmation() {
+  updateConfirmation(): boolean {
     if (this.emailConfirmation.isConfirmed) return false;
 
     this.emailConfirmation.isConfirmed = true;
@@ -51,13 +61,13 @@ export class UserORM {
     return true;
   }
 
-  resendConfirmationCode(code: string) {
+  resendConfirmationCode(code: string): void {
     this.emailConfirmation.confirmationCode = code;
     this.emailConfirmation.expirationDate = add(new Date(), { minutes: 5 });
     this.emailConfirmation.nextSend = add(new Date(), { seconds: 0 });
   }
 
-  getMe(id: string) {
+  getMe(id: string): MeType {
     const me = new MeType(this.email, this.login, id.toString());
 
     return me;

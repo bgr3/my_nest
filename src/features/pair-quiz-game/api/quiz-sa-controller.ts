@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 
-import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
 import { Paginator } from '../../../infrastructure/dto/output/output-dto';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { QuizCreateQuestionCommand } from '../application/commands/quiz-create-question-use-case';
@@ -22,6 +21,7 @@ import { QuestionORMQueryRepository } from '../infrastructure/question-orm-query
 import {
   QuizPostQuestionDTO,
   QuizPublishDTO,
+  QuizQuestionsQueryFilter,
 } from './dto/input/quiz-input-dto';
 import { QuestionOutputDTO } from './dto/output/quiz-output-dto';
 @Controller('quiz')
@@ -33,7 +33,7 @@ export class QuizSAController {
 
   @Get('questions')
   async getQuestions(
-    @Query() query: QueryFilter,
+    @Query() query: QuizQuestionsQueryFilter,
   ): Promise<Paginator<QuestionOutputDTO>> {
     return this.questionQueryRepository.findQuestions(query);
   }

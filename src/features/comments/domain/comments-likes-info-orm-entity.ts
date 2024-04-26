@@ -24,6 +24,7 @@ export class CommentLikesInfoORM {
     onDelete: 'CASCADE',
   })
   comment: CommentForPostORM;
+
   @Column({ type: 'uuid' })
   commentId: string;
 }

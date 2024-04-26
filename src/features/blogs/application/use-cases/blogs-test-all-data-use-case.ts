@@ -19,6 +19,7 @@ export class BlogsTestAllDatasUseCase
   ) {}
 
   async execute(): Promise<void> {
-    return await this.blogsRepository.testAllData();
+    const result = await this.blogsRepository.testAllData();
+    return result;
   }
 }

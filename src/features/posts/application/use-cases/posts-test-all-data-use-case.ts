@@ -19,6 +19,7 @@ export class PostsTestAllDataUseCase
   ) {}
 
   async execute(): Promise<void> {
-    return await this.postsRepository.testAllData();
+    const result = await this.postsRepository.testAllData();
+    return result;
   }
 }

@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import { GameORM } from './game-orm-entity';
 
 @Entity()
 export class QuestionORM {
@@ -8,7 +10,10 @@ export class QuestionORM {
   @Column()
   body: string;
 
-  @Column()
+  @Column({
+    type: 'character varying',
+    array: true,
+  })
   correctAnswers: string[];
 
   @Column({ type: 'boolean' })
@@ -19,6 +24,9 @@ export class QuestionORM {
 
   @Column({ type: 'timestamp without time zone' })
   updatedAt: Date;
+
+  @ManyToMany(() => GameORM, (game) => game.questions)
+  game: GameORM[];
 
   updateQuestion(body: string, correctAnswers: string[]): void {
     this.body = body;

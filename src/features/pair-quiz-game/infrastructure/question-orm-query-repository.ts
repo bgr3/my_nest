@@ -1,10 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
 import { Paginator } from '../../../infrastructure/dto/output/output-dto';
+import { QuizQuestionsQueryFilter } from '../api/dto/input/quiz-input-dto';
 import { QuestionOutputDTO } from '../api/dto/output/quiz-output-dto';
-import { QuestionORM } from '../domain/posts-orm-entity';
+import { QuestionORM } from '../domain/questions-orm-entity';
 
 export class QuestionORMQueryRepository {
   constructor(
@@ -13,8 +13,15 @@ export class QuestionORMQueryRepository {
   ) {}
 
   async findQuestions(
-    filter: QueryFilter,
+    filter: QuizQuestionsQueryFilter,
   ): Promise<Paginator<QuestionOutputDTO>> {
+    const published =
+      filter.publishedStatus == 'published'
+        ? true
+        : filter.publishedStatus == 'notPublished'
+          ? false
+          : null;
+
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
     const sortDirection = filter.sortDirection == 'asc' ? 'ASC' : 'DESC';
@@ -24,6 +31,15 @@ export class QuestionORMQueryRepository {
       dbResult = await this.questionRepository
         .createQueryBuilder('q')
         .select()
+        .where(
+          !filter.publishedStatus || filter.publishedStatus == 'all'
+            ? 'q.body ilike :name'
+            : 'q.body ilike :name && q.published = :published',
+          {
+            body: `%${filter.bodySearchTerm}%`,
+            published: published,
+          },
+        )
         .orderBy(filter.sortBy, sortDirection)
         .skip(skip)
         .take(filter.pageSize)
@@ -40,7 +56,7 @@ export class QuestionORMQueryRepository {
       page: filter.pageNumber,
       pageSize: filter.pageSize,
       totalCount: dbCount,
-      items: dbResult[0].map((q: QuestionORM) => postMapper(q)),
+      items: dbResult[0].map((q: QuestionORM) => questionMapper(q)),
     };
 
     return paginator;
@@ -64,11 +80,11 @@ export class QuestionORMQueryRepository {
 
     if (!question) return null;
 
-    return postMapper(question);
+    return questionMapper(question);
   }
 }
 
-const postMapper = (question: QuestionORM): QuestionOutputDTO => {
+const questionMapper = (question: QuestionORM): QuestionOutputDTO => {
   return {
     id: question.id.toString(),
     body: question.body,

@@ -92,11 +92,19 @@ import { CommentsSQLRepository } from './features/comments/infrastructure/sql/co
 import { EmailManager } from './features/email-manager/application/email-manager';
 import { QuizController } from './features/pair-quiz-game/api/quiz-controller';
 import { QuizSAController } from './features/pair-quiz-game/api/quiz-sa-controller';
+import { QuizAnswerUseCase } from './features/pair-quiz-game/application/commands/quiz-answer-game-use-case';
+import { QuizCreateGameUseCase } from './features/pair-quiz-game/application/commands/quiz-create-game-use-case';
 import { QuizCreateQuestionUseCase } from './features/pair-quiz-game/application/commands/quiz-create-question-use-case';
 import { QuizDeleteQuestionUseCase } from './features/pair-quiz-game/application/commands/quiz-delete-question-use-case';
 import { QuizPublishUnpublishQuestionUseCase } from './features/pair-quiz-game/application/commands/quiz-publish-question-use-case';
+import { QuizTestAllDataUseCase } from './features/pair-quiz-game/application/commands/quiz-test-all-data-use-case';
 import { QuizUpdateQuestionUseCase } from './features/pair-quiz-game/application/commands/quiz-update-question-use-case';
-import { QuestionORM } from './features/pair-quiz-game/domain/posts-orm-entity';
+import { AnswerHistoryORM } from './features/pair-quiz-game/domain/answers-orm-entity';
+import { GameORM } from './features/pair-quiz-game/domain/game-orm-entity';
+import { PlayerProgressORM } from './features/pair-quiz-game/domain/player-progress-orm-entity';
+import { QuestionORM } from './features/pair-quiz-game/domain/questions-orm-entity';
+import { GameORMQueryRepository } from './features/pair-quiz-game/infrastructure/game-orm-query-repository';
+import { GameORMRepository } from './features/pair-quiz-game/infrastructure/game-orm-repository';
 import { QuestionORMQueryRepository } from './features/pair-quiz-game/infrastructure/question-orm-query-repository';
 import { QuestionORMRepository } from './features/pair-quiz-game/infrastructure/question-orm-repository';
 import { BlogExistValidation } from './features/posts/api/dto/input/blogs-input-validator';
@@ -244,7 +252,12 @@ const authProviders = [
   AuthORMQueryRepository,
 ];
 
-const quizProviders = [QuestionORMRepository, QuestionORMQueryRepository];
+const quizProviders = [
+  QuestionORMRepository,
+  QuestionORMQueryRepository,
+  GameORMRepository,
+  GameORMQueryRepository,
+];
 
 const accessProviders = [AccessService, LogRepository, LogORMRepository];
 
@@ -288,6 +301,10 @@ const useCases = [
   QuizDeleteQuestionUseCase,
   QuizPublishUnpublishQuestionUseCase,
   QuizUpdateQuestionUseCase,
+  QuizCreateQuestionUseCase,
+  QuizCreateGameUseCase,
+  QuizTestAllDataUseCase,
+  QuizAnswerUseCase,
 ];
 
 const entities = [
@@ -303,6 +320,9 @@ const entities = [
   CommentatorInfo,
   CommentLikesInfoORM,
   QuestionORM,
+  GameORM,
+  PlayerProgressORM,
+  AnswerHistoryORM,
 ];
 
 @Module({

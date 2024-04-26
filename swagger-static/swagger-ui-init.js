@@ -800,6 +800,177 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/pair-game-quiz/pairs/my-current": {
+        "get": {
+          "operationId": "QuizController_myCurrentGame",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/pair-game-quiz/pairs/{id}": {
+        "get": {
+          "operationId": "QuizController_getGame",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/pair-game-quiz/pairs/connection": {
+        "post": {
+          "operationId": "QuizController_randomConnect",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/pair-game-quiz/pairs/my-current/answers": {
+        "post": {
+          "operationId": "QuizController_sendAnswer",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuizAnswerDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/quiz/questions": {
+        "get": {
+          "operationId": "QuizSAController_getQuestions",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "post": {
+          "operationId": "QuizSAController_createQuestion",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuizPostQuestionDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/quiz/questions/{id}": {
+        "delete": {
+          "operationId": "QuizSAController_deleteQuestion",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "put": {
+          "operationId": "QuizSAController_updateQuestion",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuizPostQuestionDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/quiz/questions/{id}/publish": {
+        "put": {
+          "operationId": "QuizSAController_publishUnpublishQuestion",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuizPublishDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
@@ -889,6 +1060,18 @@ window.onload = function() {
           "properties": {}
         },
         "CommentPutType": {
+          "type": "object",
+          "properties": {}
+        },
+        "QuizAnswerDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "QuizPostQuestionDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "QuizPublishDTO": {
           "type": "object",
           "properties": {}
         }

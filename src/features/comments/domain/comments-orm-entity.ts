@@ -44,11 +44,15 @@ export class CommentForPostORM {
   @Column()
   postId: string;
 
-  updateComment(content: string) {
+  updateComment(content: string): void {
     this.content = content;
   }
 
-  setLikeStatus(userId: string, login: string, likeStatus: LikeStatusType) {
+  setLikeStatus(
+    userId: string,
+    login: string,
+    likeStatus: LikeStatusType,
+  ): void {
     const like = this.likesInfo.find((i) => i.userId === userId);
 
     if (like) {
@@ -68,7 +72,7 @@ export class CommentForPostORM {
     postId: string,
     userId: string,
     userLogin: string,
-  ) {
+  ): CommentForPostORM {
     const comment = new this();
 
     comment.content = content;

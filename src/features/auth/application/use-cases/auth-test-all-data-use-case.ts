@@ -19,6 +19,7 @@ export class AuthTestAllDataUseCase
   ) {}
 
   async execute(): Promise<void> {
-    return this.authRepository.testAllData();
+    const result = await this.authRepository.testAllData();
+    return result;
   }
 }

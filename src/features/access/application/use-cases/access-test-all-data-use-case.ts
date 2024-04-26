@@ -17,6 +17,8 @@ export class AccessTestAllDataUseCase
   ) {}
 
   async execute(): Promise<void> {
-    return this.logRepository.testAllData();
+    const result = await this.logRepository.testAllData();
+
+    return result;
   }
 }

@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { QuizPostQuestionDTO } from '../../api/dto/input/quiz-input-dto';
-import { QuestionORM } from '../../domain/posts-orm-entity';
+import { QuestionORM } from '../../domain/questions-orm-entity';
 import { QuestionORMRepository } from '../../infrastructure/question-orm-repository';
 
 export class QuizCreateQuestionCommand {

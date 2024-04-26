@@ -19,6 +19,7 @@ export class CommentsTestAllDataUseCase
   ) {}
 
   async execute(): Promise<void> {
-    return await this.commentsRepository.testAllData();
+    const result = await this.commentsRepository.testAllData();
+    return result;
   }
 }
