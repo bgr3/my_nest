@@ -8,10 +8,12 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 
 import { Paginator } from '../../../infrastructure/dto/output/output-dto';
+import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { QuizCreateQuestionCommand } from '../application/commands/quiz-create-question-use-case';
 import { QuizDeleteQuestionCommand } from '../application/commands/quiz-delete-question-use-case';
@@ -24,7 +26,9 @@ import {
   QuizQuestionsQueryFilter,
 } from './dto/input/quiz-input-dto';
 import { QuestionOutputDTO } from './dto/output/quiz-output-dto';
-@Controller('quiz')
+
+@UseGuards(BasicAuthGuard)
+@Controller('sa/quiz')
 export class QuizSAController {
   constructor(
     private readonly questionQueryRepository: QuestionORMQueryRepository,
@@ -35,7 +39,9 @@ export class QuizSAController {
   async getQuestions(
     @Query() query: QuizQuestionsQueryFilter,
   ): Promise<Paginator<QuestionOutputDTO>> {
-    return this.questionQueryRepository.findQuestions(query);
+    const result = await this.questionQueryRepository.findQuestions(query);
+
+    return result;
   }
 
   @Post('questions')

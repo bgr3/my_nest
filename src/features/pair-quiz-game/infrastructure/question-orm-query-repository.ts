@@ -25,6 +25,7 @@ export class QuestionORMQueryRepository {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
     const sortDirection = filter.sortDirection == 'asc' ? 'ASC' : 'DESC';
+    const sortBy = `q.${filter.sortBy}`;
 
     let dbResult;
     try {
@@ -32,15 +33,15 @@ export class QuestionORMQueryRepository {
         .createQueryBuilder('q')
         .select()
         .where(
-          !filter.publishedStatus || filter.publishedStatus == 'all'
-            ? 'q.body ilike :name'
-            : 'q.body ilike :name && q.published = :published',
+          filter.publishedStatus == 'all'
+            ? 'q.body ilike :body'
+            : 'q.body ilike :body && q.published = :published',
           {
             body: `%${filter.bodySearchTerm}%`,
             published: published,
           },
         )
-        .orderBy(filter.sortBy, sortDirection)
+        .orderBy(sortBy, sortDirection)
         .skip(skip)
         .take(filter.pageSize)
         .getManyAndCount();

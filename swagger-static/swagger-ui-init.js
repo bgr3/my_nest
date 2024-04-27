@@ -864,7 +864,7 @@ window.onload = function() {
           }
         }
       },
-      "/quiz/questions": {
+      "/sa/quiz/questions": {
         "get": {
           "operationId": "QuizSAController_getQuestions",
           "parameters": [],
@@ -894,7 +894,7 @@ window.onload = function() {
           }
         }
       },
-      "/quiz/questions/{id}": {
+      "/sa/quiz/questions/{id}": {
         "delete": {
           "operationId": "QuizSAController_deleteQuestion",
           "parameters": [
@@ -942,7 +942,7 @@ window.onload = function() {
           }
         }
       },
-      "/quiz/questions/{id}/publish": {
+      "/sa/quiz/questions/{id}/publish": {
         "put": {
           "operationId": "QuizSAController_publishUnpublishQuestion",
           "parameters": [
