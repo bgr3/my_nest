@@ -22,7 +22,7 @@ export class QuestionORM {
   @Column({ type: 'timestamp without time zone' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp without time zone' })
+  @Column({ type: 'timestamp without time zone', nullable: true })
   updatedAt: Date;
 
   @ManyToMany(() => GameORM, (game) => game.questions)
@@ -46,7 +46,6 @@ export class QuestionORM {
     question.body = body;
     question.correctAnswers = correctAnswers;
     question.published = false;
-    question.createdAt = new Date();
     question.updatedAt = new Date();
 
     return question;

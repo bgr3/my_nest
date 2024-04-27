@@ -21,6 +21,7 @@ import { CommentsLikeStatusCommand } from '../application/use-cases/comments-lik
 import { CommentsUpdateCommentCommand } from '../application/use-cases/comments-update-comment-use-case';
 import { CommentsORMQueryRepository } from '../infrastructure/orm/comments-orm-query-repository';
 import { CommentPutType } from './dto/input/comments-input-dto';
+import { CommentOutput } from './dto/output/comments-output-dto';
 // import { CommentsSQLQueryRepository } from '../infrastructure/sql/comments-sql-query-repository';
 // import { CommentsQueryRepository } from '../infrastructure/comments-query-repository';
 
@@ -40,7 +41,7 @@ export class CommentsController {
     @Param('commentId') commentId: string,
     @Body() dto: LikeStatus,
     @Req() req,
-  ) {
+  ): Promise<void> {
     const userId = req.user;
     const id = commentId;
 
@@ -56,7 +57,10 @@ export class CommentsController {
   }
 
   @Get(':commentId')
-  async getComment(@Param('commentId') commentId: string, @Req() req) {
+  async getComment(
+    @Param('commentId') commentId: string,
+    @Req() req,
+  ): Promise<CommentOutput> {
     const userId = req.user;
     const foundComment = await this.commentsQueryRepository.findCommentByID(
       commentId,
@@ -74,7 +78,7 @@ export class CommentsController {
   async updateComment(
     @Param('commentId') commentId: string,
     @Body() dto: CommentPutType,
-  ) {
+  ): Promise<void> {
     const updatedComment = await this.commandBus.execute(
       new CommentsUpdateCommentCommand(commentId, dto),
     );
@@ -88,7 +92,7 @@ export class CommentsController {
   @UseGuards(JwtAuthGuard)
   @Delete(':commentId')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async deleteComment(@Param('commentId') commentId: string) {
+  async deleteComment(@Param('commentId') commentId: string): Promise<void> {
     const foundComment = await this.commandBus.execute(
       new CommentsDeleteCommentCommand(commentId),
     );

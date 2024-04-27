@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpException,
   Param,
   Post,
@@ -76,6 +77,7 @@ export class QuizSAController {
   }
 
   @Put('questions/:id')
+  @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async updateQuestion(
     @Param('id') id: string,
     @Body() dto: QuizPostQuestionDTO,
@@ -91,6 +93,7 @@ export class QuizSAController {
   }
 
   @Put('questions/:id/publish')
+  @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async publishUnpublishQuestion(
     @Param('id') id: string,
     @Body() dto: QuizPublishDTO,

@@ -3,13 +3,16 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  HttpCode,
   HttpException,
   Param,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 
+import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { QuizAnswerGameCommand } from '../application/commands/quiz-answer-game-use-case';
 import { QuizCreateGameCommand } from '../application/commands/quiz-create-game-use-case';
@@ -17,6 +20,7 @@ import { GameORMQueryRepository } from '../infrastructure/game-orm-query-reposit
 import { QuizAnswerDTO } from './dto/input/quiz-input-dto';
 import { AnswersOutputDTO, GameOutputDTO } from './dto/output/game-output-dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('pair-game-quiz')
 export class QuizController {
   constructor(
@@ -47,6 +51,7 @@ export class QuizController {
   }
 
   @Post('pairs/connection')
+  @HttpCode(HTTP_STATUSES.OK_200)
   async randomConnect(@Req() req): Promise<GameOutputDTO> {
     const userId = req.user;
     const result = await this.commandBus.execute(

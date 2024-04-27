@@ -17,9 +17,11 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 
 import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
+import { Paginator } from '../../../infrastructure/dto/output/output-dto';
 import { BasicAuthGuard } from '../../../infrastructure/guards/basic-auth-guard';
 import { CustomValidationPipe } from '../../../infrastructure/pipes/auth-email-confirm-validation-pipe';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
+import { PostOutput } from '../../posts/api/dto/output/post-output-type';
 import { PostsCreatePostCommand } from '../../posts/application/use-cases/posts-create-post-use-case';
 import { PostsDeletePostCommand } from '../../posts/application/use-cases/posts-delete-post-use-case';
 // import { PostsSQLQueryRepository } from '../../posts/infrastructure/sql/posts-sql-query-repository';
@@ -76,7 +78,7 @@ export class BlogsSAController {
   async createPostforBlog(
     @Param('id') id: string,
     @Body() dto: PostForBlogPostType,
-  ) {
+  ): Promise<PostOutput | null> {
     dto.blogId = id;
 
     const result = await this.commandBus.execute(
@@ -93,12 +95,15 @@ export class BlogsSAController {
   }
 
   @Get()
-  async getBlogs(@Query() query: BlogQueryFilter) {
-    return await this.blogsQueryRepository.findBlogs(query);
+  async getBlogs(
+    @Query() query: BlogQueryFilter,
+  ): Promise<Paginator<BlogOutput>> {
+    const result = await this.blogsQueryRepository.findBlogs(query);
+    return result;
   }
 
   @Get(':id')
-  async getBlog(@Param('id') id: string) {
+  async getBlog(@Param('id') id: string): Promise<BlogOutput> {
     const foundBlog = await this.blogsQueryRepository.findBlogByID(id);
 
     if (foundBlog) {
@@ -113,7 +118,7 @@ export class BlogsSAController {
     @Param('id') id: string,
     @Query() query: QueryFilter,
     @Req() req,
-  ) {
+  ): Promise<Paginator<PostOutput>> {
     const foundBlog = await this.blogsQueryRepository.findBlogByID(id);
 
     if (!foundBlog)
@@ -128,7 +133,10 @@ export class BlogsSAController {
 
   @Put(':id')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async updateBlog(@Param('id') id: string, @Body() dto: BlogPutType) {
+  async updateBlog(
+    @Param('id') id: string,
+    @Body() dto: BlogPutType,
+  ): Promise<void> {
     const foundBlog = await this.blogsQueryRepository.findBlogByID(id);
 
     if (!foundBlog) throw new NotFoundException();
@@ -148,7 +156,7 @@ export class BlogsSAController {
     @Param('postId') postId: string,
     @Param('blogId') blogId: string,
     @Body() dto: PostForBlogPutType,
-  ) {
+  ): Promise<void> {
     dto.blogId = blogId;
 
     const updatedPost = await this.commandBus.execute(
@@ -163,7 +171,7 @@ export class BlogsSAController {
 
   @Delete(':id')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async deleteBlog(@Param('id') id: string) {
+  async deleteBlog(@Param('id') id: string): Promise<void> {
     const foundBlog = await this.commandBus.execute(
       new BlogsDeleteBlogCommand(id),
     );
@@ -180,7 +188,7 @@ export class BlogsSAController {
   async deletePost(
     @Param('postId') postId: string,
     @Param('blogId') blogId: string,
-  ) {
+  ): Promise<void> {
     const foundBlog = await this.blogsQueryRepository.findBlogByID(blogId);
 
     if (!foundBlog)

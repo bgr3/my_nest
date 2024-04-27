@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class QuizGame1714221383988 implements MigrationInterface {
-    name = 'QuizGame1714221383988'
+export class QuizGame1714226912372 implements MigrationInterface {
+    name = 'QuizGame1714226912372'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "answer_history_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "questionId" character varying NOT NULL, "answerStatus" character varying, "addedAt" TIMESTAMP NOT NULL, "playerProgressIdId" uuid, CONSTRAINT "PK_3be48e2bde21f08bbfc28e65b9a" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "question_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "body" character varying NOT NULL, "correctAnswers" character varying array NOT NULL, "published" boolean NOT NULL, "createdAt" TIMESTAMP NOT NULL, "updatedAt" TIMESTAMP NOT NULL, CONSTRAINT "PK_969f5da88728130b8274c97ac41" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "question_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "body" character varying NOT NULL, "correctAnswers" character varying array NOT NULL, "published" boolean NOT NULL, "createdAt" TIMESTAMP NOT NULL, "updatedAt" TIMESTAMP, CONSTRAINT "PK_969f5da88728130b8274c97ac41" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "game_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "status" character varying NOT NULL, "pairCreatedDate" TIMESTAMP, "startGameDate" TIMESTAMP, "finishGameDate" TIMESTAMP, CONSTRAINT "PK_70019f3b144c0e15dffddb08d11" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "player_progress_orm" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "playerId" uuid NOT NULL, "score" integer, "game1Id" uuid, "game2Id" uuid, CONSTRAINT "REL_d96bc52070c1fa7ba683d36aeb" UNIQUE ("game1Id"), CONSTRAINT "REL_e9c79d62159dacb85d77821e30" UNIQUE ("game2Id"), CONSTRAINT "PK_ed4af8cfc51f8423eab2542bbd9" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "game_orm_questions_question_orm" ("gameOrmId" uuid NOT NULL, "questionOrmId" uuid NOT NULL, CONSTRAINT "PK_02bf1c93d26fbff0fe6f39500a6" PRIMARY KEY ("gameOrmId", "questionOrmId"))`);
