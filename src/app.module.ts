@@ -152,6 +152,9 @@ import {
   PostExistMiddleware,
   PostValidationMiddleware,
 } from './infrastructure/middlewares/comment-validation-middleware';
+import { QuizGameAnswerUserValidationMiddleware } from './infrastructure/middlewares/quiz-game-answer-user-validation-middleware';
+import { QuizGameConnectValidationMiddleware } from './infrastructure/middlewares/quiz-game-connect-validation-middleware';
+import { QuizGameUserSecurityMiddleware } from './infrastructure/middlewares/quiz-game-user-security-middleware';
 import { AuthorizationSecurityMiddleware } from './infrastructure/middlewares/security-validation-middleware';
 import { UserIdentificationMiddleware } from './infrastructure/middlewares/user-identification-middleware';
 import { TrimPipe } from './infrastructure/pipes/body-trim-pipe';
@@ -410,6 +413,21 @@ export class AppModule implements NestModule {
         { path: 'comments/*', method: RequestMethod.DELETE },
       )
       .apply(AuthorizationSecurityMiddleware)
-      .forRoutes({ path: 'security/devices/*', method: RequestMethod.DELETE });
+      .forRoutes({ path: 'security/devices/*', method: RequestMethod.DELETE })
+      .apply(QuizGameUserSecurityMiddleware)
+      .forRoutes({
+        path: 'pair-game-quiz/pairs/*',
+        method: RequestMethod.GET,
+      })
+      .apply(QuizGameConnectValidationMiddleware)
+      .forRoutes({
+        path: 'pair-game-quiz/pairs/connection',
+        method: RequestMethod.POST,
+      })
+      .apply(QuizGameAnswerUserValidationMiddleware)
+      .forRoutes({
+        path: 'pair-game-quiz/pairs/answers',
+        method: RequestMethod.POST,
+      });
   }
 }

@@ -8,6 +8,7 @@ import { HTTP_STATUSES } from '../../settings/http-statuses';
 @Injectable()
 export class AccessFrequencyMiddleware implements NestMiddleware {
   constructor(private readonly commandBus: CommandBus) {}
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   async use(req: Request, res: Response, next: NextFunction) {
     const result = await this.commandBus.execute(
       new AccessCheckAccessFrequencyCommand(req.url, req.ip!),

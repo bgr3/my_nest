@@ -13,6 +13,7 @@ export class AuthorizationSecurityMiddleware implements NestMiddleware {
     // protected authRepository: AuthSQLRepository,
     protected authRepository: AuthORMRepository,
   ) {}
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   async use(req: Request, res: Response, next: NextFunction) {
     const deviceId = req.params[0];
     const auth = await this.authRepository.findAuthSessionByDeviceId(deviceId);

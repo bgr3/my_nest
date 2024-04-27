@@ -18,10 +18,11 @@ export class UserIdentificationMiddleware implements NestMiddleware {
     // protected authRepository: AuthSQLRepository,
     protected authRepository: AuthORMRepository,
   ) {}
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   async use(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.headers.authorization?.split(' ');
     const refreshToken = req.cookies.refreshToken;
-    let userId = '';
+    let userId: string = '';
 
     if (!accessToken && !refreshToken) {
       next();
