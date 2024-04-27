@@ -37,6 +37,7 @@ export class QuestionORM {
 
   publishUnpublishQuestion(published: boolean): void {
     this.published = published;
+    this.updatedAt = new Date();
     return;
   }
 

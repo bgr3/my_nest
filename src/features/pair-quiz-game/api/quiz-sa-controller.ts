@@ -63,6 +63,7 @@ export class QuizSAController {
   }
 
   @Delete('questions/:id')
+  @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
   async deleteQuestion(@Param('id') id: string): Promise<void> {
     const result = await this.commandBus.execute(
       new QuizDeleteQuestionCommand(id),
