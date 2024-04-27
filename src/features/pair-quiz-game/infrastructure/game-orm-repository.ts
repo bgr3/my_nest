@@ -11,6 +11,7 @@ export class GameORMRepository {
 
   async testAllData(): Promise<void> {
     await this.gameRepository.delete({});
+    return;
   }
 
   async save(question: GameORM): Promise<string | null> {
