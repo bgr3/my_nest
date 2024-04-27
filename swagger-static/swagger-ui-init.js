@@ -837,7 +837,7 @@ window.onload = function() {
           "operationId": "QuizController_randomConnect",
           "parameters": [],
           "responses": {
-            "201": {
+            "200": {
               "description": ""
             }
           }
@@ -936,7 +936,7 @@ window.onload = function() {
             }
           },
           "responses": {
-            "200": {
+            "204": {
               "description": ""
             }
           }
@@ -966,7 +966,7 @@ window.onload = function() {
             }
           },
           "responses": {
-            "200": {
+            "204": {
               "description": ""
             }
           }

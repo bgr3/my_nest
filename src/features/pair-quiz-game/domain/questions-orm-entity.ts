@@ -46,7 +46,7 @@ export class QuestionORM {
     question.body = body;
     question.correctAnswers = correctAnswers;
     question.published = false;
-    question.updatedAt = new Date();
+    question.createdAt = new Date();
 
     return question;
   }
