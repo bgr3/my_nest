@@ -172,7 +172,7 @@ if (!postgresUrl) {
 export const postgresParam: TypeOrmModuleOptions = {
   type: 'postgres',
   url: postgresUrl,
-  database: 'nestORM',
+  // database: 'nestORM',
   // namingStrategy:
   // logging: ['query'],
   autoLoadEntities: true,

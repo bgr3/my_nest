@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { applyAppSettings } from './settings/apply-app-settings';
 
 const port = process.env.PORT || 3000;
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
