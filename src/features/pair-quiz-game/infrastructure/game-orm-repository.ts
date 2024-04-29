@@ -47,7 +47,8 @@ export class GameORMRepository {
         .select()
         .leftJoinAndSelect('g.firstPlayerProgress', 'f')
         .leftJoinAndSelect('f.player', 'fp')
-        .leftJoinAndSelect('g.secondPlayerProgress', 'sp')
+        .leftJoinAndSelect('g.secondPlayerProgress', 's')
+        .leftJoinAndSelect('s.player', 'sp')
         .leftJoinAndSelect('g.questions', 'q')
         .where('fp.id = :fId OR sp.id = :sId', {
           fId: userId,

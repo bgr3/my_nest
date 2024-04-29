@@ -85,10 +85,10 @@ export class GameORMQueryRepository {
         .select()
         .leftJoinAndSelect('g.firstPlayerProgress', 'f')
         .leftJoinAndSelect('f.player', 'fp')
-        .leftJoinAndSelect('g.secondPlayerProgress', 'sp')
-        .leftJoinAndSelect('sp.player', 'spp')
+        .leftJoinAndSelect('g.secondPlayerProgress', 's')
+        .leftJoinAndSelect('s.player', 'sp')
         .leftJoinAndSelect('g.questions', 'q')
-        .where('fp.id = :fId OR spp.id = :sId', {
+        .where('fp.id = :fId OR sp.id = :sId', {
           fId: userId,
           sId: userId,
         })
