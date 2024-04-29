@@ -46,6 +46,7 @@ export class QuizCreateGameUseCase
       }
 
       randomArray.forEach((i) => randomQuestions.push(allQuestions[0][i]));
+      pendingGame.addQuestions(randomQuestions);
     } else {
       game = GameORM.createGame(user);
     }

@@ -70,6 +70,12 @@ export class GameORM {
     return;
   }
 
+  addQuestions(questions: QuestionORM[]): void {
+    this.questions = [...questions];
+
+    return;
+  }
+
   firstPlayerAnswer(answer: string): AnswerHistoryORM | null {
     const numberQuestion = this.firstPlayerProgress.answers.length;
 
