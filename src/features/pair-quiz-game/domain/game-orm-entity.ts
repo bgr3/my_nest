@@ -41,6 +41,7 @@ export class GameORM {
 
   @ManyToMany(() => QuestionORM, (question) => question.game, {
     eager: true,
+    cascade: true,
     nullable: true,
   })
   @JoinTable()

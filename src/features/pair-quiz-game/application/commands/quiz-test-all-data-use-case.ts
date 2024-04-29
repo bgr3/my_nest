@@ -12,13 +12,13 @@ export class QuizTestAllDataUseCase
   implements ICommandHandler<QuizTestAllDataCommand>
 {
   constructor(
-    private readonly questionRepository: QuestionORMRepository,
     private readonly gameRepository: GameORMRepository,
+    private readonly questionRepository: QuestionORMRepository,
   ) {}
 
   async execute(): Promise<void> {
-    await this.questionRepository.testAllData();
     await this.gameRepository.testAllData();
+    await this.questionRepository.testAllData();
     return;
   }
 }
