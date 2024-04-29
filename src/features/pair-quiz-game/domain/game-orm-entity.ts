@@ -59,8 +59,10 @@ export class GameORM {
   finishGameDate: Date | null;
 
   addSecondPlayer(secondPlayer: UserORM): void {
-    this.secondPlayerProgress = new PlayerProgressORM();
-    this.secondPlayerProgress.player = secondPlayer;
+    this.secondPlayerProgress =
+      PlayerProgressORM.createPlayerProgress(secondPlayer);
+    this.firstPlayerProgress.score = 0;
+    this.secondPlayerProgress.score = 0;
     this.status = 'Active';
     this.pairCreatedDate = new Date();
     this.startGameDate = new Date();

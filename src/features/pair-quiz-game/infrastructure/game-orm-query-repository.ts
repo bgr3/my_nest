@@ -60,6 +60,7 @@ export class GameORMQueryRepository {
         .leftJoinAndSelect('g.firstPlayerProgress', 'f')
         .leftJoinAndSelect('f.player', 'fp')
         .leftJoinAndSelect('g.secondPlayerProgress', 's')
+        .leftJoinAndSelect('s.player', 'sp')
         .leftJoinAndSelect('g.questions', 'q')
         .where('g.id = :id', {
           id: id,
@@ -85,8 +86,9 @@ export class GameORMQueryRepository {
         .leftJoinAndSelect('g.firstPlayerProgress', 'f')
         .leftJoinAndSelect('f.player', 'fp')
         .leftJoinAndSelect('g.secondPlayerProgress', 'sp')
+        .leftJoinAndSelect('sp.player', 'spp')
         .leftJoinAndSelect('g.questions', 'q')
-        .where('fp.id = :fId OR sp.id = :sId', {
+        .where('fp.id = :fId OR spp.id = :sId', {
           fId: userId,
           sId: userId,
         })
@@ -103,6 +105,8 @@ export class GameORMQueryRepository {
 }
 
 const gameMapper = (game: GameORM): GameOutputDTO => {
+  console.log(game);
+
   return {
     id: game.id,
 
@@ -123,9 +127,11 @@ const gameMapper = (game: GameORM): GameOutputDTO => {
 
     secondPlayerProgress: game.secondPlayerProgress
       ? {
-          answers: game.secondPlayerProgress.answers.map((answer) =>
-            answersMapper(answer),
-          ),
+          answers: game.secondPlayerProgress.answers
+            ? game.secondPlayerProgress.answers.map((answer) =>
+                answersMapper(answer),
+              )
+            : null,
 
           player: {
             id: game.secondPlayerProgress.player.id,
