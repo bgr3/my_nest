@@ -415,6 +415,10 @@ export class AppModule implements NestModule {
       .apply(AuthorizationSecurityMiddleware)
       .forRoutes({ path: 'security/devices/*', method: RequestMethod.DELETE })
       .apply(QuizGameUserSecurityMiddleware)
+      .exclude({
+        path: 'pair-game-quiz/pairs/my-current',
+        method: RequestMethod.GET,
+      })
       .forRoutes({
         path: 'pair-game-quiz/pairs/*',
         method: RequestMethod.GET,

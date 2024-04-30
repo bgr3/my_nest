@@ -42,8 +42,6 @@ export class QuizController {
 
   @Get('pairs/:id')
   async getGame(@Param() dto: QuizParamUUIDDTO): Promise<GameOutputDTO> {
-    console.log('PARAM dto!!!!!!!!!: ', dto);
-
     const game = await this.gameQueryRepository.findGameByID(dto.id);
 
     if (!game)
