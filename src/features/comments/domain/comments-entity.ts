@@ -50,11 +50,11 @@ export class CommentForPost {
   @Prop({ required: true })
   postId: string;
 
-  updateComment(content: string) {
+  updateComment(content: string): void {
     this.content = content;
   }
 
-  setLikeStatus(userId: string, login: string, likeStatus: string) {
+  setLikeStatus(userId: string, login: string, likeStatus: string): void {
     const like = this.likesInfo.find((i) => i.userId === userId);
 
     if (like) {
@@ -74,7 +74,7 @@ export class CommentForPost {
     postId: string,
     userId: string,
     userLogin: string,
-  ) {
+  ): CommentForPost {
     const comment = new this();
 
     comment.content = content;

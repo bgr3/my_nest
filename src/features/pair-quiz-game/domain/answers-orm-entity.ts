@@ -10,7 +10,7 @@ export class AnswerHistoryORM {
   @Column()
   questionId: string;
 
-  @Column({ nullable: true })
+  @Column()
   answerStatus: AnswerStatusType;
 
   @Column({ type: 'timestamp without time zone' })
@@ -23,7 +23,10 @@ export class AnswerHistoryORM {
       onDelete: 'CASCADE',
     },
   )
-  playerProgressId: PlayerProgressORM;
+  playerProgress: PlayerProgressORM;
+
+  @Column({ type: 'uuid' })
+  playerProgressId: string;
 
   // updateAnswerHistory(body: string, correctAnswers: string[]): void {
   //   this.body = body;

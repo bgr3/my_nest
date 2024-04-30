@@ -19,17 +19,15 @@ export class PlayerProgressORM {
 
   @OneToMany(
     () => AnswerHistoryORM,
-    (answerHistoryORM) => answerHistoryORM.playerProgressId,
+    (answerHistoryORM) => answerHistoryORM.playerProgress,
     {
       eager: true,
       cascade: true,
-      nullable: true,
     },
   )
   answers: AnswerHistoryORM[];
 
   @ManyToOne(() => UserORM, (player) => player.playerProgressId, {
-    nullable: true,
     eager: true,
     onDelete: 'CASCADE',
   })
@@ -37,8 +35,8 @@ export class PlayerProgressORM {
   @Column({ type: 'uuid' })
   playerId: string;
 
-  @Column({ nullable: true })
-  score: number;
+  @Column()
+  score: number = 0;
 
   @OneToOne(() => GameORM, (game) => game.firstPlayerProgress, {
     onDelete: 'CASCADE',
@@ -58,12 +56,11 @@ export class PlayerProgressORM {
   @Column({ type: 'uuid', nullable: true })
   game2Id: string;
 
-  // updateAnswerHistory(body: string, correctAnswers: string[]): void {
-  //   this.body = body;
-  //   this.correctAnswers = correctAnswers;
-  //   this.updatedAt = new Date();
-  //   return;
-  // }
+  pushAnswer(answer: AnswerHistoryORM): void {
+    this.answers.push(answer);
+
+    return;
+  }
 
   static createPlayerProgress(player: UserORM): PlayerProgressORM {
     const playerProgress = new this();

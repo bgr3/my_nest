@@ -426,7 +426,7 @@ export class AppModule implements NestModule {
       })
       .apply(QuizGameAnswerUserValidationMiddleware)
       .forRoutes({
-        path: 'pair-game-quiz/pairs/answers',
+        path: 'pair-game-quiz/pairs/my-current/answers',
         method: RequestMethod.POST,
       });
   }

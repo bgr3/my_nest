@@ -58,8 +58,10 @@ export class GameORMQueryRepository {
         .createQueryBuilder('g')
         .select()
         .leftJoinAndSelect('g.firstPlayerProgress', 'f')
+        .leftJoinAndSelect('f.answers', 'fa')
         .leftJoinAndSelect('f.player', 'fp')
         .leftJoinAndSelect('g.secondPlayerProgress', 's')
+        .leftJoinAndSelect('s.answers', 'sa')
         .leftJoinAndSelect('s.player', 'sp')
         .leftJoinAndSelect('g.questions', 'q')
         .where('g.id = :id', {
@@ -84,8 +86,10 @@ export class GameORMQueryRepository {
         .createQueryBuilder('g')
         .select()
         .leftJoinAndSelect('g.firstPlayerProgress', 'f')
+        .leftJoinAndSelect('f.answers', 'fa')
         .leftJoinAndSelect('f.player', 'fp')
         .leftJoinAndSelect('g.secondPlayerProgress', 's')
+        .leftJoinAndSelect('s.answers', 'sa')
         .leftJoinAndSelect('s.player', 'sp')
         .leftJoinAndSelect('g.questions', 'q')
         .where('fp.id = :fId OR sp.id = :sId', {
@@ -105,17 +109,13 @@ export class GameORMQueryRepository {
 }
 
 const gameMapper = (game: GameORM): GameOutputDTO => {
-  console.log(game);
-
   return {
     id: game.id,
 
     firstPlayerProgress: {
-      answers: game.firstPlayerProgress.answers
-        ? game.firstPlayerProgress.answers.map((answer) =>
-            answersMapper(answer),
-          )
-        : null,
+      answers: game.firstPlayerProgress.answers.map((answer) =>
+        answersMapper(answer),
+      ),
 
       player: {
         id: game.firstPlayerProgress.player.id,
@@ -127,11 +127,9 @@ const gameMapper = (game: GameORM): GameOutputDTO => {
 
     secondPlayerProgress: game.secondPlayerProgress
       ? {
-          answers: game.secondPlayerProgress.answers
-            ? game.secondPlayerProgress.answers.map((answer) =>
-                answersMapper(answer),
-              )
-            : null,
+          answers: game.secondPlayerProgress.answers.map((answer) =>
+            answersMapper(answer),
+          ),
 
           player: {
             id: game.secondPlayerProgress.player.id,

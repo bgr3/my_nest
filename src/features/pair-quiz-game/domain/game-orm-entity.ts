@@ -23,7 +23,6 @@ export class GameORM {
     {
       eager: true,
       cascade: true,
-      nullable: true,
     },
   )
   firstPlayerProgress: PlayerProgressORM;
@@ -62,8 +61,6 @@ export class GameORM {
   addSecondPlayer(secondPlayer: UserORM): void {
     this.secondPlayerProgress =
       PlayerProgressORM.createPlayerProgress(secondPlayer);
-    this.firstPlayerProgress.score = 0;
-    this.secondPlayerProgress.score = 0;
     this.status = 'Active';
     this.pairCreatedDate = new Date();
     this.startGameDate = new Date();
@@ -78,7 +75,9 @@ export class GameORM {
   }
 
   firstPlayerAnswer(answer: string): AnswerHistoryORM | null {
-    const numberQuestion = this.firstPlayerProgress.answers.length;
+    const numberQuestion = this.firstPlayerProgress.answers
+      ? this.firstPlayerProgress.answers.length
+      : 0;
 
     if (numberQuestion == 5) return null;
 
@@ -107,14 +106,16 @@ export class GameORM {
         'Incorrect',
         question.id,
       );
-      this.firstPlayerProgress.answers.push(answer);
+      this.firstPlayerProgress.pushAnswer(answer);
 
       return answer;
     }
   }
 
   secondPlayerAnswer(answer: string): AnswerHistoryORM | null {
-    const numberQuestion = this.secondPlayerProgress!.answers.length;
+    const numberQuestion = this.firstPlayerProgress.answers
+      ? this.firstPlayerProgress.answers.length
+      : 0;
 
     if (numberQuestion == 5) return null;
 
