@@ -70,6 +70,7 @@ export class QuizController {
   }
 
   @Post('pairs/my-current/answers')
+  @HttpCode(HTTP_STATUSES.OK_200)
   async sendAnswer(
     @Req() req,
     @Body() dto: QuizAnswerDTO,

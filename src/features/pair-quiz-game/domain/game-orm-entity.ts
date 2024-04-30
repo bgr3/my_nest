@@ -62,7 +62,6 @@ export class GameORM {
     this.secondPlayerProgress =
       PlayerProgressORM.createPlayerProgress(secondPlayer);
     this.status = 'Active';
-    this.pairCreatedDate = new Date();
     this.startGameDate = new Date();
 
     return;
@@ -106,7 +105,8 @@ export class GameORM {
       this.firstPlayerProgress.answers.length == 5 &&
       this.secondPlayerProgress!.answers.length == 5
     ) {
-      this.status = 'Done';
+      this.status = 'Finished';
+      this.finishGameDate = new Date();
     }
 
     return result;
@@ -144,7 +144,8 @@ export class GameORM {
       this.firstPlayerProgress.answers.length == 5 &&
       this.secondPlayerProgress!.answers.length == 5
     ) {
-      this.status = 'Done';
+      this.status = 'Finished';
+      this.finishGameDate = new Date();
     }
 
     return result;
@@ -159,9 +160,10 @@ export class GameORM {
       );
     // game.firstPlayerProgress.player = player;
     game.status = 'PendingSecondPlayer';
+    game.pairCreatedDate = new Date();
 
     return game;
   }
 }
 
-export type GameStatusType = 'PendingSecondPlayer' | 'Active' | 'Done';
+export type GameStatusType = 'PendingSecondPlayer' | 'Active' | 'Finished';

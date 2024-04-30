@@ -92,10 +92,15 @@ export class GameORMQueryRepository {
         .leftJoinAndSelect('s.answers', 'sa')
         .leftJoinAndSelect('s.player', 'sp')
         .leftJoinAndSelect('g.questions', 'q')
-        .where('fp.id = :fId OR sp.id = :sId', {
-          fId: userId,
-          sId: userId,
-        })
+        .where(
+          '(fp.id = :fId OR sp.id = :sId) AND (g.status = :status OR g.status = :status2)',
+          {
+            fId: userId,
+            sId: userId,
+            status: 'Active',
+            status2: 'PendingSecondPlayer',
+          },
+        )
         .getOne();
     } catch (err) {
       console.log(err);
