@@ -38,7 +38,7 @@ export class GameORMRepository {
     return game;
   }
 
-  async getGameByUserId(userId: string): Promise<GameORM | null> {
+  async getActiveGameByUserId(userId: string): Promise<GameORM | null> {
     let game;
 
     try {
@@ -52,9 +52,10 @@ export class GameORMRepository {
         .leftJoinAndSelect('s.answers', 'sa')
         .leftJoinAndSelect('s.player', 'sp')
         .leftJoinAndSelect('g.questions', 'q')
-        .where('fp.id = :fId OR sp.id = :sId', {
+        .where('(fp.id = :fId OR sp.id = :sId) AND g.status = :status', {
           fId: userId,
           sId: userId,
+          status: 'Active',
         })
         .getOne();
     } catch (err) {

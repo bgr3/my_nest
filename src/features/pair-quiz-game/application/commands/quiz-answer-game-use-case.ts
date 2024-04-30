@@ -25,7 +25,9 @@ export class QuizAnswerUseCase
   async execute(
     command: QuizAnswerGameCommand,
   ): Promise<AnswersOutputDTO | null> {
-    const game = await this.gameRepository.getGameByUserId(command.userId);
+    const game = await this.gameRepository.getActiveGameByUserId(
+      command.userId,
+    );
 
     if (!game) return null;
 

@@ -12,9 +12,11 @@ export class QuizGameAnswerUserValidationMiddleware implements NestMiddleware {
     const userId = req.user;
 
     if (userId) {
-      const game = await this.gameRepository.getGameByUserId(userId.toString());
+      const game = await this.gameRepository.getActiveGameByUserId(
+        userId.toString(),
+      );
 
-      if (game?.status === 'Active') {
+      if (game) {
         if (
           game.firstPlayerProgress.player.id === userId &&
           game.firstPlayerProgress.answers.length < 5

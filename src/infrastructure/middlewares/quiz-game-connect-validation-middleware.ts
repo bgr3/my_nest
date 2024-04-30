@@ -12,9 +12,11 @@ export class QuizGameConnectValidationMiddleware implements NestMiddleware {
     const userId = req.user;
 
     if (userId) {
-      const game = await this.gameRepository.getGameByUserId(userId.toString());
+      const game = await this.gameRepository.getActiveGameByUserId(
+        userId.toString(),
+      );
 
-      if (!game || game.status == 'Finished') {
+      if (!game) {
         next();
         return;
       } else {
