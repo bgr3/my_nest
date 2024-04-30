@@ -42,11 +42,13 @@ export class QuizAnswerUseCase
       if (!secondPlayerResult) return null;
     }
 
-    if (firstPlayerResult) await this.gameRepository.save(game);
+    if (firstPlayerResult || secondPlayerResult)
+      await this.gameRepository.save(game);
 
     const gameRepo = await this.gameQueryRepository.findGameByID(game.id);
 
     let answer;
+
     if (firstPlayerResult) {
       answer =
         gameRepo!.firstPlayerProgress.answers![

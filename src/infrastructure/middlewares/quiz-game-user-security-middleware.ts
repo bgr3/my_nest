@@ -13,7 +13,11 @@ export class QuizGameUserSecurityMiddleware implements NestMiddleware {
     const game = await this.gameRepository.getGameById(gameId);
     const userId = req.user;
 
-    if (game && userId) {
+    if (
+      game &&
+      userId &&
+      (game.status == 'Active' || game.status == 'PendingSecondPlayer')
+    ) {
       if (
         game.firstPlayerProgress.player.id === userId ||
         game.secondPlayerProgress?.player.id === userId

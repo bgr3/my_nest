@@ -815,16 +815,7 @@ window.onload = function() {
       "/pair-game-quiz/pairs/{id}": {
         "get": {
           "operationId": "QuizController_getGame",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
+          "parameters": [],
           "responses": {
             "200": {
               "description": ""

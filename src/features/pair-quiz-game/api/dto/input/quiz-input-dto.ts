@@ -1,4 +1,10 @@
-import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+} from 'class-validator';
 
 import { QueryFilter } from '../../../../../infrastructure/dto/input/input-dto';
 
@@ -30,3 +36,8 @@ export class QuizQuestionsQueryFilter extends QueryFilter {
 }
 
 export type PublishedStatuses = 'all' | 'published' | 'notPublished';
+
+export class QuizParamUUIDDTO {
+  @IsUUID()
+  id: string;
+}

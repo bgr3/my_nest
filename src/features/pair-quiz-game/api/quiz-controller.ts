@@ -17,7 +17,7 @@ import { HTTP_STATUSES } from '../../../settings/http-statuses';
 import { QuizAnswerGameCommand } from '../application/commands/quiz-answer-game-use-case';
 import { QuizCreateGameCommand } from '../application/commands/quiz-create-game-use-case';
 import { GameORMQueryRepository } from '../infrastructure/game-orm-query-repository';
-import { QuizAnswerDTO } from './dto/input/quiz-input-dto';
+import { QuizAnswerDTO, QuizParamUUIDDTO } from './dto/input/quiz-input-dto';
 import { AnswersOutputDTO, GameOutputDTO } from './dto/output/game-output-dto';
 
 @UseGuards(JwtAuthGuard)
@@ -41,8 +41,10 @@ export class QuizController {
   }
 
   @Get('pairs/:id')
-  async getGame(@Param('id') id: string): Promise<GameOutputDTO> {
-    const game = await this.gameQueryRepository.findGameByID(id);
+  async getGame(@Param() dto: QuizParamUUIDDTO): Promise<GameOutputDTO> {
+    console.log('PARAM dto!!!!!!!!!: ', dto);
+
+    const game = await this.gameQueryRepository.findGameByID(dto.id);
 
     if (!game)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);

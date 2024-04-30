@@ -75,20 +75,17 @@ export class GameORM {
   }
 
   firstPlayerAnswer(answer: string): AnswerHistoryORM | null {
-    const numberQuestion = this.firstPlayerProgress.answers
-      ? this.firstPlayerProgress.answers.length
-      : 0;
+    const numberQuestion = this.firstPlayerProgress.answers.length;
 
     if (numberQuestion == 5) return null;
 
     const question = this.questions[numberQuestion];
 
+    let result: AnswerHistoryORM;
+
     if (question.correctAnswers.includes(answer)) {
-      const answer = AnswerHistoryORM.createAnswerHistory(
-        'Correct',
-        question.id,
-      );
-      this.firstPlayerProgress.answers.push(answer);
+      result = AnswerHistoryORM.createAnswerHistory('Correct', question.id);
+      this.firstPlayerProgress.answers.push(result);
       this.firstPlayerProgress.score++;
 
       if (
@@ -100,33 +97,33 @@ export class GameORM {
       ) {
         this.firstPlayerProgress.score++;
       }
-      return answer;
     } else {
-      const answer = AnswerHistoryORM.createAnswerHistory(
-        'Incorrect',
-        question.id,
-      );
-      this.firstPlayerProgress.pushAnswer(answer);
-
-      return answer;
+      result = AnswerHistoryORM.createAnswerHistory('Incorrect', question.id);
+      this.firstPlayerProgress.pushAnswer(result);
     }
+
+    if (
+      this.firstPlayerProgress.answers.length == 5 &&
+      this.secondPlayerProgress!.answers.length == 5
+    ) {
+      this.status = 'Done';
+    }
+
+    return result;
   }
 
   secondPlayerAnswer(answer: string): AnswerHistoryORM | null {
-    const numberQuestion = this.firstPlayerProgress.answers
-      ? this.firstPlayerProgress.answers.length
-      : 0;
+    const numberQuestion = this.firstPlayerProgress.answers.length;
 
     if (numberQuestion == 5) return null;
 
     const question = this.questions[numberQuestion];
 
+    let result: AnswerHistoryORM;
+
     if (question.correctAnswers.includes(answer)) {
-      const answer = AnswerHistoryORM.createAnswerHistory(
-        'Correct',
-        question.id,
-      );
-      this.secondPlayerProgress!.answers.push(answer);
+      result = AnswerHistoryORM.createAnswerHistory('Correct', question.id);
+      this.secondPlayerProgress!.answers.push(result);
       this.secondPlayerProgress!.score++;
 
       if (
@@ -138,16 +135,19 @@ export class GameORM {
       ) {
         this.secondPlayerProgress!.score++;
       }
-      return answer;
     } else {
-      const answer = AnswerHistoryORM.createAnswerHistory(
-        'Incorrect',
-        question.id,
-      );
-      this.secondPlayerProgress!.answers.push(answer);
-
-      return answer;
+      result = AnswerHistoryORM.createAnswerHistory('Incorrect', question.id);
+      this.secondPlayerProgress!.answers.push(result);
     }
+
+    if (
+      this.firstPlayerProgress.answers.length == 5 &&
+      this.secondPlayerProgress!.answers.length == 5
+    ) {
+      this.status = 'Done';
+    }
+
+    return result;
   }
 
   static createGame(player: UserORM): GameORM {
@@ -164,4 +164,4 @@ export class GameORM {
   }
 }
 
-export type GameStatusType = 'PendingSecondPlayer' | 'Active';
+export type GameStatusType = 'PendingSecondPlayer' | 'Active' | 'Done';
