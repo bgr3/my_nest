@@ -68,6 +68,42 @@ export class GameORMRepository {
     return game;
   }
 
+  async getActiveOrPendingGameByUserId(
+    userId: string,
+  ): Promise<GameORM | null> {
+    let game;
+
+    try {
+      game = await this.gameRepository
+        .createQueryBuilder('g')
+        .select()
+        .leftJoinAndSelect('g.firstPlayerProgress', 'f')
+        .leftJoinAndSelect('f.answers', 'fa')
+        .leftJoinAndSelect('f.player', 'fp')
+        .leftJoinAndSelect('g.secondPlayerProgress', 's')
+        .leftJoinAndSelect('s.answers', 'sa')
+        .leftJoinAndSelect('s.player', 'sp')
+        .leftJoinAndSelect('g.questions', 'q')
+        .where(
+          '(fp.id = :fId OR sp.id = :sId) AND (g.status = :status1 OR g.status = :status2)',
+          {
+            fId: userId,
+            sId: userId,
+            status1: 'Active',
+            status2: 'PendingSecondPlayer',
+          },
+        )
+        .getOne();
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+
+    if (!game) return null;
+
+    return game;
+  }
+
   async getPendingGame(): Promise<GameORM | null> {
     let game;
 

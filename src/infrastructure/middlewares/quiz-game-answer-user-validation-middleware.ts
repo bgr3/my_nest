@@ -32,11 +32,9 @@ export class QuizGameAnswerUserValidationMiddleware implements NestMiddleware {
           next();
           return;
         }
-
-        throw new HttpException('', HTTP_STATUSES.FORBIDDEN_403);
-      } else {
-        throw new HttpException('', HTTP_STATUSES.FORBIDDEN_403);
       }
+
+      throw new HttpException('', HTTP_STATUSES.FORBIDDEN_403);
     }
 
     next();
