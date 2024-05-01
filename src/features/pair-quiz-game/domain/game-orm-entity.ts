@@ -80,11 +80,14 @@ export class GameORM {
 
     const question = this.questions[numberQuestion];
 
-    let result: AnswerHistoryORM;
+    let answerEntity: AnswerHistoryORM;
 
     if (question.correctAnswers.includes(answer)) {
-      result = AnswerHistoryORM.createAnswerHistory('Correct', question.id);
-      this.firstPlayerProgress.answers.push(result);
+      answerEntity = AnswerHistoryORM.createAnswerHistory(
+        'Correct',
+        question.id,
+      );
+      this.firstPlayerProgress.pushAnswer(answerEntity);
       this.firstPlayerProgress.score++;
 
       if (
@@ -97,8 +100,11 @@ export class GameORM {
         this.firstPlayerProgress.score++;
       }
     } else {
-      result = AnswerHistoryORM.createAnswerHistory('Incorrect', question.id);
-      this.firstPlayerProgress.pushAnswer(result);
+      answerEntity = AnswerHistoryORM.createAnswerHistory(
+        'Incorrect',
+        question.id,
+      );
+      this.firstPlayerProgress.pushAnswer(answerEntity);
     }
 
     if (
@@ -109,11 +115,11 @@ export class GameORM {
       this.finishGameDate = new Date();
     }
 
-    return result;
+    return answerEntity;
   }
 
   secondPlayerAnswer(answer: string): AnswerHistoryORM | null {
-    const numberQuestion = this.firstPlayerProgress.answers.length;
+    const numberQuestion = this.secondPlayerProgress!.answers.length;
 
     if (numberQuestion == 5) return null;
 
