@@ -146,7 +146,7 @@ const gameMapper = (game: GameORM): GameOutputDTO => {
       : null,
     questions:
       game.questions.length > 0
-        ? game.questions.map((question) => questionMapper(question)).sort()
+        ? game.questions.map((question) => questionMapper(question))
         : null,
     status: game.status,
     pairCreatedDate: game.pairCreatedDate

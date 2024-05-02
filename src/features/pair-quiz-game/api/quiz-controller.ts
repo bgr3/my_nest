@@ -66,6 +66,7 @@ export class QuizController {
     if (!newGame)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
 
+    newGame.questions?.reverse();
     return newGame;
   }
 
