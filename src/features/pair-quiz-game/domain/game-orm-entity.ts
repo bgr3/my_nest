@@ -89,22 +89,20 @@ export class GameORM {
       );
       this.firstPlayerProgress.pushAnswer(answerEntity);
       this.firstPlayerProgress.score++;
-
-      if (
-        numberQuestion == 4 &&
-        this.secondPlayerProgress!.answers.length < 5 &&
-        this.firstPlayerProgress.answers.find(
-          (i) => i.answerStatus == 'Correct',
-        )
-      ) {
-        this.firstPlayerProgress.score++;
-      }
     } else {
       answerEntity = AnswerHistoryORM.createAnswerHistory(
         'Incorrect',
         question.id,
       );
       this.firstPlayerProgress.pushAnswer(answerEntity);
+    }
+
+    if (
+      numberQuestion == 4 &&
+      this.secondPlayerProgress!.answers.length < 5 &&
+      this.firstPlayerProgress.answers.find((i) => i.answerStatus == 'Correct')
+    ) {
+      this.firstPlayerProgress.score++;
     }
 
     if (
@@ -131,19 +129,19 @@ export class GameORM {
       result = AnswerHistoryORM.createAnswerHistory('Correct', question.id);
       this.secondPlayerProgress!.answers.push(result);
       this.secondPlayerProgress!.score++;
-
-      if (
-        numberQuestion == 4 &&
-        this.firstPlayerProgress.answers.length < 5 &&
-        this.secondPlayerProgress!.answers.find(
-          (i) => i.answerStatus == 'Correct',
-        )
-      ) {
-        this.secondPlayerProgress!.score++;
-      }
     } else {
       result = AnswerHistoryORM.createAnswerHistory('Incorrect', question.id);
       this.secondPlayerProgress!.answers.push(result);
+    }
+
+    if (
+      numberQuestion == 4 &&
+      this.firstPlayerProgress.answers.length < 5 &&
+      this.secondPlayerProgress!.answers.find(
+        (i) => i.answerStatus == 'Correct',
+      )
+    ) {
+      this.secondPlayerProgress!.score++;
     }
 
     if (
