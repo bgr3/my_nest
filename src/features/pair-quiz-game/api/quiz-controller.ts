@@ -37,6 +37,9 @@ export class QuizController {
     if (!myGame)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
 
+    console.log('my-current');
+    console.log(myGame);
+
     return myGame;
   }
 
@@ -46,6 +49,9 @@ export class QuizController {
 
     if (!game)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
+
+    console.log('by id');
+    console.log(game);
 
     return game;
   }
@@ -66,7 +72,10 @@ export class QuizController {
     if (!newGame)
       throw new HttpException('NOT_FOUND', HTTP_STATUSES.NOT_FOUND_404);
 
-    newGame.questions?.reverse();
+    // newGame.questions?.reverse();
+    console.log('connect');
+    console.log(newGame);
+
     return newGame;
   }
 
