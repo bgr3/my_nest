@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { QuizAnswerDTO } from '../../api/dto/input/quiz-input-dto';
-import { AnswersOutputDTO } from '../../api/dto/output/game-output-dto';
 import { AnswerHistoryORM } from '../../domain/answers-orm-entity';
 import { GameORMQueryRepository } from '../../infrastructure/game-orm-query-repository';
 import { GameORMRepository } from '../../infrastructure/game-orm-repository';
+import { AnswerDTO } from '../dto/game-dto';
 
 export class QuizAnswerGameCommand {
   constructor(
@@ -22,9 +22,7 @@ export class QuizAnswerUseCase
     private readonly gameQueryRepository: GameORMQueryRepository,
   ) {}
 
-  async execute(
-    command: QuizAnswerGameCommand,
-  ): Promise<AnswersOutputDTO | null> {
+  async execute(command: QuizAnswerGameCommand): Promise<AnswerDTO | null> {
     const game = await this.gameRepository.getActiveGameByUserId(
       command.userId,
     );
@@ -49,22 +47,31 @@ export class QuizAnswerUseCase
 
     const gameRepo = await this.gameQueryRepository.findGameByID(game.id);
 
+    if (!gameRepo) return null;
+
     let answer;
 
     if (firstPlayerResult) {
       answer =
-        gameRepo!.firstPlayerProgress.answers![
-          gameRepo!.firstPlayerProgress.answers!.length - 1
+        gameRepo.firstPlayerProgress.answers![
+          gameRepo.firstPlayerProgress.answers!.length - 1
         ];
     }
 
     if (secondPlayerResult) {
       answer =
-        gameRepo!.secondPlayerProgress!.answers![
-          gameRepo!.secondPlayerProgress!.answers!.length - 1
+        gameRepo.secondPlayerProgress!.answers![
+          gameRepo.secondPlayerProgress!.answers!.length - 1
         ];
     }
 
-    return answer;
+    return {
+      answer: answer,
+      statusGame: gameRepo.status,
+      firstPlayerId: gameRepo.firstPlayerProgress.player.id,
+      secondPlayerId: gameRepo.secondPlayerProgress
+        ? gameRepo.secondPlayerProgress!.player!.id
+        : '',
+    };
   }
 }

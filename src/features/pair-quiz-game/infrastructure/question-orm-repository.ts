@@ -55,6 +55,26 @@ export class QuestionORMRepository {
     return questions;
   }
 
+  async getFivePublishedRandomQuestions(): Promise<QuestionORM[]> {
+    let questions;
+
+    try {
+      questions = await this.questionRepository
+        .createQueryBuilder('q')
+        .select()
+        .where('q.published = :published', { published: true })
+        .orderBy('RANDOM()')
+        .take(5)
+        .getMany();
+    } catch (err) {
+      console.log(err);
+
+      return [];
+    }
+
+    return questions;
+  }
+
   async deleteQuestion(id: string): Promise<boolean> {
     let result;
 

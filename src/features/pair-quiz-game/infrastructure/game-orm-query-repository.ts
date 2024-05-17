@@ -1,8 +1,8 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
 import { Paginator } from '../../../infrastructure/dto/output/output-dto';
+import { QuizGamesQueryFilter } from '../api/dto/input/quiz-input-dto';
 import {
   AnswersOutputDTO,
   GameOutputDTO,
@@ -18,17 +18,33 @@ export class GameORMQueryRepository {
     private readonly gameRepository: Repository<GameORM>,
   ) {}
 
-  async findGames(filter: QueryFilter): Promise<Paginator<GameOutputDTO>> {
+  async findGames(
+    filter: QuizGamesQueryFilter,
+    userId: string,
+  ): Promise<Paginator<GameOutputDTO>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
-
     const sortDirection = filter.sortDirection == 'asc' ? 'ASC' : 'DESC';
+    const sortBy = `g.${filter.sortBy}`;
 
     let dbResult;
     try {
       dbResult = await this.gameRepository
         .createQueryBuilder('g')
         .select()
-        .orderBy(filter.sortBy, sortDirection)
+        .leftJoinAndSelect('g.firstPlayerProgress', 'f')
+        .leftJoinAndSelect('f.answers', 'fa')
+        .leftJoinAndSelect('f.player', 'fp')
+        .leftJoinAndSelect('g.secondPlayerProgress', 's')
+        .leftJoinAndSelect('s.answers', 'sa')
+        .leftJoinAndSelect('s.player', 'sp')
+        .leftJoinAndSelect('g.questions', 'q')
+        .leftJoinAndSelect('q.question', 'qq')
+        .where('fp.id = :fId OR sp.id = :sId', {
+          fId: userId,
+          sId: userId,
+        })
+        .orderBy(sortBy, sortDirection)
+        .addOrderBy('g.pairCreatedDate', 'DESC')
         .skip(skip)
         .take(filter.pageSize)
         .getManyAndCount();
@@ -64,6 +80,7 @@ export class GameORMQueryRepository {
         .leftJoinAndSelect('s.answers', 'sa')
         .leftJoinAndSelect('s.player', 'sp')
         .leftJoinAndSelect('g.questions', 'q')
+        .leftJoinAndSelect('q.question', 'qq')
         .where('g.id = :id', {
           id: id,
         })
@@ -92,6 +109,7 @@ export class GameORMQueryRepository {
         .leftJoinAndSelect('s.answers', 'sa')
         .leftJoinAndSelect('s.player', 'sp')
         .leftJoinAndSelect('g.questions', 'q')
+        .leftJoinAndSelect('q.question', 'qq')
         .where(
           '(fp.id = :fId OR sp.id = :sId) AND (g.status = :status OR g.status = :status2)',
           {
@@ -114,13 +132,21 @@ export class GameORMQueryRepository {
 }
 
 const gameMapper = (game: GameORM): GameOutputDTO => {
+  if (game.questions.length > 0) {
+    // console.log(game.questions);
+
+    game.questions.sort((a, b) =>
+      a.questionNumber > b.questionNumber ? 1 : -1,
+    );
+  }
+
   return {
     id: game.id,
 
     firstPlayerProgress: {
-      answers: game.firstPlayerProgress.answers.map((answer) =>
-        answersMapper(answer),
-      ),
+      answers: game.firstPlayerProgress.answers
+        .sort((a, b) => (a.addedAt > b.addedAt ? 1 : -1))
+        .map((answer) => answersMapper(answer)),
 
       player: {
         id: game.firstPlayerProgress.player.id,
@@ -132,9 +158,9 @@ const gameMapper = (game: GameORM): GameOutputDTO => {
 
     secondPlayerProgress: game.secondPlayerProgress
       ? {
-          answers: game.secondPlayerProgress.answers.map((answer) =>
-            answersMapper(answer),
-          ),
+          answers: game.secondPlayerProgress.answers
+            .sort((a, b) => (a.addedAt > b.addedAt ? 1 : -1))
+            .map((answer) => answersMapper(answer)),
 
           player: {
             id: game.secondPlayerProgress.player.id,
@@ -146,7 +172,9 @@ const gameMapper = (game: GameORM): GameOutputDTO => {
       : null,
     questions:
       game.questions.length > 0
-        ? game.questions.map((question) => questionMapper(question))
+        ? game.questions.map((question) => {
+            return questionMapper(question.question);
+          })
         : null,
     status: game.status,
     pairCreatedDate: game.pairCreatedDate

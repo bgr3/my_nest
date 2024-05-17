@@ -10,6 +10,7 @@ import {
 
 import { MeType } from '../../auth/api/dto/output/auth-output-dto';
 import { PlayerProgressORM } from '../../pair-quiz-game/domain/player-progress-orm-entity';
+import { StatisticORM } from '../../pair-quiz-game/domain/statistic-orm-entity';
 import { EmailConfirmation } from './email-confirmation-orm-entity';
 
 @Entity()
@@ -43,6 +44,9 @@ export class UserORM {
 
   @OneToMany(() => PlayerProgressORM, (playerProgress) => playerProgress.player)
   playerProgressId: PlayerProgressORM;
+
+  @OneToOne(() => StatisticORM, (statistic) => statistic.player)
+  statisticId: StatisticORM;
 
   updateCodeForRecoveryPassword(code: string, expirationDate: object): void {
     this.emailConfirmation.confirmationCode = code;

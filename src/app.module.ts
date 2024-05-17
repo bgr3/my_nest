@@ -7,6 +7,7 @@ import {
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import dotenv from 'dotenv';
@@ -14,6 +15,7 @@ import { join } from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TasksService } from './base/cron-service';
 import { AccessService } from './features/access/application/access-service';
 import { AccessCheckAccessFrequencyUseCase } from './features/access/application/use-cases/access-check-access-frequency-use-case';
 import { AccessTestAllDataUseCase } from './features/access/application/use-cases/access-test-all-data-use-case';
@@ -95,18 +97,23 @@ import { QuizSAController } from './features/pair-quiz-game/api/quiz-sa-controll
 import { QuizAnswerUseCase } from './features/pair-quiz-game/application/commands/quiz-answer-game-use-case';
 import { QuizCreateGameUseCase } from './features/pair-quiz-game/application/commands/quiz-create-game-use-case';
 import { QuizCreateQuestionUseCase } from './features/pair-quiz-game/application/commands/quiz-create-question-use-case';
+import { QuizCreateStatisticUseCase } from './features/pair-quiz-game/application/commands/quiz-create-statistic-game-use-case';
 import { QuizDeleteQuestionUseCase } from './features/pair-quiz-game/application/commands/quiz-delete-question-use-case';
 import { QuizPublishUnpublishQuestionUseCase } from './features/pair-quiz-game/application/commands/quiz-publish-question-use-case';
 import { QuizTestAllDataUseCase } from './features/pair-quiz-game/application/commands/quiz-test-all-data-use-case';
 import { QuizUpdateQuestionUseCase } from './features/pair-quiz-game/application/commands/quiz-update-question-use-case';
 import { AnswerHistoryORM } from './features/pair-quiz-game/domain/answers-orm-entity';
 import { GameORM } from './features/pair-quiz-game/domain/game-orm-entity';
+import { GameQuestionsORM } from './features/pair-quiz-game/domain/game-qusestions-orm-entity';
 import { PlayerProgressORM } from './features/pair-quiz-game/domain/player-progress-orm-entity';
 import { QuestionORM } from './features/pair-quiz-game/domain/questions-orm-entity';
+import { StatisticORM } from './features/pair-quiz-game/domain/statistic-orm-entity';
 import { GameORMQueryRepository } from './features/pair-quiz-game/infrastructure/game-orm-query-repository';
 import { GameORMRepository } from './features/pair-quiz-game/infrastructure/game-orm-repository';
 import { QuestionORMQueryRepository } from './features/pair-quiz-game/infrastructure/question-orm-query-repository';
 import { QuestionORMRepository } from './features/pair-quiz-game/infrastructure/question-orm-repository';
+import { StatisticORMQueryRepository } from './features/pair-quiz-game/infrastructure/statistic-orm-query-repository';
+import { StatisticORMRepository } from './features/pair-quiz-game/infrastructure/statistic-orm-repository';
 import { BlogExistValidation } from './features/posts/api/dto/input/blogs-input-validator';
 import { PostsController } from './features/posts/api/post-controller';
 import { PostsService } from './features/posts/application/post-service';
@@ -245,6 +252,8 @@ const quizProviders = [
   QuestionORMQueryRepository,
   GameORMRepository,
   GameORMQueryRepository,
+  StatisticORMRepository,
+  StatisticORMQueryRepository,
 ];
 
 const accessProviders = [AccessService, LogRepository, LogORMRepository];
@@ -293,6 +302,7 @@ const useCases = [
   QuizCreateGameUseCase,
   QuizTestAllDataUseCase,
   QuizAnswerUseCase,
+  QuizCreateStatisticUseCase,
 ];
 
 const entities = [
@@ -309,8 +319,10 @@ const entities = [
   CommentLikesInfoORM,
   QuestionORM,
   GameORM,
+  GameQuestionsORM,
   PlayerProgressORM,
   AnswerHistoryORM,
+  StatisticORM,
 ];
 
 @Module({
@@ -358,6 +370,7 @@ const entities = [
       signOptions: { expiresIn: '60s' },
     }),
     CqrsModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [
     AppController,
@@ -376,6 +389,7 @@ const entities = [
     AppService,
     EmailManager,
     TrimPipe,
+    TasksService,
     ...usersProviders,
     ...blogsProviders,
     ...postsProviders,

@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { GameORM } from './game-orm-entity';
+import { GameQuestionsORM } from './game-qusestions-orm-entity';
 
 @Entity()
 export class QuestionORM {
@@ -25,8 +25,8 @@ export class QuestionORM {
   @Column({ type: 'timestamp without time zone', nullable: true })
   updatedAt: Date;
 
-  @ManyToMany(() => GameORM, (game) => game.questions)
-  game: GameORM[];
+  @OneToMany(() => GameQuestionsORM, (gameQuestions) => gameQuestions.question)
+  game: GameQuestionsORM[];
 
   updateQuestion(body: string, correctAnswers: string[]): void {
     this.body = body;

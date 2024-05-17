@@ -36,7 +36,7 @@ export class AuthORM {
     refreshToken: string,
     issuedAt: Date,
     expiredAt: Date,
-  ) {
+  ): void {
     this.issuedAt = issuedAt;
     this.expiredAt = expiredAt;
     this.JWTTokens.accessToken = accessToken;

@@ -52,3 +52,19 @@ export class AnswersOutputDTO {
 
   addedAt: string;
 }
+
+export class StatisticOutputDTO {
+  sumScore: number;
+  avgScores: number;
+  gamesCount: number;
+  winsCount: number;
+  lossesCount: number;
+  drawsCount: number;
+}
+
+export class TopPlayerOutputDTO extends StatisticOutputDTO {
+  player: {
+    id: string;
+    login: string;
+  };
+}

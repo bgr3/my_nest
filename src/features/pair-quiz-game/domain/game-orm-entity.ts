@@ -1,14 +1,14 @@
 import {
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { UserORM } from '../../users/domain/users-orm-entity';
 import { AnswerHistoryORM } from './answers-orm-entity';
+import { GameQuestionsORM } from './game-qusestions-orm-entity';
 import { PlayerProgressORM } from './player-progress-orm-entity';
 import { QuestionORM } from './questions-orm-entity';
 
@@ -38,13 +38,12 @@ export class GameORM {
   )
   secondPlayerProgress: PlayerProgressORM | null;
 
-  @ManyToMany(() => QuestionORM, (question) => question.game, {
+  @OneToMany(() => GameQuestionsORM, (gameQuestion) => gameQuestion.game, {
     eager: true,
     cascade: true,
     nullable: true,
   })
-  @JoinTable()
-  questions: QuestionORM[];
+  questions: GameQuestionsORM[];
 
   @Column()
   status: GameStatusType;
@@ -68,7 +67,14 @@ export class GameORM {
   }
 
   addQuestions(questions: QuestionORM[]): void {
-    this.questions = [...questions];
+    questions.forEach((value, index) => {
+      const question = new GameQuestionsORM();
+
+      question.question = value;
+      question.questionNumber = index + 1;
+
+      this.questions ? this.questions.push(question) : [question];
+    });
 
     return;
   }
@@ -82,27 +88,29 @@ export class GameORM {
 
     let answerEntity: AnswerHistoryORM;
 
-    if (question.correctAnswers.includes(answer)) {
+    if (question.question.correctAnswers.includes(answer)) {
       answerEntity = AnswerHistoryORM.createAnswerHistory(
         'Correct',
-        question.id,
+        question.question.id,
       );
       this.firstPlayerProgress.pushAnswer(answerEntity);
       this.firstPlayerProgress.score++;
     } else {
       answerEntity = AnswerHistoryORM.createAnswerHistory(
         'Incorrect',
-        question.id,
+        question.question.id,
       );
       this.firstPlayerProgress.pushAnswer(answerEntity);
     }
 
     if (
       numberQuestion == 4 &&
-      this.secondPlayerProgress!.answers.length < 5 &&
-      this.firstPlayerProgress.answers.find((i) => i.answerStatus == 'Correct')
+      this.secondPlayerProgress!.answers.length == 5 &&
+      this.secondPlayerProgress!.answers.find(
+        (i) => i.answerStatus == 'Correct',
+      )
     ) {
-      this.firstPlayerProgress.score++;
+      this.secondPlayerProgress!.score++;
     }
 
     if (
@@ -125,23 +133,27 @@ export class GameORM {
 
     let result: AnswerHistoryORM;
 
-    if (question.correctAnswers.includes(answer)) {
-      result = AnswerHistoryORM.createAnswerHistory('Correct', question.id);
+    if (question.question.correctAnswers.includes(answer)) {
+      result = AnswerHistoryORM.createAnswerHistory(
+        'Correct',
+        question.question.id,
+      );
       this.secondPlayerProgress!.answers.push(result);
       this.secondPlayerProgress!.score++;
     } else {
-      result = AnswerHistoryORM.createAnswerHistory('Incorrect', question.id);
+      result = AnswerHistoryORM.createAnswerHistory(
+        'Incorrect',
+        question.question.id,
+      );
       this.secondPlayerProgress!.answers.push(result);
     }
 
     if (
       numberQuestion == 4 &&
-      this.firstPlayerProgress.answers.length < 5 &&
-      this.secondPlayerProgress!.answers.find(
-        (i) => i.answerStatus == 'Correct',
-      )
+      this.firstPlayerProgress.answers.length == 5 &&
+      this.firstPlayerProgress.answers.find((i) => i.answerStatus == 'Correct')
     ) {
-      this.secondPlayerProgress!.score++;
+      this.firstPlayerProgress.score++;
     }
 
     if (

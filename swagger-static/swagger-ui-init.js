@@ -801,6 +801,39 @@ window.onload = function() {
           }
         }
       },
+      "/pair-game-quiz/users/top": {
+        "get": {
+          "operationId": "QuizController_usersTop",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/pair-game-quiz/pairs/my": {
+        "get": {
+          "operationId": "QuizController_myAllGames",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/pair-game-quiz/users/my-statistic": {
+        "get": {
+          "operationId": "QuizController_myStatistic",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/pair-game-quiz/pairs/my-current": {
         "get": {
           "operationId": "QuizController_myCurrentGame",
