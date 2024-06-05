@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { QueryFilter } from '../../../../infrastructure/dto/input/input-dto';
 import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
 import { CommentOutput } from '../../api/dto/output/comments-output-dto';
+import { CommentLikesInfoORM } from '../../domain/comments-likes-info-orm-entity';
 import { CommentForPostORM } from '../../domain/comments-orm-entity';
 
 @Injectable()
@@ -12,6 +13,8 @@ export class CommentsORMQueryRepository {
   constructor(
     @InjectRepository(CommentForPostORM)
     private readonly commentsRepository: Repository<CommentForPostORM>,
+    @InjectRepository(CommentLikesInfoORM)
+    private readonly commentsLikesInfoRepository: Repository<CommentLikesInfoORM>,
   ) {}
 
   async findComments(
@@ -23,16 +26,45 @@ export class CommentsORMQueryRepository {
     const sortDirection = filter.sortDirection == 'asc' ? 'ASC' : 'DESC';
     const sortBy = `c.${filter.sortBy}`;
 
+    let subQuery;
+
+    try {
+      subQuery = await this.commentsLikesInfoRepository
+        .createQueryBuilder('likes')
+        .select('likes.id', 'id')
+        .leftJoin('likes.owner', 'likeOwner')
+        .leftJoin('likeOwner.banInfo', 'likeOwnerBan')
+        .where('likeOwnerBan.isBanned = false')
+        .getRawMany();
+    } catch (err) {
+      console.log(err);
+      subQuery = [];
+    }
+
+    subQuery = subQuery.map((i) => "'" + i.id + "'");
+
     let dbResult;
     try {
       dbResult = await this.commentsRepository
         .createQueryBuilder('c')
         .select()
-        .leftJoinAndSelect('c.likesInfo', 'l')
-        .leftJoinAndSelect('c.commentatorInfo', 'i')
-        .where(postId ? 'c.postId = :postId' : '', {
-          postId: postId,
-        })
+        .leftJoinAndSelect(
+          'c.likesInfo',
+          'likes',
+          subQuery.length > 0 ? `likes.id IN (${subQuery})` : 'true = false',
+        )
+        .leftJoinAndSelect('likes.owner', 'likeOwner')
+        .leftJoinAndSelect('likeOwner.banInfo', 'likeOwnerBan')
+        .leftJoinAndSelect('c.commentatorInfo', 'commentator')
+        .leftJoinAndSelect('commentator.banInfo', 'ban')
+        .where(
+          `ban.isBanned = false AND likeOwnerBan.isBanned = false ${
+            postId ? 'AND c.postId = :postId' : ''
+          }`,
+          {
+            postId: postId,
+          },
+        )
         .orderBy(sortBy, sortDirection)
         .skip(skip)
         .take(filter.pageSize)
@@ -61,14 +93,38 @@ export class CommentsORMQueryRepository {
     id: string,
     userId: string = '',
   ): Promise<CommentOutput | null> {
-    let comment;
+    let subQuery;
+
+    try {
+      subQuery = await this.commentsLikesInfoRepository
+        .createQueryBuilder('likes')
+        .select('likes.id', 'id')
+        .leftJoin('likes.owner', 'likeOwner')
+        .leftJoin('likeOwner.banInfo', 'likeOwnerBan')
+        .where('likeOwnerBan.isBanned = false')
+        .getRawMany();
+    } catch (err) {
+      console.log(err);
+      subQuery = [];
+    }
+
+    subQuery = subQuery.map((i) => "'" + i.id + "'");
+
+    let comment: CommentForPostORM | null;
     try {
       comment = await this.commentsRepository
         .createQueryBuilder('c')
         .select()
-        .leftJoinAndSelect('c.likesInfo', 'l')
-        .leftJoinAndSelect('c.commentatorInfo', 'i')
-        .where('c.id = :id', {
+        .leftJoinAndSelect(
+          'c.likesInfo',
+          'likes',
+          subQuery.length > 0 ? `likes.id IN (${subQuery})` : 'true = false',
+        )
+        .leftJoinAndSelect('likes.owner', 'likeOwner')
+        .leftJoinAndSelect('likeOwner.banInfo', 'likeOwnerBan')
+        .leftJoinAndSelect('c.commentatorInfo', 'commentator')
+        .leftJoinAndSelect('commentator.banInfo', 'ban')
+        .where('ban.isBanned = false AND c.id = :id', {
           id: id,
         })
         .getOne();
@@ -87,7 +143,7 @@ const commentMapper = (
   comment: CommentForPostORM,
   userId: string,
 ): CommentOutput => {
-  const myStatusInfo = comment.likesInfo.find((i) => i.userId === userId);
+  const myStatusInfo = comment.likesInfo.find((i) => i.owner.id === userId);
   const myStatus = myStatusInfo ? myStatusInfo.likeStatus : 'None';
 
   // const lastLikes = comment.likesInfo
@@ -106,8 +162,8 @@ const commentMapper = (
     id: comment.id.toString(),
     content: comment.content,
     commentatorInfo: {
-      userId: comment.commentatorInfo.userId,
-      userLogin: comment.commentatorInfo.userLogin,
+      userId: comment.commentatorInfo.id,
+      userLogin: comment.commentatorInfo.login,
     },
     createdAt: comment.createdAt,
     likesInfo: {

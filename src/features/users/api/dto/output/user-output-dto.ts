@@ -4,5 +4,14 @@ export class UserOutput {
     public login: string,
     public email: string,
     public createdAt: string,
+    public banInfo: UserBanInfoOutputDTO,
+  ) {}
+}
+
+export class UserBanInfoOutputDTO {
+  constructor(
+    public banDate: string | null,
+    public banReason: string | null,
+    public isBanned: boolean,
   ) {}
 }

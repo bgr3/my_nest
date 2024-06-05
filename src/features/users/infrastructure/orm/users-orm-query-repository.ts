@@ -15,6 +15,12 @@ export class UsersORMQueryRepository {
   ) {}
   async findUsers(filter: UserQueryFilter): Promise<Paginator<UserOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
+    const banStatus =
+      filter.banStatus === 'banned'
+        ? 'ban.isBanned = true'
+        : filter.banStatus === 'notBanned'
+          ? 'ban.isBanned = false'
+          : 'ban.isBanned IN (true, false)';
 
     // const dbCount = await this.usersRepository
     //   .createQueryBuilder('u')
@@ -31,17 +37,21 @@ export class UsersORMQueryRepository {
     //   )
     //   .getCount();
 
-    // console.log(filter);
-
     const dbResult = await this.usersRepository
       .createQueryBuilder('u')
       .select()
-      .where('u.login ilike :login', {
-        login: `%${filter.searchLoginTerm}%`,
-      })
-      .orWhere('u.email ilike :email', {
-        email: `%${filter.searchEmailTerm}%`,
-      })
+      .leftJoinAndSelect('u.banInfo', 'ban')
+      .where(
+        `(u.login ilike :login OR u.email ilike :email) AND ${banStatus}`,
+        {
+          login: `%${filter.searchLoginTerm}%`,
+          email: `%${filter.searchEmailTerm}%`,
+        },
+      )
+      // .andWhere('u.email ilike :email', {
+      //   email: `%${filter.searchEmailTerm}%`,
+      // })
+      // .andWhere(banStatus)
       .orderBy(
         `u.${filter.sortBy}`,
         filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
@@ -89,5 +99,10 @@ const userMapper = (user: UserORM): UserOutput => {
     login: user.login,
     email: user.email,
     createdAt: user.createdAt,
+    banInfo: {
+      banDate: user.banInfo.banDate ? user.banInfo.banDate.toISOString() : null,
+      banReason: user.banInfo.banReason,
+      isBanned: user.banInfo.isBanned,
+    },
   };
 };

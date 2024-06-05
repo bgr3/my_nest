@@ -30,14 +30,13 @@ export class PostsLikeStatusUseCase
 
     if (!user) return false;
 
-    const login = user.login;
     const likeStatus = command.dto.likeStatus;
 
     const post = await this.postsRepository.getPostById(command.postId);
 
     if (!post) return false;
 
-    post.setLikeStatus(command.userId, login, likeStatus);
+    post.setLikeStatus(user, likeStatus);
     await this.postsRepository.save(post);
 
     return true;

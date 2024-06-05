@@ -107,6 +107,24 @@ export class AuthORMRepository {
     return true;
   }
 
+  async deleteAllAuthSessionsByUserId(userId: string): Promise<boolean> {
+    let result;
+
+    try {
+      result = await this.authRepository
+        .createQueryBuilder()
+        .where('userId = :userId', { userId: userId })
+        .delete()
+        .execute();
+    } catch (err) {
+      return false;
+    }
+
+    if (result.affected === 0) return false;
+
+    return true;
+  }
+
   async deleteAuthSessionByDeviceId(deviceId: string): Promise<boolean> {
     let result;
 

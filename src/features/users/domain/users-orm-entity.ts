@@ -9,16 +9,21 @@ import {
 } from 'typeorm';
 
 import { MeType } from '../../auth/api/dto/output/auth-output-dto';
+import { BlogORM } from '../../blogs/domain/blogs-orm-entity';
+import { CommentLikesInfoORM } from '../../comments/domain/comments-likes-info-orm-entity';
+import { CommentForPostORM } from '../../comments/domain/comments-orm-entity';
 import { PlayerProgressORM } from '../../pair-quiz-game/domain/player-progress-orm-entity';
 import { StatisticORM } from '../../pair-quiz-game/domain/statistic-orm-entity';
+import { PostLikesInfoORM } from '../../posts/domain/posts-likesinfo-orm-entity';
 import { EmailConfirmation } from './email-confirmation-orm-entity';
+import { UserBanORM } from './users-ban-orm-entity';
 
 @Entity()
 export class UserORM {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ collation: 'C' })
   login: string;
 
   @Column()
@@ -45,8 +50,26 @@ export class UserORM {
   @OneToMany(() => PlayerProgressORM, (playerProgress) => playerProgress.player)
   playerProgressId: PlayerProgressORM;
 
+  @OneToMany(() => BlogORM, (blog) => blog.blogOwnerInfo)
+  blog: BlogORM;
+
+  @OneToMany(() => CommentForPostORM, (comment) => comment.commentatorInfo)
+  comment: CommentForPostORM;
+
+  @OneToMany(() => CommentLikesInfoORM, (likesInfo) => likesInfo.owner)
+  commentLikes: CommentLikesInfoORM;
+
+  @OneToMany(() => PostLikesInfoORM, (likesInfo) => likesInfo.owner)
+  postLikes: PostLikesInfoORM;
+
   @OneToOne(() => StatisticORM, (statistic) => statistic.player)
   statisticId: StatisticORM;
+
+  @OneToOne(() => UserBanORM, (userBanORM) => userBanORM.user, {
+    eager: true,
+    cascade: true,
+  })
+  banInfo: UserBanORM;
 
   updateCodeForRecoveryPassword(code: string, expirationDate: object): void {
     this.emailConfirmation.confirmationCode = code;
@@ -77,6 +100,10 @@ export class UserORM {
     return me;
   }
 
+  banUnban(isBanned: boolean, banReason: string): void {
+    this.banInfo.updateBan(isBanned, banReason);
+  }
+
   static createUser(
     login: string,
     email: string,
@@ -94,6 +121,7 @@ export class UserORM {
     user.emailConfirmation.expirationDate = add(new Date(), { minutes: 5 });
     user.emailConfirmation.isConfirmed = isSuperAdmin;
     user.emailConfirmation.nextSend = add(new Date(), { seconds: 0 });
+    user.banInfo = UserBanORM.createBan();
 
     return user;
   }

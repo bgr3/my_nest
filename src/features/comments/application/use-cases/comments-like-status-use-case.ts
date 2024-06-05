@@ -30,7 +30,6 @@ export class CommentsLikeStatusUseCase
 
     if (!user) return false;
 
-    const login = user.login;
     const likeStatus = command.dto.likeStatus;
 
     const comment = await this.commentsRepository.getCommentById(
@@ -39,7 +38,7 @@ export class CommentsLikeStatusUseCase
 
     if (!comment) return false;
 
-    comment.setLikeStatus(command.userId, login, likeStatus);
+    comment.setLikeStatus(user, likeStatus);
 
     await this.commentsRepository.save(comment);
 

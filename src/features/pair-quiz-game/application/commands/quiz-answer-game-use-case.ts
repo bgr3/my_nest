@@ -45,6 +45,43 @@ export class QuizAnswerUseCase
     if (firstPlayerResult || secondPlayerResult)
       await this.gameRepository.save(game);
 
+    if (
+      game.firstPlayerProgress.answers.length === 5 ||
+      game.secondPlayerProgress?.answers.length === 5
+    ) {
+      setTimeout(async () => {
+        const notFinishedGame = await this.gameRepository.getGameById(game.id);
+
+        if (!notFinishedGame) return;
+
+        if (
+          notFinishedGame.firstPlayerProgress.answers.length == 5 &&
+          notFinishedGame.status === 'Active'
+        ) {
+          const count = notFinishedGame.secondPlayerProgress!.answers.length;
+
+          for (let i = 0; i < 5 - count; i++) {
+            notFinishedGame.secondPlayerAnswer('');
+          }
+
+          await this.gameRepository.save(notFinishedGame);
+        }
+
+        if (
+          notFinishedGame.secondPlayerProgress!.answers.length == 5 &&
+          notFinishedGame.status === 'Active'
+        ) {
+          const count = notFinishedGame.firstPlayerProgress.answers.length;
+
+          for (let i = 0; i < 5 - count; i++) {
+            notFinishedGame.firstPlayerAnswer('');
+          }
+
+          await this.gameRepository.save(notFinishedGame);
+        }
+      }, 10000);
+    }
+
     const gameRepo = await this.gameQueryRepository.findGameByID(game.id);
 
     if (!gameRepo) return null;

@@ -1,4 +1,11 @@
-import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsIn,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 import { QueryFilter } from '../../../../../infrastructure/dto/input/input-dto';
 
@@ -21,4 +28,18 @@ export class UserQueryFilter extends QueryFilter {
   @IsOptional()
   @IsString()
   searchEmailTerm: string = '';
+
+  @IsOptional()
+  @IsIn(['all', 'banned', 'notBanned'])
+  banStatus: banStatuses;
 }
+
+export class UserBanDTO {
+  @IsBoolean()
+  isBanned: boolean;
+
+  @Length(20)
+  banReason: string;
+}
+
+type banStatuses = 'all' | 'banned' | 'notBanned';

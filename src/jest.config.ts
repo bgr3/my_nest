@@ -3,5 +3,5 @@ module.exports = {
   testEnvironment: 'node',
   testRegex: 'quiz.api.test.ts$',
   rootDir: '../__tests__',
-  testTimeout: 15000,
+  testTimeout: 100000,
 };

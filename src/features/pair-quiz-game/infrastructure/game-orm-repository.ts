@@ -14,17 +14,26 @@ export class GameORMRepository {
     return;
   }
 
-  async save(game: GameORM): Promise<string | null> {
-    const questionResult = await this.gameRepository.save(game);
+  async save(
+    game: GameORM,
+    entityManager?: EntityManager,
+  ): Promise<string | null> {
+    const gameRepository = this._getUserRepository(entityManager);
+    const questionResult = await gameRepository.save(game);
 
     return questionResult.id;
   }
 
-  async getGameById(id: string): Promise<GameORM | null> {
+  async getGameById(
+    id: string,
+    entityManager?: EntityManager,
+  ): Promise<GameORM | null> {
+    const gameRepository = this._getUserRepository(entityManager);
+
     let game: GameORM | null;
 
     try {
-      game = await this.gameRepository.findOne({
+      game = await gameRepository.findOne({
         where: {
           id: id,
         },
@@ -44,11 +53,16 @@ export class GameORMRepository {
     return game;
   }
 
-  async getActiveGameByUserId(userId: string): Promise<GameORM | null> {
+  async getActiveGameByUserId(
+    userId: string,
+    entityManager?: EntityManager,
+  ): Promise<GameORM | null> {
+    const gameRepository = this._getUserRepository(entityManager);
+
     let game: GameORM | null;
 
     try {
-      game = await this.gameRepository
+      game = await gameRepository
         .createQueryBuilder('g')
         .select()
         .leftJoinAndSelect('g.firstPlayerProgress', 'f')
@@ -81,11 +95,14 @@ export class GameORMRepository {
 
   async getActiveOrPendingGameByUserId(
     userId: string,
+    entityManager?: EntityManager,
   ): Promise<GameORM | null> {
+    const gameRepository = this._getUserRepository(entityManager);
+
     let game: GameORM | null;
 
     try {
-      game = await this.gameRepository
+      game = await gameRepository
         .createQueryBuilder('g')
         .select()
         .leftJoinAndSelect('g.firstPlayerProgress', 'f')
@@ -153,11 +170,13 @@ export class GameORMRepository {
     return games;
   }
 
-  async getPendingGame(): Promise<GameORM | null> {
+  async getPendingGame(entityManager?: EntityManager): Promise<GameORM | null> {
+    const gameRepository = this._getUserRepository(entityManager);
+
     let game;
 
     try {
-      game = await this.gameRepository.findOne({
+      game = await gameRepository.findOne({
         where: {
           status: 'PendingSecondPlayer',
         },
@@ -171,11 +190,13 @@ export class GameORMRepository {
     return game;
   }
 
-  async getActiveGames(): Promise<GameORM[] | []> {
+  async getActiveGames(entityManager?: EntityManager): Promise<GameORM[] | []> {
+    const gameRepository = this._getUserRepository(entityManager);
+
     let games: GameORM[];
 
     try {
-      games = await this.gameRepository.find({
+      games = await gameRepository.find({
         where: {
           status: 'Active',
         },

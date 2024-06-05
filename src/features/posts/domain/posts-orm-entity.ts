@@ -8,6 +8,7 @@ import {
 
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 import { BlogORM } from '../../blogs/domain/blogs-orm-entity';
+import { UserORM } from '../../users/domain/users-orm-entity';
 import { PostLikesInfoORM } from './posts-likesinfo-orm-entity';
 
 @Entity()
@@ -63,12 +64,8 @@ export class PostORM {
     return;
   }
 
-  setLikeStatus(
-    userId: string,
-    login: string,
-    likeStatus: LikeStatusType,
-  ): void {
-    const like = this.likesInfo.find((i) => i.userId === userId);
+  setLikeStatus(user: UserORM, likeStatus: LikeStatusType): void {
+    const like = this.likesInfo.find((i) => i.owner.id === user.id);
 
     if (like) {
       like.likeStatus = likeStatus;
@@ -76,8 +73,7 @@ export class PostORM {
       const likesInfo = new PostLikesInfoORM();
       likesInfo.addedAt = new Date().toISOString();
       likesInfo.likeStatus = likeStatus;
-      likesInfo.login = login;
-      likesInfo.userId = userId;
+      likesInfo.owner = user;
       this.likesInfo.push(likesInfo);
     }
 

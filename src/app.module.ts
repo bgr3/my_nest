@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
@@ -15,17 +14,11 @@ import { join } from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TasksService } from './base/cron-service';
 import { AccessService } from './features/access/application/access-service';
 import { AccessCheckAccessFrequencyUseCase } from './features/access/application/use-cases/access-check-access-frequency-use-case';
 import { AccessTestAllDataUseCase } from './features/access/application/use-cases/access-test-all-data-use-case';
-import {
-  AccessLog,
-  AccessLogSchema,
-} from './features/access/domain/access-log-entity';
 import { AccessLogORM } from './features/access/domain/access-log-orm-entity';
 import { LogORMRepository } from './features/access/infrastructure/access-log-orm-repository';
-import { LogRepository } from './features/access/infrastructure/access-log-repository';
 import { AuthController } from './features/auth/api/dto/auth-controller';
 import {
   AuthEmailConfirmValidation,
@@ -38,8 +31,9 @@ import { AuthService } from './features/auth/application/auth-service';
 import { AuthChangePasswordEmailUseCase } from './features/auth/application/use-cases/auth-change-password-email-use-case';
 import { AuthConfirmEmailUseCase } from './features/auth/application/use-cases/auth-confirm-email-use-case';
 import { AuthCreateAuthSessionUseCase } from './features/auth/application/use-cases/auth-create-auth-session-use-case';
+import { AuthDeleteAllAuthSessionsUseCase } from './features/auth/application/use-cases/auth-delete-all-auth-sessions-use-case';
 import { AuthDeleteAuthSessionByTokenUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-by-token-use-case';
-import { AuthDeleteAuthSessionsExcludeCurentUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-exclude-current-use-case copy';
+import { AuthDeleteAuthSessionsExcludeCurentUseCase } from './features/auth/application/use-cases/auth-delete-auth-session-exclude-current-use-case';
 import { AuthDeleteSpecifiedAuthSessionByDeviceIdUseCase } from './features/auth/application/use-cases/auth-delete-specified-auth-session-by-device-id-use-case';
 import { AuthGetAuthSessionsByTokenUseCase } from './features/auth/application/use-cases/auth-get-auth-session-by-token-use-case';
 import { AuthGetMeByIdUseCase } from './features/auth/application/use-cases/auth-get-me-by-id-use-case';
@@ -47,30 +41,22 @@ import { AuthRegisterUserSendEmailUseCase } from './features/auth/application/us
 import { AuthResendEmailUseCase } from './features/auth/application/use-cases/auth-resend-email-use-case';
 import { AuthTestAllDataUseCase } from './features/auth/application/use-cases/auth-test-all-data-use-case';
 import { AuthUpdateTokensUseCase } from './features/auth/application/use-cases/auth-update-tokens-use-case';
-import { Auth, AuthSchema } from './features/auth/domain/auth-entity';
 import { AuthORM } from './features/auth/domain/auth-orm-entity';
 import { JWTTokens } from './features/auth/domain/tokens-orm-entity';
-import { AuthQueryRepository } from './features/auth/infrastructure/mongo/auth-query-repository';
-import { AuthRepository } from './features/auth/infrastructure/mongo/auth-repository';
 import { AuthORMQueryRepository } from './features/auth/infrastructure/orm/auth-orm-query-repository';
 import { AuthORMRepository } from './features/auth/infrastructure/orm/auth-orm-repository';
-import { AuthSQLQueryRepository } from './features/auth/infrastructure/sql/auth-sql-query-repository';
-import { AuthSQLRepository } from './features/auth/infrastructure/sql/auth-sql-repository';
+import { BlogsBloggerController } from './features/blogs/api/blogs-blogger-controller';
 import { BlogsController } from './features/blogs/api/blogs-controller';
 import { BlogsSAController } from './features/blogs/api/blogs-sa-controller';
 import { BlogsService } from './features/blogs/application/blog-service';
+import { BlogsBindBlogUseCase } from './features/blogs/application/use-cases/blogs-bind-blog-use-case';
 import { BlogsCreateBlogUseCase } from './features/blogs/application/use-cases/blogs-create-blog-use-case';
 import { BlogsDeleteBlogUseCase } from './features/blogs/application/use-cases/blogs-delete-blog-use-case';
 import { BlogsTestAllDatasUseCase } from './features/blogs/application/use-cases/blogs-test-all-data-use-case';
 import { BlogsUpdateBlogUseCase } from './features/blogs/application/use-cases/blogs-update-blog-use-case';
-import { Blog, BlogSchema } from './features/blogs/domain/blogs-entity';
 import { BlogORM } from './features/blogs/domain/blogs-orm-entity';
-import { BlogsQueryRepository } from './features/blogs/infrastructure/mongo/blogs-query-repository';
-import { BlogsRepository } from './features/blogs/infrastructure/mongo/blogs-repository';
 import { BlogsORMQueryRepository } from './features/blogs/infrastructure/orm/blogs-orm-query-repository';
 import { BlogsORMRepository } from './features/blogs/infrastructure/orm/blogs-orm-repository';
-import { BlogsSQLQueryRepository } from './features/blogs/infrastructure/sql/blogs-sql-query-repository';
-import { BlogsSQLRepository } from './features/blogs/infrastructure/sql/blogs-sql-repository';
 import { CommentsController } from './features/comments/api/comments-controller';
 import { CommentsService } from './features/comments/application/comment-service';
 import { CommentsCreateCommentUseCase } from './features/comments/application/use-cases/comments-create-comment-use-case';
@@ -78,19 +64,10 @@ import { CommentsDeleteCommentUseCase } from './features/comments/application/us
 import { CommentsLikeStatusUseCase } from './features/comments/application/use-cases/comments-like-status-use-case';
 import { CommentsTestAllDataUseCase } from './features/comments/application/use-cases/comments-test-all-data-use-case';
 import { CommentsUpdateCommentUseCase } from './features/comments/application/use-cases/comments-update-comment-use-case';
-import { CommentatorInfo } from './features/comments/domain/comments-commentator-info-orm-entity';
-import {
-  CommentForPost,
-  CommentSchema,
-} from './features/comments/domain/comments-entity';
 import { CommentLikesInfoORM } from './features/comments/domain/comments-likes-info-orm-entity';
 import { CommentForPostORM } from './features/comments/domain/comments-orm-entity';
-import { CommentsQueryRepository } from './features/comments/infrastructure/mongo/comments-query-repository';
-import { CommentsRepository } from './features/comments/infrastructure/mongo/comments-repository';
 import { CommentsORMQueryRepository } from './features/comments/infrastructure/orm/comments-orm-query-repository';
 import { CommentsORMRepository } from './features/comments/infrastructure/orm/comments-orm-repository';
-import { CommentsSQLQueryRepository } from './features/comments/infrastructure/sql/comments-sql-query-repository';
-import { CommentsSQLRepository } from './features/comments/infrastructure/sql/comments-sql-repository';
 import { EmailManager } from './features/email-manager/application/email-manager';
 import { QuizController } from './features/pair-quiz-game/api/quiz-controller';
 import { QuizSAController } from './features/pair-quiz-game/api/quiz-sa-controller';
@@ -122,21 +99,17 @@ import { PostsDeletePostUseCase } from './features/posts/application/use-cases/p
 import { PostsLikeStatusUseCase } from './features/posts/application/use-cases/posts-like-status-use-case';
 import { PostsTestAllDataUseCase } from './features/posts/application/use-cases/posts-test-all-data-use-case';
 import { PostsUpdatePostUseCase } from './features/posts/application/use-cases/posts-update-post-use-case';
-import { Post, PostSchema } from './features/posts/domain/posts-entity';
 import { PostLikesInfoORM } from './features/posts/domain/posts-likesinfo-orm-entity';
 import { PostORM } from './features/posts/domain/posts-orm-entity';
-import { PostsQueryRepository } from './features/posts/infrastructure/mongo/posts-query-repository';
-import { PostsRepository } from './features/posts/infrastructure/mongo/posts-repository';
 import { PostsORMQueryRepository } from './features/posts/infrastructure/orm/posts-orm-query-repository';
 import { PostsORMRepository } from './features/posts/infrastructure/orm/posts-orm-repository';
-import { PostsSQLQueryRepository } from './features/posts/infrastructure/sql/posts-sql-query-repository';
-import { PostsSQLRepository } from './features/posts/infrastructure/sql/posts-sql-repository';
 import { SecurityController } from './features/security/api/dto/security-controller';
 import { TestingController } from './features/testing/api/testing-controller';
 import { UsersController } from './features/users/api/users-controller';
 import { BasicStrategy } from './features/users/application/strategies/basic-strategy';
 import { JwtStrategy } from './features/users/application/strategies/jwt-strategy';
 import { LocalStrategy } from './features/users/application/strategies/local-strategy';
+import { UsersBanUnbanUseCase } from './features/users/application/use-cases/users-ban-unban-use-case';
 import { UsersChangePasswordUseCase } from './features/users/application/use-cases/users-change-password-use-case';
 import { UsersCheckCredentialsUseCase } from './features/users/application/use-cases/users-check-credentials-use-case';
 import { UsersCreateUserUseCase } from './features/users/application/use-cases/users-create-user-use-case';
@@ -145,14 +118,11 @@ import { UsersTestAllDataUseCase } from './features/users/application/use-cases/
 import { UsersUpdateCodeForRecoveryPasswordUseCase } from './features/users/application/use-cases/users-update-code-for-recovery-password-use-case';
 import { UsersService } from './features/users/application/users-service';
 import { EmailConfirmation } from './features/users/domain/email-confirmation-orm-entity';
-import { User, UserSchema } from './features/users/domain/users-entity';
+import { UserBanORM } from './features/users/domain/users-ban-orm-entity';
 import { UserORM } from './features/users/domain/users-orm-entity';
-import { UsersQueryRepository } from './features/users/infrastructure/mongo/users-query-repository';
-import { UsersRepository } from './features/users/infrastructure/mongo/users-repository';
 import { UsersORMQueryRepository } from './features/users/infrastructure/orm/users-orm-query-repository';
 import { UsersORMRepository } from './features/users/infrastructure/orm/users-orm-repository';
-import { UsersSQLQueryRepository } from './features/users/infrastructure/sql/users-sql-query-repository';
-import { UsersSQLRepository } from './features/users/infrastructure/sql/users-sql-repository';
+import { AuthorizationBlogMiddleware } from './infrastructure/middlewares/blog-validation-middleware';
 import {
   AuthorizationCommentMiddleware,
   CommentExistMiddleware,
@@ -191,41 +161,25 @@ export const postgresParam: TypeOrmModuleOptions = {
 
 const usersProviders = [
   UsersService,
-  UsersRepository,
-  UsersQueryRepository,
-  UsersSQLRepository,
-  UsersSQLQueryRepository,
   UsersORMRepository,
   UsersORMQueryRepository,
 ];
 
 const blogsProviders = [
   BlogsService,
-  BlogsRepository,
-  BlogsQueryRepository,
-  BlogsSQLRepository,
-  BlogsSQLQueryRepository,
   BlogsORMRepository,
   BlogsORMQueryRepository,
 ];
 
 const postsProviders = [
   PostsService,
-  PostsRepository,
-  PostsQueryRepository,
   BlogExistValidation,
-  PostsSQLRepository,
-  PostsSQLQueryRepository,
   PostsORMRepository,
   PostsORMQueryRepository,
 ];
 
 const commentsProviders = [
   CommentsService,
-  CommentsRepository,
-  CommentsQueryRepository,
-  CommentsSQLRepository,
-  CommentsSQLQueryRepository,
   CommentsORMRepository,
   CommentsORMQueryRepository,
 ];
@@ -234,15 +188,11 @@ const strategiesProviders = [LocalStrategy, JwtStrategy, BasicStrategy];
 
 const authProviders = [
   AuthService,
-  AuthRepository,
-  AuthQueryRepository,
   AuthEmailConfirmValidation,
   AuthPasswordRecoveryCodeValidation,
   AuthReSendEmailConfirmValidation,
   UserEmailValidation,
   UserLoginValidation,
-  AuthSQLRepository,
-  AuthSQLQueryRepository,
   AuthORMRepository,
   AuthORMQueryRepository,
 ];
@@ -256,7 +206,7 @@ const quizProviders = [
   StatisticORMQueryRepository,
 ];
 
-const accessProviders = [AccessService, LogRepository, LogORMRepository];
+const accessProviders = [AccessService, LogORMRepository];
 
 const useCases = [
   UsersTestAllDataUseCase,
@@ -265,8 +215,10 @@ const useCases = [
   UsersUpdateCodeForRecoveryPasswordUseCase,
   UsersChangePasswordUseCase,
   UsersDeleteUserUseCase,
+  UsersBanUnbanUseCase,
   BlogsTestAllDatasUseCase,
   BlogsCreateBlogUseCase,
+  BlogsBindBlogUseCase,
   BlogsUpdateBlogUseCase,
   BlogsDeleteBlogUseCase,
   CommentsTestAllDataUseCase,
@@ -293,6 +245,8 @@ const useCases = [
   AuthGetAuthSessionsByTokenUseCase,
   AuthDeleteAuthSessionsExcludeCurentUseCase,
   AuthDeleteSpecifiedAuthSessionByDeviceIdUseCase,
+  AuthDeleteAllAuthSessionsUseCase,
+  UsersBanUnbanUseCase,
   AuthDeleteAuthSessionByTokenUseCase,
   QuizCreateQuestionUseCase,
   QuizDeleteQuestionUseCase,
@@ -315,7 +269,6 @@ const entities = [
   PostORM,
   PostLikesInfoORM,
   CommentForPostORM,
-  CommentatorInfo,
   CommentLikesInfoORM,
   QuestionORM,
   GameORM,
@@ -323,6 +276,7 @@ const entities = [
   PlayerProgressORM,
   AnswerHistoryORM,
   StatisticORM,
+  UserBanORM,
 ];
 
 @Module({
@@ -333,38 +287,9 @@ const entities = [
     }),
 
     TypeOrmModule.forRoot(postgresParam),
-    MongooseModule.forRoot(url, {
-      dbName: 'nest',
-    }),
 
     TypeOrmModule.forFeature([...entities]),
 
-    MongooseModule.forFeature([
-      {
-        name: User.name,
-        schema: UserSchema,
-      },
-      {
-        name: Blog.name,
-        schema: BlogSchema,
-      },
-      {
-        name: Post.name,
-        schema: PostSchema,
-      },
-      {
-        name: CommentForPost.name,
-        schema: CommentSchema,
-      },
-      {
-        name: Auth.name,
-        schema: AuthSchema,
-      },
-      {
-        name: AccessLog.name,
-        schema: AccessLogSchema,
-      },
-    ]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '60s' },
@@ -384,12 +309,14 @@ const entities = [
     SecurityController,
     QuizController,
     QuizSAController,
+    BlogsSAController,
+    BlogsBloggerController,
   ],
   providers: [
     AppService,
     EmailManager,
     TrimPipe,
-    TasksService,
+    // TasksService,
     ...usersProviders,
     ...blogsProviders,
     ...postsProviders,
@@ -446,6 +373,11 @@ export class AppModule implements NestModule {
       .forRoutes({
         path: 'pair-game-quiz/pairs/my-current/answers',
         method: RequestMethod.POST,
+      })
+      .apply(AuthorizationBlogMiddleware)
+      .forRoutes({
+        path: 'blogger/blogs/*',
+        method: RequestMethod.ALL,
       });
   }
 }

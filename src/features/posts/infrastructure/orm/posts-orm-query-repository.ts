@@ -14,6 +14,8 @@ export class PostsORMQueryRepository {
   constructor(
     @InjectRepository(PostORM)
     private readonly postsRepository: Repository<PostORM>,
+    @InjectRepository(PostLikesInfoORM)
+    private readonly postsLikesInfoRepository: Repository<PostLikesInfoORM>,
   ) {}
 
   async findPosts(
@@ -24,20 +26,50 @@ export class PostsORMQueryRepository {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
     const sortBy =
-      filter.sortBy == 'blogName' ? 'b.name' : `p.${filter.sortBy}`;
+      filter.sortBy == 'blogName' ? 'blog.name' : `posts.${filter.sortBy}`;
 
     const sortDirection = filter.sortDirection == 'asc' ? 'ASC' : 'DESC';
+
+    let subQuery;
+
+    try {
+      subQuery = await this.postsLikesInfoRepository
+        .createQueryBuilder('likes')
+        .select('likes.id', 'id')
+        .leftJoin('likes.owner', 'likeOwner')
+        .leftJoin('likeOwner.banInfo', 'likeOwnerBan')
+        .where('likeOwnerBan.isBanned = false')
+        .getRawMany();
+    } catch (err) {
+      console.log(err);
+      subQuery = [];
+    }
+
+    subQuery = subQuery.map((i) => "'" + i.id + "'");
 
     let dbResult;
     try {
       dbResult = await this.postsRepository
-        .createQueryBuilder('p')
+        .createQueryBuilder('posts')
         .select()
-        .leftJoinAndSelect('p.likesInfo', 'l')
-        .leftJoinAndSelect('p.blog', 'b')
-        .where(blogId ? 'p.blogId = :blogId' : '', {
-          blogId: blogId,
-        })
+        .leftJoinAndSelect(
+          'posts.likesInfo',
+          'likes',
+          subQuery.length > 0 ? `likes.id IN (${subQuery})` : 'true = false',
+        )
+        .leftJoinAndSelect('likes.owner', 'likeOwner')
+        .leftJoinAndSelect('likeOwner.banInfo', 'likeOwnerBan')
+        .leftJoinAndSelect('posts.blog', 'blog')
+        .leftJoinAndSelect('blog.blogOwnerInfo', 'owner')
+        .leftJoinAndSelect('owner.banInfo', 'ban')
+        .where(
+          `(ban.isBanned = false ${
+            blogId ? 'AND posts.blogId = :blogId' : ''
+          }) OR likeOwnerBan.isBanned = false`,
+          {
+            blogId: blogId,
+          },
+        )
         .orderBy(sortBy, sortDirection)
         .skip(skip)
         .take(filter.pageSize)
@@ -46,6 +78,9 @@ export class PostsORMQueryRepository {
       console.log(err);
       dbResult = [[], 0];
     }
+    console.log(dbResult[0]);
+
+    // console.log(dbResult[0][0].likesInfo[0].owner);
 
     const dbCount = dbResult[1];
 
@@ -64,15 +99,40 @@ export class PostsORMQueryRepository {
     id: string,
     userId: string = '',
   ): Promise<PostOutput | null> {
+    let subQuery;
+
+    try {
+      subQuery = await this.postsLikesInfoRepository
+        .createQueryBuilder('likes')
+        .select('likes.id', 'id')
+        .leftJoin('likes.owner', 'likeOwner')
+        .leftJoin('likeOwner.banInfo', 'likeOwnerBan')
+        .where('likeOwnerBan.isBanned = false')
+        .getRawMany();
+    } catch (err) {
+      console.log(err);
+      subQuery = [];
+    }
+
+    subQuery = subQuery.map((i) => "'" + i.id + "'");
+
     let post;
 
     try {
       post = await this.postsRepository
-        .createQueryBuilder('p')
+        .createQueryBuilder('posts')
         .select()
-        .leftJoinAndSelect('p.likesInfo', 'l')
-        .leftJoinAndSelect('p.blog', 'b')
-        .where('p.id = :id', {
+        .leftJoinAndSelect(
+          'posts.likesInfo',
+          'likes',
+          subQuery.length > 0 ? `likes.id IN (${subQuery})` : 'true = false',
+        )
+        .leftJoinAndSelect('likes.owner', 'likeOwner')
+        .leftJoinAndSelect('likeOwner.banInfo', 'likeOwnerBan')
+        .leftJoinAndSelect('posts.blog', 'blog')
+        .leftJoinAndSelect('blog.blogOwnerInfo', 'owner')
+        .leftJoinAndSelect('owner.banInfo', 'ban')
+        .where('ban.isBanned = false AND posts.id = :id', {
           id: id,
         })
         .getOne();
@@ -88,7 +148,7 @@ export class PostsORMQueryRepository {
 }
 
 const postMapper = (post: PostORM, userId: string): PostOutput => {
-  const myStatus = post.likesInfo.find((i) => i.userId === userId);
+  const myStatus = post.likesInfo.find((i) => i.owner.id === userId);
 
   const lastLikes = post.likesInfo
     .filter((i) => i.likeStatus === 'Like')
@@ -121,8 +181,8 @@ const postMapper = (post: PostORM, userId: string): PostOutput => {
 
 const likesMapper = (like: PostLikesInfoORM): LikesInfoOutput => {
   return {
-    userId: like.userId,
-    login: like.login,
+    userId: like.owner.id,
+    login: like.owner.login,
     addedAt: like.addedAt,
   };
 };

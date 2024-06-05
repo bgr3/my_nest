@@ -34,6 +34,7 @@ import {
   AuthRegistrationConfirmationDTO,
   AuthRegistrationDTO,
 } from './input/auth-input-dto';
+import { LoginResponseType, MeType } from './output/auth-output-dto';
 
 @Controller('auth')
 export class AuthController {
@@ -42,7 +43,10 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HTTP_STATUSES.OK_200)
-  async loginUser(@Req() req, @Res({ passthrough: true }) res: Response) {
+  async loginUser(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<LoginResponseType> {
     const deviceName: string = req.header('User-Agent')
       ? req.header('User-Agent')!
       : 'unknown device';
@@ -61,7 +65,7 @@ export class AuthController {
 
   @Post('password-recovery')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async passwordRecovery(@Body() dto: AuthPasswordRecoveryDTO) {
+  async passwordRecovery(@Body() dto: AuthPasswordRecoveryDTO): Promise<void> {
     const userId = await this.commandBus.execute(
       new UsersUpdateCodeForRecoveryPasswordCommand(dto.email),
     );
@@ -75,7 +79,7 @@ export class AuthController {
 
   @Post('new-password')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async newPassword(@Body() dto: AuthNewPasswordDTO) {
+  async newPassword(@Body() dto: AuthNewPasswordDTO): Promise<void> {
     const result = await this.commandBus.execute(
       new UsersChangePasswordCommand(dto.recoveryCode, dto.newPassword),
     );
@@ -89,7 +93,10 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('refresh-token')
   @HttpCode(HTTP_STATUSES.OK_200)
-  async refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
+  async refreshToken(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<LoginResponseType> {
     const deviceId = req.user;
 
     const tokens = await this.commandBus.execute(
@@ -109,7 +116,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async logout(@Req() req) {
+  async logout(@Req() req): Promise<void> {
     const deviceId = req.user;
 
     const result = await this.commandBus.execute(
@@ -124,7 +131,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async aboutMe(@Req() req) {
+  async aboutMe(@Req() req): Promise<MeType> {
     const userId = req.user;
 
     const me = await this.commandBus.execute(new AuthGetMeByIdCommand(userId));
@@ -134,7 +141,7 @@ export class AuthController {
 
   @Post('registration')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async registration(@Body() dto: AuthRegistrationDTO) {
+  async registration(@Body() dto: AuthRegistrationDTO): Promise<void> {
     const result = await this.commandBus.execute(
       new UsersCreateUserCommand(dto),
     );
@@ -154,7 +161,9 @@ export class AuthController {
 
   @Post('registration-confirmation')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async registrationConfirmation(@Body() dto: AuthRegistrationConfirmationDTO) {
+  async registrationConfirmation(
+    @Body() dto: AuthRegistrationConfirmationDTO,
+  ): Promise<void> {
     const result = await this.commandBus.execute(
       new AuthConfirmEmailCommand(dto.code),
     );
@@ -167,7 +176,7 @@ export class AuthController {
 
   @Post('registration-email-resending')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)
-  async emailResending(@Body() dto: AuthEmailResendingDTO) {
+  async emailResending(@Body() dto: AuthEmailResendingDTO): Promise<void> {
     const result = await this.commandBus.execute(
       new AuthResendEmailCommand(dto.email),
     );

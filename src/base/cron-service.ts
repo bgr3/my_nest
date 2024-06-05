@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+// import { Injectable } from '@nestjs/common';
+// import { Cron, CronExpression } from '@nestjs/schedule';
 import { add } from 'date-fns/add';
 
 import { GameORM } from '../features/pair-quiz-game/domain/game-orm-entity';
 import { GameORMRepository } from '../features/pair-quiz-game/infrastructure/game-orm-repository';
 
-@Injectable()
+// @Injectable()
 export class TasksService {
   constructor(private readonly gameRepository: GameORMRepository) {}
 
-  @Cron(CronExpression.EVERY_SECOND)
+  // @Cron(CronExpression.EVERY_SECOND)
   async handleCron(): Promise<void> {
     const notFinishedGames = await this.gameRepository.getActiveGames();
 

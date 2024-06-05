@@ -1,13 +1,13 @@
 import {
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
-import { CommentatorInfo } from './comments-commentator-info-orm-entity';
+import { UserORM } from '../../users/domain/users-orm-entity';
 import { CommentLikesInfoORM } from './comments-likes-info-orm-entity';
 
 @Entity()
@@ -18,15 +18,14 @@ export class CommentForPostORM {
   @Column()
   content: string;
 
-  @OneToOne(
-    () => CommentatorInfo,
-    (commentatorInfo) => commentatorInfo.comment,
-    {
-      eager: true,
-      cascade: true,
-    },
-  )
-  commentatorInfo: CommentatorInfo;
+  @ManyToOne(() => UserORM, (user) => user.comment, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  commentatorInfo: UserORM;
+  @Column()
+  commentatorInfoId: string;
 
   @Column()
   createdAt: string;
@@ -48,12 +47,8 @@ export class CommentForPostORM {
     this.content = content;
   }
 
-  setLikeStatus(
-    userId: string,
-    login: string,
-    likeStatus: LikeStatusType,
-  ): void {
-    const like = this.likesInfo.find((i) => i.userId === userId);
+  setLikeStatus(user: UserORM, likeStatus: LikeStatusType): void {
+    const like = this.likesInfo.find((i) => i.owner.id === user.id);
 
     if (like) {
       like.likeStatus = likeStatus;
@@ -61,8 +56,7 @@ export class CommentForPostORM {
       const likesInfo = new CommentLikesInfoORM();
       likesInfo.addedAt = new Date().toISOString();
       likesInfo.likeStatus = likeStatus;
-      likesInfo.login = login;
-      likesInfo.userId = userId;
+      likesInfo.owner = user;
       this.likesInfo.push(likesInfo);
     }
   }
@@ -70,15 +64,12 @@ export class CommentForPostORM {
   static createComment(
     content: string,
     postId: string,
-    userId: string,
-    userLogin: string,
+    user: UserORM,
   ): CommentForPostORM {
     const comment = new this();
 
     comment.content = content;
-    comment.commentatorInfo = new CommentatorInfo();
-    comment.commentatorInfo.userId = userId;
-    comment.commentatorInfo.userLogin = userLogin;
+    comment.commentatorInfo = user;
     comment.createdAt = new Date().toISOString();
     comment.postId = postId;
 

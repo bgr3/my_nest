@@ -1,6 +1,13 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { PostORM } from '../../posts/domain/posts-orm-entity';
+import { UserORM } from '../../users/domain/users-orm-entity';
 import { BlogPostType, BlogPutType } from '../api/dto/input/blogs-input-dto';
 
 @Entity()
@@ -26,13 +33,27 @@ export class BlogORM {
   @OneToMany(() => PostORM, (post) => post.blog)
   post: PostORM;
 
-  updateBlog(inputModel: BlogPutType) {
+  @ManyToOne(() => UserORM, (user) => user.blog, {
+    eager: true,
+    nullable: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  blogOwnerInfo: UserORM;
+  @Column()
+  blogOwnerInfoId: string;
+
+  updateBlog(inputModel: BlogPutType): void {
     this.name = inputModel.name;
     this.description = inputModel.description;
     this.websiteUrl = inputModel.websiteUrl;
   }
 
-  static createBlog(inputModel: BlogPostType): BlogORM {
+  bindBloger(user: UserORM): void {
+    this.blogOwnerInfo = user;
+  }
+
+  static createBlog(inputModel: BlogPostType, user: UserORM): BlogORM {
     const blog = new this();
 
     blog.name = inputModel.name;
@@ -40,6 +61,7 @@ export class BlogORM {
     blog.websiteUrl = inputModel.websiteUrl;
     blog.createdAt = new Date().toISOString();
     blog.isMembership = false;
+    blog.blogOwnerInfo = user;
 
     return blog;
   }

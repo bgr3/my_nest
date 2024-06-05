@@ -223,89 +223,30 @@ window.onload = function() {
         }
       },
       "/sa/blogs": {
-        "post": {
-          "operationId": "BlogsSAController_createBlog",
-          "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPostType"
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": ""
-            }
-          }
-        },
-        "get": {
-          "operationId": "BlogsSAController_getBlogs",
-          "parameters": [],
-          "responses": {
-            "200": {
-              "description": ""
-            }
-          }
-        }
-      },
-      "/sa/blogs/{id}/posts": {
-        "post": {
-          "operationId": "BlogsSAController_createPostforBlog",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PostForBlogPostType"
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": ""
-            }
-          }
-        },
-        "get": {
-          "operationId": "BlogsSAController_getPostsforBlog",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": ""
-            }
-          }
-        }
-      },
-      "/sa/blogs/{id}": {
         "get": {
           "operationId": "BlogsSAController_getBlog",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/sa/blogs/{blogId}/bind-with-user/{userId}": {
+        "put": {
+          "operationId": "BlogsSAController_bindBlog",
           "parameters": [
             {
-              "name": "id",
+              "name": "blogId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "userId",
               "required": true,
               "in": "path",
               "schema": {
@@ -315,116 +256,6 @@ window.onload = function() {
           ],
           "responses": {
             "200": {
-              "description": ""
-            }
-          }
-        },
-        "put": {
-          "operationId": "BlogsSAController_updateBlog",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPutType"
-                }
-              }
-            }
-          },
-          "responses": {
-            "204": {
-              "description": ""
-            }
-          }
-        },
-        "delete": {
-          "operationId": "BlogsSAController_deleteBlog",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "204": {
-              "description": ""
-            }
-          }
-        }
-      },
-      "/sa/blogs/{blogId}/posts/{postId}": {
-        "put": {
-          "operationId": "BlogsSAController_updatePostForBlog",
-          "parameters": [
-            {
-              "name": "postId",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "blogId",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PostForBlogPutType"
-                }
-              }
-            }
-          },
-          "responses": {
-            "204": {
-              "description": ""
-            }
-          }
-        },
-        "delete": {
-          "operationId": "BlogsSAController_deletePost",
-          "parameters": [
-            {
-              "name": "postId",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "blogId",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "204": {
               "description": ""
             }
           }
@@ -597,6 +428,36 @@ window.onload = function() {
               }
             }
           ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/sa/users/{userId}/ban": {
+        "put": {
+          "operationId": "UsersController_banUnbanUser",
+          "parameters": [
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserBanDTO"
+                }
+              }
+            }
+          },
           "responses": {
             "204": {
               "description": ""
@@ -995,6 +856,196 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/blogger/blogs/{id}": {
+        "put": {
+          "operationId": "BlogsBloggerController_updateBlog",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogPutType"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "BlogsBloggerController_deleteBlog",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/blogger/blogs": {
+        "post": {
+          "operationId": "BlogsBloggerController_createBlog",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogPostType"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        },
+        "get": {
+          "operationId": "BlogsBloggerController_getBlogs",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/blogger/blogs/{id}/posts": {
+        "post": {
+          "operationId": "BlogsBloggerController_createPostforBlog",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostForBlogPostType"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        },
+        "get": {
+          "operationId": "BlogsBloggerController_getPostsforBlog",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/blogger/blogs/{blogId}/posts/{postId}": {
+        "put": {
+          "operationId": "BlogsBloggerController_updatePostForBlog",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "blogId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostForBlogPutType"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "BlogsBloggerController_deletePost",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "blogId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
@@ -1032,6 +1083,50 @@ window.onload = function() {
           "type": "object",
           "properties": {}
         },
+        "LikeStatus": {
+          "type": "object",
+          "properties": {}
+        },
+        "PostPostType": {
+          "type": "object",
+          "properties": {}
+        },
+        "CommentPostType": {
+          "type": "object",
+          "properties": {}
+        },
+        "PostPutType": {
+          "type": "object",
+          "properties": {}
+        },
+        "UserBanDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "UserPost": {
+          "type": "object",
+          "properties": {}
+        },
+        "CommentPutType": {
+          "type": "object",
+          "properties": {}
+        },
+        "QuizAnswerDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "QuizPostQuestionDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "QuizPublishDTO": {
+          "type": "object",
+          "properties": {}
+        },
+        "BlogPutType": {
+          "type": "object",
+          "properties": {}
+        },
         "BlogPostType": {
           "type": "object",
           "properties": {
@@ -1055,47 +1150,7 @@ window.onload = function() {
           "type": "object",
           "properties": {}
         },
-        "BlogPutType": {
-          "type": "object",
-          "properties": {}
-        },
         "PostForBlogPutType": {
-          "type": "object",
-          "properties": {}
-        },
-        "LikeStatus": {
-          "type": "object",
-          "properties": {}
-        },
-        "PostPostType": {
-          "type": "object",
-          "properties": {}
-        },
-        "CommentPostType": {
-          "type": "object",
-          "properties": {}
-        },
-        "PostPutType": {
-          "type": "object",
-          "properties": {}
-        },
-        "UserPost": {
-          "type": "object",
-          "properties": {}
-        },
-        "CommentPutType": {
-          "type": "object",
-          "properties": {}
-        },
-        "QuizAnswerDTO": {
-          "type": "object",
-          "properties": {}
-        },
-        "QuizPostQuestionDTO": {
-          "type": "object",
-          "properties": {}
-        },
-        "QuizPublishDTO": {
           "type": "object",
           "properties": {}
         }

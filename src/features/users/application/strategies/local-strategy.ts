@@ -3,6 +3,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 
+import { UserORM } from '../../domain/users-orm-entity';
 import { UsersCheckCredentialsCommand } from '../use-cases/users-check-credentials-use-case';
 
 @Injectable()
@@ -13,12 +14,14 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async validate(loginOrEmail: string, password: string): Promise<any> {
-    const user = await this.commandBus.execute(
+    const user: UserORM | null = await this.commandBus.execute(
       new UsersCheckCredentialsCommand(loginOrEmail, password),
     );
 
     if (!user) throw new UnauthorizedException();
+    if (user.banInfo.isBanned) throw new UnauthorizedException();
 
     return user;
   }
