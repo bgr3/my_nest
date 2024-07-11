@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
-import { UserORM } from '../../users/domain/users-orm-entity';
+import { UserORM } from '../../users/domain/entities/users-orm-entity';
 import { PostORM } from './posts-orm-entity';
 
 @Entity()

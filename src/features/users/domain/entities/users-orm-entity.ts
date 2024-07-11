@@ -1,3 +1,4 @@
+import { AggregateRoot } from '@nestjs/cqrs';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns/add';
 import {
@@ -8,18 +9,21 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { MeType } from '../../auth/api/dto/output/auth-output-dto';
-import { BlogORM } from '../../blogs/domain/blogs-orm-entity';
-import { CommentLikesInfoORM } from '../../comments/domain/comments-likes-info-orm-entity';
-import { CommentForPostORM } from '../../comments/domain/comments-orm-entity';
-import { PlayerProgressORM } from '../../pair-quiz-game/domain/player-progress-orm-entity';
-import { StatisticORM } from '../../pair-quiz-game/domain/statistic-orm-entity';
-import { PostLikesInfoORM } from '../../posts/domain/posts-likesinfo-orm-entity';
+import { MeType } from '../../../auth/api/dto/output/auth-output-dto';
+import { BlogORM } from '../../../blogs/domain/blogs-orm-entity';
+import { CommentLikesInfoORM } from '../../../comments/domain/comments-likes-info-orm-entity';
+import { CommentForPostORM } from '../../../comments/domain/comments-orm-entity';
+import { PlayerProgressORM } from '../../../pair-quiz-game/domain/player-progress-orm-entity';
+import { StatisticORM } from '../../../pair-quiz-game/domain/statistic-orm-entity';
+import { PostLikesInfoORM } from '../../../posts/domain/posts-likesinfo-orm-entity';
+import { UserBlogBanDTO } from '../../api/dto/input/users-input-dto';
+import { UserCreatedEvent } from '../events/user-created-event';
 import { EmailConfirmation } from './email-confirmation-orm-entity';
 import { UserBanORM } from './users-ban-orm-entity';
+import { UserBlogBanORM } from './users-blog-ban-orm-entity';
 
 @Entity()
-export class UserORM {
+export class UserORM extends AggregateRoot {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -71,6 +75,12 @@ export class UserORM {
   })
   banInfo: UserBanORM;
 
+  @OneToMany(() => UserBlogBanORM, (userBlogBanORM) => userBlogBanORM.user, {
+    eager: true,
+    cascade: true,
+  })
+  blogBanInfo: UserBlogBanORM[];
+
   updateCodeForRecoveryPassword(code: string, expirationDate: object): void {
     this.emailConfirmation.confirmationCode = code;
     this.emailConfirmation.expirationDate = expirationDate;
@@ -104,6 +114,17 @@ export class UserORM {
     this.banInfo.updateBan(isBanned, banReason);
   }
 
+  blogBanUnban(blogBanDto: UserBlogBanDTO, blog: BlogORM): void {
+    let blogBan = this.blogBanInfo.find((i) => i.blogId === blogBanDto.blogId);
+    if (!blogBan) {
+      blogBan = UserBlogBanORM.createBan(blog);
+      blogBan.updateBan(blogBanDto.isBanned, blogBanDto.banReason);
+      this.blogBanInfo.push(blogBan);
+    } else {
+      blogBan.updateBan(blogBanDto.isBanned, blogBanDto.banReason);
+    }
+  }
+
   static createUser(
     login: string,
     email: string,
@@ -122,6 +143,10 @@ export class UserORM {
     user.emailConfirmation.isConfirmed = isSuperAdmin;
     user.emailConfirmation.nextSend = add(new Date(), { seconds: 0 });
     user.banInfo = UserBanORM.createBan();
+
+    const userCreatedEvent = new UserCreatedEvent(login);
+
+    user.apply(userCreatedEvent);
 
     return user;
   }

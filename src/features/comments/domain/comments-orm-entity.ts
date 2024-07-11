@@ -7,7 +7,8 @@ import {
 } from 'typeorm';
 
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
-import { UserORM } from '../../users/domain/users-orm-entity';
+import { PostORM } from '../../posts/domain/posts-orm-entity';
+import { UserORM } from '../../users/domain/entities/users-orm-entity';
 import { CommentLikesInfoORM } from './comments-likes-info-orm-entity';
 
 @Entity()
@@ -40,6 +41,12 @@ export class CommentForPostORM {
   )
   likesInfo: CommentLikesInfoORM[];
 
+  @ManyToOne(() => PostORM, (post) => post.comments, {
+    // eager: true,
+    // cascade: true,
+    onDelete: 'CASCADE',
+  })
+  post: PostORM;
   @Column()
   postId: string;
 
@@ -63,7 +70,7 @@ export class CommentForPostORM {
 
   static createComment(
     content: string,
-    postId: string,
+    post: PostORM,
     user: UserORM,
   ): CommentForPostORM {
     const comment = new this();
@@ -71,7 +78,7 @@ export class CommentForPostORM {
     comment.content = content;
     comment.commentatorInfo = user;
     comment.createdAt = new Date().toISOString();
-    comment.postId = postId;
+    comment.post = post;
 
     return comment;
   }

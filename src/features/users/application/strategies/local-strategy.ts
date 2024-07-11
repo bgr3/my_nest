@@ -3,7 +3,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 
-import { UserORM } from '../../domain/users-orm-entity';
+import { UserORM } from '../../domain/entities/users-orm-entity';
 import { UsersCheckCredentialsCommand } from '../use-cases/users-check-credentials-use-case';
 
 @Injectable()

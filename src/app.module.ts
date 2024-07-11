@@ -14,6 +14,8 @@ import { join } from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { FilesStorageAdapter } from './base/adapters/files-storage-adapter';
+import { S3StorageAdapter } from './base/adapters/s3-storage-adapter';
 import { AccessService } from './features/access/application/access-service';
 import { AccessCheckAccessFrequencyUseCase } from './features/access/application/use-cases/access-check-access-frequency-use-case';
 import { AccessTestAllDataUseCase } from './features/access/application/use-cases/access-test-all-data-use-case';
@@ -49,11 +51,14 @@ import { BlogsBloggerController } from './features/blogs/api/blogs-blogger-contr
 import { BlogsController } from './features/blogs/api/blogs-controller';
 import { BlogsSAController } from './features/blogs/api/blogs-sa-controller';
 import { BlogsService } from './features/blogs/application/blog-service';
+import { BlogsBanUnbanUseCase } from './features/blogs/application/use-cases/blogs-ban-unban-use-case';
 import { BlogsBindBlogUseCase } from './features/blogs/application/use-cases/blogs-bind-blog-use-case';
 import { BlogsCreateBlogUseCase } from './features/blogs/application/use-cases/blogs-create-blog-use-case';
 import { BlogsDeleteBlogUseCase } from './features/blogs/application/use-cases/blogs-delete-blog-use-case';
 import { BlogsTestAllDatasUseCase } from './features/blogs/application/use-cases/blogs-test-all-data-use-case';
 import { BlogsUpdateBlogUseCase } from './features/blogs/application/use-cases/blogs-update-blog-use-case';
+import { BlogsUploadBackgroundWallpaperUseCase } from './features/blogs/application/use-cases/blogs-upload-background-wallpaper-use-case';
+import { BlogBanORM } from './features/blogs/domain/blogs-ban-orm-entity';
 import { BlogORM } from './features/blogs/domain/blogs-orm-entity';
 import { BlogsORMQueryRepository } from './features/blogs/infrastructure/orm/blogs-orm-query-repository';
 import { BlogsORMRepository } from './features/blogs/infrastructure/orm/blogs-orm-repository';
@@ -105,11 +110,14 @@ import { PostsORMQueryRepository } from './features/posts/infrastructure/orm/pos
 import { PostsORMRepository } from './features/posts/infrastructure/orm/posts-orm-repository';
 import { SecurityController } from './features/security/api/dto/security-controller';
 import { TestingController } from './features/testing/api/testing-controller';
+import { UsersBloggerController } from './features/users/api/users-blogger-controller';
 import { UsersController } from './features/users/api/users-controller';
+import { UserCreatedHandler } from './features/users/application/events-handlers/log-created-user.event.handler';
 import { BasicStrategy } from './features/users/application/strategies/basic-strategy';
 import { JwtStrategy } from './features/users/application/strategies/jwt-strategy';
 import { LocalStrategy } from './features/users/application/strategies/local-strategy';
 import { UsersBanUnbanUseCase } from './features/users/application/use-cases/users-ban-unban-use-case';
+import { UsersBloggerBanUnbanUseCase } from './features/users/application/use-cases/users-blogger-ban-unban-use-case';
 import { UsersChangePasswordUseCase } from './features/users/application/use-cases/users-change-password-use-case';
 import { UsersCheckCredentialsUseCase } from './features/users/application/use-cases/users-check-credentials-use-case';
 import { UsersCreateUserUseCase } from './features/users/application/use-cases/users-create-user-use-case';
@@ -117,14 +125,19 @@ import { UsersDeleteUserUseCase } from './features/users/application/use-cases/u
 import { UsersTestAllDataUseCase } from './features/users/application/use-cases/users-testing-all-data-use-case';
 import { UsersUpdateCodeForRecoveryPasswordUseCase } from './features/users/application/use-cases/users-update-code-for-recovery-password-use-case';
 import { UsersService } from './features/users/application/users-service';
-import { EmailConfirmation } from './features/users/domain/email-confirmation-orm-entity';
-import { UserBanORM } from './features/users/domain/users-ban-orm-entity';
-import { UserORM } from './features/users/domain/users-orm-entity';
+import { EmailConfirmation } from './features/users/domain/entities/email-confirmation-orm-entity';
+import { UserBanORM } from './features/users/domain/entities/users-ban-orm-entity';
+import { UserBlogBanORM } from './features/users/domain/entities/users-blog-ban-orm-entity';
+import { UserORM } from './features/users/domain/entities/users-orm-entity';
 import { UsersORMQueryRepository } from './features/users/infrastructure/orm/users-orm-query-repository';
 import { UsersORMRepository } from './features/users/infrastructure/orm/users-orm-repository';
-import { AuthorizationBlogMiddleware } from './infrastructure/middlewares/blog-validation-middleware';
+import {
+  AuthorizationBloggerBanMiddleware,
+  AuthorizationBlogMiddleware,
+} from './infrastructure/middlewares/blog-validation-middleware';
 import {
   AuthorizationCommentMiddleware,
+  BannedUserCommentMiddleware,
   CommentExistMiddleware,
   PostExistMiddleware,
   PostValidationMiddleware,
@@ -158,6 +171,10 @@ export const postgresParam: TypeOrmModuleOptions = {
   autoLoadEntities: true,
   synchronize: false,
 };
+
+const adapterProviders = [
+  { provide: FilesStorageAdapter, useClass: S3StorageAdapter },
+];
 
 const usersProviders = [
   UsersService,
@@ -216,11 +233,14 @@ const useCases = [
   UsersChangePasswordUseCase,
   UsersDeleteUserUseCase,
   UsersBanUnbanUseCase,
+  UsersBloggerBanUnbanUseCase,
   BlogsTestAllDatasUseCase,
   BlogsCreateBlogUseCase,
   BlogsBindBlogUseCase,
   BlogsUpdateBlogUseCase,
   BlogsDeleteBlogUseCase,
+  BlogsBanUnbanUseCase,
+  BlogsUploadBackgroundWallpaperUseCase,
   CommentsTestAllDataUseCase,
   CommentsCreateCommentUseCase,
   CommentsUpdateCommentUseCase,
@@ -259,6 +279,8 @@ const useCases = [
   QuizCreateStatisticUseCase,
 ];
 
+const handlers = [UserCreatedHandler];
+
 const entities = [
   UserORM,
   EmailConfirmation,
@@ -266,6 +288,7 @@ const entities = [
   JWTTokens,
   AccessLogORM,
   BlogORM,
+  BlogBanORM,
   PostORM,
   PostLikesInfoORM,
   CommentForPostORM,
@@ -277,6 +300,7 @@ const entities = [
   AnswerHistoryORM,
   StatisticORM,
   UserBanORM,
+  UserBlogBanORM,
 ];
 
 @Module({
@@ -304,6 +328,7 @@ const entities = [
     BlogsSAController,
     PostsController,
     UsersController,
+    UsersBloggerController,
     CommentsController,
     TestingController,
     SecurityController,
@@ -317,6 +342,7 @@ const entities = [
     EmailManager,
     TrimPipe,
     // TasksService,
+    ...adapterProviders,
     ...usersProviders,
     ...blogsProviders,
     ...postsProviders,
@@ -326,6 +352,7 @@ const entities = [
     ...accessProviders,
     ...quizProviders,
     ...useCases,
+    ...handlers,
   ],
 })
 export class AppModule implements NestModule {
@@ -342,9 +369,11 @@ export class AppModule implements NestModule {
       // )
       // .forRoutes(AuthController)
       .apply(PostValidationMiddleware)
-      .forRoutes({ path: 'post/*/comments', method: RequestMethod.POST })
+      .forRoutes({ path: 'posts/*/comments', method: RequestMethod.POST })
+      .apply(BannedUserCommentMiddleware)
+      .forRoutes({ path: 'posts/*/comments', method: RequestMethod.POST })
       .apply(PostExistMiddleware)
-      .forRoutes({ path: 'post/*/like-status', method: RequestMethod.PUT })
+      .forRoutes({ path: 'posts/*/like-status', method: RequestMethod.PUT })
       .apply(CommentExistMiddleware)
       .forRoutes({ path: 'comments/*/like-status', method: RequestMethod.PUT })
       .apply(AuthorizationCommentMiddleware)
@@ -378,6 +407,16 @@ export class AppModule implements NestModule {
       .forRoutes({
         path: 'blogger/blogs/*',
         method: RequestMethod.ALL,
+      })
+      .apply(AuthorizationBlogMiddleware)
+      .forRoutes({
+        path: 'blogger/users/blog/*',
+        method: RequestMethod.GET,
+      })
+      .apply(AuthorizationBloggerBanMiddleware)
+      .forRoutes({
+        path: 'blogger/users/*/ban',
+        method: RequestMethod.PUT,
       });
   }
 }

@@ -29,6 +29,8 @@ export class BlogsORMRepository {
         },
       });
     } catch (err) {
+      console.log(err);
+
       return null;
     }
 

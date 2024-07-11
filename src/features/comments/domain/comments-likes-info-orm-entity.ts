@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
-import { UserORM } from '../../users/domain/users-orm-entity';
+import { UserORM } from '../../users/domain/entities/users-orm-entity';
 import { CommentForPostORM } from './comments-orm-entity';
 
 @Entity()
@@ -11,7 +11,6 @@ export class CommentLikesInfoORM {
 
   @ManyToOne(() => UserORM, (user) => user.commentLikes, {
     eager: true,
-    cascade: true,
     onDelete: 'CASCADE',
   })
   owner: UserORM;

@@ -16,26 +16,42 @@ export class BlogsORMQueryRepository {
     filter: BlogQueryFilter,
     userId: string = '',
     superAdmin: boolean = false,
+    isPublic: boolean = true,
   ): Promise<Paginator<BlogOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
-    const searcFilter =
-      'b.name ilike :name' + (userId ? ' AND o.id = :userId' : '');
 
-    const dbResult = await this.blogsRepository
-      .createQueryBuilder('b')
-      .select()
-      .leftJoinAndSelect('b.blogOwnerInfo', 'o')
-      .where(searcFilter, {
-        name: `%${filter.searchNameTerm}%`,
-        userId: userId,
-      })
-      .orderBy(
-        `b.${filter.sortBy}`,
-        filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
-      )
-      .offset(skip)
-      .limit(filter.pageSize)
-      .getManyAndCount();
+    let queryBuilder;
+    let dbResult;
+    try {
+      queryBuilder = await this.blogsRepository
+        .createQueryBuilder('b')
+        .select()
+        .leftJoinAndSelect('b.blogOwnerInfo', 'o')
+        .leftJoinAndSelect('b.banInfo', 'blogBan')
+        .where('b.name ilike :name', {
+          name: `%${filter.searchNameTerm}%`,
+        });
+
+      if (userId) {
+        queryBuilder.andWhere('o.id = :userId', { userId: userId });
+      }
+
+      if (isPublic) {
+        queryBuilder.andWhere('blogBan.isBanned = false');
+      }
+
+      dbResult = await queryBuilder
+        .orderBy(
+          `b.${filter.sortBy}`,
+          filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
+        )
+        .offset(skip)
+        .limit(filter.pageSize)
+        .getManyAndCount();
+    } catch (err) {
+      console.log(err);
+      dbResult = [[], 0];
+    }
 
     const dbCount = dbResult[1];
 
@@ -52,12 +68,25 @@ export class BlogsORMQueryRepository {
     return paginator;
   }
 
-  async findBlogByID(id: string): Promise<BlogOutput | null> {
+  async findBlogByID(
+    id: string,
+    isPublic: boolean = true,
+  ): Promise<BlogOutput | null> {
     let blog;
+    let queryBuilder;
     try {
-      blog = await this.blogsRepository.findOne({
-        where: { id: id },
-      });
+      queryBuilder = await this.blogsRepository
+        .createQueryBuilder('b')
+        .select()
+        .leftJoinAndSelect('b.blogOwnerInfo', 'o')
+        .leftJoinAndSelect('b.banInfo', 'blogBan')
+        .where('b.id = :id', { id: id });
+
+      if (isPublic) {
+        queryBuilder.andWhere('blogBan.isBanned = false');
+      }
+
+      blog = await queryBuilder.getOne();
     } catch (err) {
       console.log(err);
       return null;
@@ -92,6 +121,12 @@ const blogSuperAdminMapper = (blog: BlogORM): BlogSAOutput => {
     blogOwnerInfo: {
       userId: blog.blogOwnerInfo.id,
       userLogin: blog.blogOwnerInfo.login,
+    },
+    banInfo: {
+      banDate: blog.banInfo.banDate
+        ? blog.banInfo.banDate?.toISOString()
+        : null,
+      isBanned: blog.banInfo.isBanned,
     },
   };
 };

@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 
-import { UserORM } from '../../users/domain/users-orm-entity';
+import { UserORM } from '../../users/domain/entities/users-orm-entity';
 import { StatisticOutputDTO } from '../api/dto/output/game-output-dto';
 
 @Entity()

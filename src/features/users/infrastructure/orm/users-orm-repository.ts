@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { UserORM } from '../../domain/users-orm-entity';
+import { UserORM } from '../../domain/entities/users-orm-entity';
 
 @Injectable()
 export class UsersORMRepository {
@@ -22,9 +22,27 @@ export class UsersORMRepository {
   }
 
   async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserORM | null> {
-    const user = await this.usersRepository.findOne({
-      where: [{ login: loginOrEmail }, { email: loginOrEmail }],
-    });
+    let user;
+    // = await this.usersRepository.findOne({
+    //   where: [{ login: loginOrEmail }, { email: loginOrEmail }],
+    // });
+
+    try {
+      user = await this.usersRepository
+        .createQueryBuilder('u')
+        .select()
+        .leftJoinAndSelect('u.banInfo', 'ban')
+        .leftJoinAndSelect('u.blogBanInfo', 'blogBan')
+        .leftJoinAndSelect('blogBan.blog', 'blog')
+        .where(`u.login = :loginOrEmail OR u.email = :loginOrEmail`, {
+          loginOrEmail: loginOrEmail,
+        })
+        .getOne();
+    } catch (err) {
+      console.log(err);
+
+      return null;
+    }
 
     return user;
   }
@@ -33,11 +51,22 @@ export class UsersORMRepository {
     let user;
 
     try {
-      user = await this.usersRepository.findOne({
-        where: {
+      // user = await this.usersRepository.findOne({
+      //   where: {
+      //     id: id,
+      //   },
+      // });
+
+      user = await this.usersRepository
+        .createQueryBuilder('u')
+        .select()
+        .leftJoinAndSelect('u.banInfo', 'ban')
+        .leftJoinAndSelect('u.blogBanInfo', 'blogBan')
+        .leftJoinAndSelect('blogBan.blog', 'blog')
+        .where(`u.id = :id`, {
           id: id,
-        },
-      });
+        })
+        .getOne();
     } catch (err) {
       return null;
     }
@@ -46,13 +75,31 @@ export class UsersORMRepository {
   }
 
   async findUserByConfirmationCode(code: string): Promise<UserORM | null> {
-    const user = await this.usersRepository.findOne({
-      where: {
-        emailConfirmation: {
-          confirmationCode: code,
-        },
-      },
-    });
+    let user;
+    //  = await this.usersRepository.findOne({
+    //   where: {
+    //     emailConfirmation: {
+    //       confirmationCode: code,
+    //     },
+    //   },
+    // });
+
+    try {
+      user = await this.usersRepository
+        .createQueryBuilder('u')
+        .select()
+        .leftJoinAndSelect('u.banInfo', 'ban')
+        .leftJoinAndSelect('u.blogBanInfo', 'blogBan')
+        .leftJoinAndSelect('blogBan.blog', 'blog')
+        .where(`u.emailConfirmation = :code`, {
+          code: code,
+        })
+        .getOne();
+    } catch (err) {
+      console.log(err);
+
+      return null;
+    }
 
     return user;
   }

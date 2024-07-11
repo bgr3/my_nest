@@ -261,6 +261,36 @@ window.onload = function() {
           }
         }
       },
+      "/sa/blogs/{blogId}/ban": {
+        "put": {
+          "operationId": "BlogsSAController_banBlog",
+          "parameters": [
+            {
+              "name": "blogId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogBanDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/posts/{id}/like-status": {
         "put": {
           "operationId": "PostsController_likeStatus",
@@ -510,6 +540,56 @@ window.onload = function() {
           ],
           "responses": {
             "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/blogger/users/{userId}/ban": {
+        "put": {
+          "operationId": "UsersBloggerController_banUnbanUser",
+          "parameters": [
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserBlogBanDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/blogger/users/blog/{blogId}": {
+        "get": {
+          "operationId": "UsersBloggerController_getUsers",
+          "parameters": [
+            {
+              "name": "blogId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
               "description": ""
             }
           }
@@ -857,6 +937,37 @@ window.onload = function() {
           }
         }
       },
+      "/blogger/blogs/images/wallpaper": {
+        "get": {
+          "operationId": "BlogsBloggerController_uploadBackgroundWallpaperForBlog",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "post": {
+          "operationId": "BlogsBloggerController_changeBackgroundWallpaperForBlog",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/blogger/blogs/comments": {
+        "get": {
+          "operationId": "BlogsBloggerController_getAllComments",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/blogger/blogs/{id}": {
         "put": {
           "operationId": "BlogsBloggerController_updateBlog",
@@ -1083,6 +1194,10 @@ window.onload = function() {
           "type": "object",
           "properties": {}
         },
+        "BlogBanDTO": {
+          "type": "object",
+          "properties": {}
+        },
         "LikeStatus": {
           "type": "object",
           "properties": {}
@@ -1104,6 +1219,10 @@ window.onload = function() {
           "properties": {}
         },
         "UserPost": {
+          "type": "object",
+          "properties": {}
+        },
+        "UserBlogBanDTO": {
           "type": "object",
           "properties": {}
         },

@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { UserORM } from '../../users/domain/users-orm-entity';
+import { UserORM } from '../../users/domain/entities/users-orm-entity';
 import { AnswerHistoryORM } from './answers-orm-entity';
 import { GameQuestionsORM } from './game-qusestions-orm-entity';
 import { PlayerProgressORM } from './player-progress-orm-entity';

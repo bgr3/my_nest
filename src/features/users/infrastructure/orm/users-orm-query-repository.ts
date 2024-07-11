@@ -4,8 +4,11 @@ import { Repository } from 'typeorm';
 
 import { Paginator } from '../../../../infrastructure/dto/output/output-dto';
 import { UserQueryFilter } from '../../api/dto/input/users-input-dto';
-import { UserOutput } from '../../api/dto/output/user-output-dto';
-import { UserORM } from '../../domain/users-orm-entity';
+import {
+  UserBloggerOutput,
+  UserOutput,
+} from '../../api/dto/output/user-output-dto';
+import { UserORM } from '../../domain/entities/users-orm-entity';
 
 @Injectable()
 export class UsersORMQueryRepository {
@@ -75,17 +78,83 @@ export class UsersORMQueryRepository {
     return paginator;
   }
 
+  async findBlogBannedUsers(
+    filter: Omit<UserQueryFilter, 'banReason'>,
+    blogId: string,
+  ): Promise<Paginator<UserBloggerOutput>> {
+    const skip = (filter.pageNumber - 1) * filter.pageSize;
+
+    let dbResult;
+
+    try {
+      dbResult = await this.usersRepository
+        .createQueryBuilder('u')
+        .select()
+        .leftJoinAndSelect('u.banInfo', 'ban')
+        .leftJoinAndSelect(
+          'u.blogBanInfo',
+          'blogBan',
+          'blogBan.isBanned = true AND blogBan.blogId = :blogId',
+          { blogId: blogId },
+        )
+        .leftJoinAndSelect('blogBan.blog', 'blog')
+        .where(`blogBan.isBanned = true AND blogBan.blogId = :blogId`, {
+          login: `%${filter.searchLoginTerm}%`,
+          email: `%${filter.searchEmailTerm}%`,
+        })
+        .orderBy(
+          `u.${filter.sortBy}`,
+          filter.sortDirection == 'asc' ? 'ASC' : 'DESC',
+        )
+        .skip(skip)
+        .take(filter.pageSize)
+        .getManyAndCount();
+    } catch (err) {
+      console.log(err);
+      dbResult = [];
+    }
+
+    const dbCount = dbResult[1];
+
+    const paginator = {
+      pagesCount: Math.ceil(dbCount / filter.pageSize),
+      page: filter.pageNumber,
+      pageSize: filter.pageSize,
+      totalCount: dbCount,
+      items: dbResult[0].map((p: UserORM) => userBloggerMapper(p, blogId)),
+    };
+
+    return paginator;
+  }
+
   async findUserByID(id: string): Promise<UserOutput | null> {
     let user;
 
     try {
-      user = await this.usersRepository.findOne({
-        where: { id: id },
-      });
+      user = await this.usersRepository
+        .createQueryBuilder('u')
+        .select()
+        .leftJoinAndSelect('u.banInfo', 'ban')
+        .leftJoinAndSelect('u.blogBanInfo', 'blogBan')
+        .leftJoinAndSelect('blogBan.blog', 'blog')
+        .where(`u.id = :id`, {
+          id: id,
+        })
+        .getOne();
     } catch (err) {
+      console.log(err);
       return null;
     }
 
+    // try {
+    //   user = await this.usersRepository.findOne({
+    //     where: { id: id },
+    //   });
+    // } catch (err) {
+    //   console.log(err);
+
+    //   return null;
+    // }
     if (user) {
       return userMapper(user);
     }
@@ -103,6 +172,22 @@ const userMapper = (user: UserORM): UserOutput => {
       banDate: user.banInfo.banDate ? user.banInfo.banDate.toISOString() : null,
       banReason: user.banInfo.banReason,
       isBanned: user.banInfo.isBanned,
+    },
+  };
+};
+
+const userBloggerMapper = (
+  user: UserORM,
+  blogId: string,
+): UserBloggerOutput => {
+  const banInfo = user.blogBanInfo.find((i) => i.blog.id === blogId);
+  return {
+    id: user.id,
+    login: user.login,
+    banInfo: {
+      banDate: banInfo!.banDate ? banInfo!.banDate.toISOString() : null,
+      banReason: banInfo!.banReason,
+      isBanned: banInfo!.isBanned,
     },
   };
 };

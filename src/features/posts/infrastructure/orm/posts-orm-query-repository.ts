@@ -22,6 +22,7 @@ export class PostsORMQueryRepository {
     blogId: string | null,
     filter: QueryFilter,
     userId: string = '',
+    isPublic: boolean = true,
   ): Promise<Paginator<PostOutput>> {
     const skip = (filter.pageNumber - 1) * filter.pageSize;
 
@@ -47,9 +48,10 @@ export class PostsORMQueryRepository {
 
     subQuery = subQuery.map((i) => "'" + i.id + "'");
 
+    let queryBuilder;
     let dbResult;
     try {
-      dbResult = await this.postsRepository
+      queryBuilder = await this.postsRepository
         .createQueryBuilder('posts')
         .select()
         .leftJoinAndSelect(
@@ -61,15 +63,23 @@ export class PostsORMQueryRepository {
         .leftJoinAndSelect('likeOwner.banInfo', 'likeOwnerBan')
         .leftJoinAndSelect('posts.blog', 'blog')
         .leftJoinAndSelect('blog.blogOwnerInfo', 'owner')
-        .leftJoinAndSelect('owner.banInfo', 'ban')
+        .leftJoinAndSelect('owner.banInfo', 'OwnerBan')
         .where(
-          `(ban.isBanned = false ${
+          `((OwnerBan.isBanned = false ${
             blogId ? 'AND posts.blogId = :blogId' : ''
-          }) OR likeOwnerBan.isBanned = false`,
+          }) OR likeOwnerBan.isBanned = false)`,
           {
             blogId: blogId,
           },
-        )
+        );
+
+      if (isPublic) {
+        queryBuilder
+          .leftJoinAndSelect('blog.banInfo', 'blogBan')
+          .andWhere('blogBan.isBanned = false');
+      }
+
+      dbResult = await queryBuilder
         .orderBy(sortBy, sortDirection)
         .skip(skip)
         .take(filter.pageSize)
@@ -78,9 +88,6 @@ export class PostsORMQueryRepository {
       console.log(err);
       dbResult = [[], 0];
     }
-    console.log(dbResult[0]);
-
-    // console.log(dbResult[0][0].likesInfo[0].owner);
 
     const dbCount = dbResult[1];
 
@@ -98,6 +105,7 @@ export class PostsORMQueryRepository {
   async findPostByID(
     id: string,
     userId: string = '',
+    isPublic: boolean = true,
   ): Promise<PostOutput | null> {
     let subQuery;
 
@@ -117,9 +125,10 @@ export class PostsORMQueryRepository {
     subQuery = subQuery.map((i) => "'" + i.id + "'");
 
     let post;
+    let queryBuilder;
 
     try {
-      post = await this.postsRepository
+      queryBuilder = await this.postsRepository
         .createQueryBuilder('posts')
         .select()
         .leftJoinAndSelect(
@@ -134,8 +143,15 @@ export class PostsORMQueryRepository {
         .leftJoinAndSelect('owner.banInfo', 'ban')
         .where('ban.isBanned = false AND posts.id = :id', {
           id: id,
-        })
-        .getOne();
+        });
+
+      if (isPublic) {
+        queryBuilder
+          .leftJoinAndSelect('blog.banInfo', 'blogBan')
+          .andWhere('blogBan.isBanned = false');
+      }
+
+      post = await queryBuilder.getOne();
     } catch (err) {
       console.log(err);
       return null;

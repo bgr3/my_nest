@@ -15,3 +15,11 @@ export class UserBanInfoOutputDTO {
     public isBanned: boolean,
   ) {}
 }
+
+export class UserBloggerOutput {
+  constructor(
+    public id: string,
+    public login: string,
+    public banInfo: UserBanInfoOutputDTO,
+  ) {}
+}

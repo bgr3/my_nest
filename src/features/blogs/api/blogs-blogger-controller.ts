@@ -1,3 +1,5 @@
+import path, { dirname } from 'node:path';
+
 import {
   BadRequestException,
   Body,
@@ -12,15 +14,19 @@ import {
   Put,
   Query,
   Req,
-  UseGuards,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { FileInterceptor } from '@nestjs/platform-express';
 
+import { readTextFileAsync } from '../../../base/utils/fs-utils';
 import { QueryFilter } from '../../../infrastructure/dto/input/input-dto';
 import { Paginator } from '../../../infrastructure/dto/output/output-dto';
-import { JwtAuthGuard } from '../../../infrastructure/guards/jwt-auth-guard';
 import { CustomValidationPipe } from '../../../infrastructure/pipes/auth-email-confirm-validation-pipe';
 import { HTTP_STATUSES } from '../../../settings/http-statuses';
+import { BloggerAllCommentsOutput } from '../../comments/api/dto/output/comments-output-dto';
+import { CommentsORMQueryRepository } from '../../comments/infrastructure/orm/comments-orm-query-repository';
 import { PostOutput } from '../../posts/api/dto/output/post-output-type';
 import { PostsCreatePostCommand } from '../../posts/application/use-cases/posts-create-post-use-case';
 import { PostsDeletePostCommand } from '../../posts/application/use-cases/posts-delete-post-use-case';
@@ -30,6 +36,7 @@ import { BlogsService } from '../application/blog-service';
 import { BlogsCreateBlogCommand } from '../application/use-cases/blogs-create-blog-use-case';
 import { BlogsDeleteBlogCommand } from '../application/use-cases/blogs-delete-blog-use-case';
 import { BlogsUpdateBlogCommand } from '../application/use-cases/blogs-update-blog-use-case';
+import { BlogsUploadBackgroundWallpaperCommand } from '../application/use-cases/blogs-upload-background-wallpaper-use-case';
 import { BlogsORMQueryRepository } from '../infrastructure/orm/blogs-orm-query-repository';
 import {
   BlogPostType,
@@ -40,15 +47,74 @@ import {
 } from './dto/input/blogs-input-dto';
 import { BlogOutput } from './dto/output/blog-output-dto';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('blogger/blogs')
 export class BlogsBloggerController {
   constructor(
     private readonly blogsQueryRepository: BlogsORMQueryRepository,
     private readonly postsQueryRepository: PostsORMQueryRepository,
     private readonly commandBus: CommandBus,
+    private readonly commentsQueryRepository: CommentsORMQueryRepository,
     private readonly blogsService: BlogsService,
   ) {}
+
+  @Get('images/wallpaper')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async uploadBackgroundWallpaperForBlog(): Promise<any> {
+    console.log('!!!!!!!!dirName');
+
+    console.log(__dirname);
+    console.log(dirname(require.main!.filename));
+
+    path.basename;
+
+    const dirPath = path.join(
+      'base',
+      'views',
+      'wallpapers',
+      'change-page.html',
+    );
+
+    const htmlContent = await readTextFileAsync(dirPath);
+    return htmlContent;
+  }
+
+  @Post('images/wallpaper')
+  @UseInterceptors(FileInterceptor('wallpaper'))
+  async changeBackgroundWallpaperForBlog(
+    @UploadedFile() wallpaper: Express.Multer.File,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): Promise<any> {
+    console.log('wallpaper: ');
+
+    console.log(wallpaper);
+
+    const userId = '1'; //from request token
+
+    await this.commandBus.execute(
+      new BlogsUploadBackgroundWallpaperCommand(
+        userId,
+        wallpaper.originalname,
+        wallpaper.buffer,
+      ),
+    );
+
+    return 'wallpaper changed';
+  }
+
+  @Get('comments')
+  async getAllComments(
+    @Query() query: BlogQueryFilter,
+    @Req() req,
+  ): Promise<Paginator<BloggerAllCommentsOutput>> {
+    const userId = req.user;
+
+    const result = await this.commentsQueryRepository.findAllCommentsForBlogger(
+      query,
+      userId,
+    );
+    return result;
+  }
 
   @Put(':id')
   @HttpCode(HTTP_STATUSES.NO_CONTENT_204)

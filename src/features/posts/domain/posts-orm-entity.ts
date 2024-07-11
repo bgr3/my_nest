@@ -8,7 +8,8 @@ import {
 
 import { LikeStatusType } from '../../../infrastructure/dto/input/input-dto';
 import { BlogORM } from '../../blogs/domain/blogs-orm-entity';
-import { UserORM } from '../../users/domain/users-orm-entity';
+import { CommentForPostORM } from '../../comments/domain/comments-orm-entity';
+import { UserORM } from '../../users/domain/entities/users-orm-entity';
 import { PostLikesInfoORM } from './posts-likesinfo-orm-entity';
 
 @Entity()
@@ -28,13 +29,9 @@ export class PostORM {
   @ManyToOne(() => BlogORM, (blog) => blog.post, {
     onDelete: 'CASCADE',
   })
-  // @JoinColumn()
   blog: BlogORM;
   @Column({ type: 'uuid' })
   blogId: string;
-
-  // @Column()
-  // blogName: string;
 
   @Column()
   createdAt: string;
@@ -48,6 +45,12 @@ export class PostORM {
     },
   )
   likesInfo: PostLikesInfoORM[];
+
+  @OneToMany(() => CommentForPostORM, (comment) => comment.post, {
+    // eager: true,
+    cascade: true,
+  })
+  comments: CommentForPostORM[];
 
   updatePost(
     title: string,

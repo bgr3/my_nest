@@ -14,3 +14,12 @@ export class CommentOutput {
     },
   ) {}
 }
+
+export class BloggerAllCommentsOutput extends CommentOutput {
+  postInfo: {
+    id: string;
+    title: string;
+    blogId: string;
+    blogName: string;
+  };
+}

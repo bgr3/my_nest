@@ -27,15 +27,11 @@ import {
   UserQueryFilter,
 } from './dto/input/users-input-dto';
 import { UserOutput } from './dto/output/user-output-dto';
-//import { UsersQueryRepository } from '../infrastructure/users-query-repository';
-// import { UsersSQLQueryRepository } from '../infrastructure/sql/users-sql-query-repository';
 
 @Controller('sa/users')
 @UseGuards(BasicAuthGuard)
 export class UsersController {
   constructor(
-    //private readonly usersQueryRepository: UsersQueryRepository,
-    //private readonly usersQueryRepository: UsersSQLQueryRepository,
     private readonly usersQueryRepository: UsersORMQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}

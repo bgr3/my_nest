@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 
-import { UserORM } from '../domain/users-orm-entity';
+import { UserORM } from '../domain/entities/users-orm-entity';
 import { UsersORMRepository } from '../infrastructure/orm/users-orm-repository';
 // import { UserSQL } from '../domain/users-sql-entity';
 // import { UsersSQLRepository } from '../infrastructure/sql/users-sql-repository';

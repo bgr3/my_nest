@@ -42,4 +42,15 @@ export class UserBanDTO {
   banReason: string;
 }
 
+export class UserBlogBanDTO {
+  @IsBoolean()
+  isBanned: boolean;
+
+  @Length(20)
+  banReason: string;
+
+  @IsString()
+  blogId: string;
+}
+
 type banStatuses = 'all' | 'banned' | 'notBanned';

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, Length, Matches } from 'class-validator';
+import {
+  IsBoolean,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+} from 'class-validator';
 
 import { QueryFilter } from '../../../../../infrastructure/dto/input/input-dto';
 
@@ -64,4 +70,9 @@ export class PostForBlogPutType {
   content: string;
 
   blogId: string;
+}
+
+export class BlogBanDTO {
+  @IsBoolean()
+  isBanned: boolean;
 }

@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { PostsORMQueryRepository } from '../../../posts/infrastructure/orm/posts-orm-query-repository';
+import { PostsORMRepository } from '../../../posts/infrastructure/orm/posts-orm-repository';
 import { UsersService } from '../../../users/application/users-service';
 import { CommentPostType } from '../../api/dto/input/comments-input-dto';
 import { CommentForPostORM } from '../../domain/comments-orm-entity';
@@ -21,7 +21,7 @@ export class CommentsCreateCommentUseCase
   constructor(
     private readonly commentsRepository: CommentsORMRepository,
     private readonly usersService: UsersService,
-    protected postsQueryRepository: PostsORMQueryRepository,
+    protected postsRepository: PostsORMRepository,
   ) {}
 
   async execute(command: CommentsCreateCommentCommand): Promise<string | null> {
@@ -29,20 +29,20 @@ export class CommentsCreateCommentUseCase
 
     if (!user) return null;
 
-    const post = await this.postsQueryRepository.findPostByID(command.postId);
+    const post = await this.postsRepository.getPostById(command.postId);
 
-    if (post) {
-      const newComment = CommentForPostORM.createComment(
-        command.dto.content,
-        post.id,
-        user,
-      );
+    if (!post) return null;
 
-      const result = await this.commentsRepository.save(newComment);
+    if (user.blogBanInfo.find((i) => i.blog.id === post.blogId)) return null;
 
-      return result;
-    }
+    const newComment = CommentForPostORM.createComment(
+      command.dto.content,
+      post,
+      user,
+    );
 
-    return null;
+    const result = await this.commentsRepository.save(newComment);
+
+    return result;
   }
 }

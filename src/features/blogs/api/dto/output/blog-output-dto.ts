@@ -21,5 +21,9 @@ export class BlogSAOutput {
       userId: string;
       userLogin: string;
     },
+    public banInfo: {
+      isBanned: boolean;
+      banDate: string | null;
+    },
   ) {}
 }
